@@ -10,6 +10,11 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.ServletRequestBindingException;
 import tools.jackson.databind.JsonNode;
 
 @RestControllerAdvice
@@ -33,5 +38,12 @@ public class ProblemAdvice {
     @ExceptionHandler(MaxUploadSizeExceededException.class) public ResponseEntity<JsonNode> tooLarge(MaxUploadSizeExceededException exception,HttpServletRequest request){return business(ApiException.of("FILE_TOO_LARGE","File vượt giới hạn 10 MiB."),request);}
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class) public ResponseEntity<JsonNode> media(HttpMediaTypeNotSupportedException exception,HttpServletRequest request){return business(ApiException.of("MEDIA_UNSUPPORTED","Định dạng nội dung không được hỗ trợ."),request);}
     @ExceptionHandler(NoResourceFoundException.class) public ResponseEntity<JsonNode> missing(NoResourceFoundException exception,HttpServletRequest request){return business(ApiException.of("NOT_FOUND","Không tìm thấy tài nguyên."),request);}
+    @ExceptionHandler(MissingServletRequestParameterException.class) public ResponseEntity<JsonNode> missingParameter(MissingServletRequestParameterException exception,HttpServletRequest request){return business(ApiException.validation(argumentPath(request,exception.getParameterName()),"Thiếu tham số bắt buộc."),request);}
+    @ExceptionHandler(MissingServletRequestPartException.class) public ResponseEntity<JsonNode> missingPart(MissingServletRequestPartException exception,HttpServletRequest request){return business(ApiException.validation("/body/"+pointer(exception.getRequestPartName()),"Thiếu multipart part bắt buộc."),request);}
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class) public ResponseEntity<JsonNode> argumentType(MethodArgumentTypeMismatchException exception,HttpServletRequest request){return business(ApiException.validation(argumentPath(request,exception.getName()),"Kiểu hoặc định dạng tham số không hợp lệ."),request);}
+    @ExceptionHandler(MethodArgumentNotValidException.class) public ResponseEntity<JsonNode> argumentInvalid(MethodArgumentNotValidException exception,HttpServletRequest request){var violations=exception.getBindingResult().getFieldErrors().stream().limit(100).map(error->new ApiException.Violation("/body/"+pointer(error.getField()),"INVALID","Dữ liệu không hợp lệ.")).toList();return business(new ApiException("VALIDATION_FAILED","Dữ liệu không hợp lệ.",violations,null),request);}
+    @ExceptionHandler(ServletRequestBindingException.class) public ResponseEntity<JsonNode> requestBinding(ServletRequestBindingException exception,HttpServletRequest request){return business(ApiException.validation("/body","Thiếu hoặc sai dữ liệu request."),request);}
     @ExceptionHandler(Exception.class) public ResponseEntity<JsonNode> infrastructure(Exception exception,HttpServletRequest request){LOGGER.error("Request failed; traceId={}",request.getAttribute(TraceFilter.ATTRIBUTE),exception);return business(ApiException.of("SERVICE_UNAVAILABLE","Không thể hoàn tất thao tác lúc này."),request);}
+    private static String argumentPath(HttpServletRequest request,String name){return (request.getContentType()!=null&&request.getContentType().toLowerCase(java.util.Locale.ROOT).startsWith("multipart/form-data")?"/body/":"/query/")+pointer(name);}
+    private static String pointer(String value){return value.replace("~","~0").replace("/","~1");}
 }

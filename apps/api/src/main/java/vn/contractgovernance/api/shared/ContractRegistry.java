@@ -55,6 +55,8 @@ public class ContractRegistry {
     }
     public void validateRequest(String operationId,JsonNode value) {validateRequest(operations.stream().filter(item->item.id().equals(operationId)).findFirst().orElseThrow(),value);}
     public void validateResponse(Operation operation,int status,JsonNode value) {
+        if(status==204){if(value!=null&&!value.isNull())throw new IllegalStateException("204 must have no response body: "+operation.id());}
+        if(!operation.definition().path("responses").has(Integer.toString(status)))throw new IllegalStateException("Undeclared response status: "+operation.id()+" "+status);
         var response=resolve(operation.definition().path("responses").path(Integer.toString(status)));
         var schema=response.path("content").path(status>=400?"application/problem+json":"application/json").path("schema");
         if(schema.isMissingNode())return;
