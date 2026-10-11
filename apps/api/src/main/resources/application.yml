@@ -31,7 +31,6 @@ server:
 cg:
   storage-root: ${CG_STORAGE_ROOT:../../var/private-files}
   cursor-secret: ${CG_CURSOR_SECRET:}
-  local-seed-enabled: ${CG_LOCAL_SEED_ENABLED:false}
   scanner:
     host: ${CG_SCANNER_HOST:localhost}
     port: ${CG_SCANNER_PORT:3310}
