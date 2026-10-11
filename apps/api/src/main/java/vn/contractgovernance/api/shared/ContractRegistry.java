@@ -68,6 +68,10 @@ public class ContractRegistry {
         }
         Map<String,JsonNode> allowed=new HashMap<>();
         for(JsonNode raw:operation.definition().path("parameters")) {var parameter=resolve(raw);if(parameter.path("in").asString().equals("query"))allowed.put(parameter.path("name").asString(),parameter);}
+        for(var entry:allowed.entrySet()) {
+            if(entry.getValue().path("required").asBoolean() && !query.containsKey(entry.getKey()))
+                throw ApiException.validation("/query/"+pointer(entry.getKey()),"Thiếu query parameter bắt buộc.");
+        }
         for(var entry:query.entrySet()) {
             if(!allowed.containsKey(entry.getKey()))throw ApiException.validation("/query/"+pointer(entry.getKey()),"Query parameter không được định nghĩa.");
             var parameter=allowed.get(entry.getKey());JsonNode schema=parameter.path("schema");
