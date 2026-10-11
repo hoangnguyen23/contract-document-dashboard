@@ -25,7 +25,7 @@ public class FileController {
         var actor=actors.current();var fields=json.object();var seen=new java.util.HashSet<String>();
         try{for(var part:request.getParts()){if(!java.util.Set.of("file","branchId","targetKind","targetId","purpose").contains(part.getName()))throw ApiException.validation("/"+part.getName(),"Multipart field không được định nghĩa.");if(!seen.add(part.getName()))throw ApiException.validation("/"+part.getName(),"Multipart field không được lặp.");}}
         catch(java.io.IOException | jakarta.servlet.ServletException exception){throw ApiException.validation("/file","Multipart request không hợp lệ.");}
-        if(file!=null)fields.put("file","<binary>");if(branch==null || branch.isBlank() || branch.equals("null"))fields.putNull("branchId");else fields.put("branchId",branch);if(targetKind!=null)fields.put("targetKind",targetKind);if(targetId!=null)fields.put("targetId",targetId);if(purpose!=null)fields.put("purpose",purpose);
+        if(file!=null)fields.put("file","<binary>");if(seen.contains("branchId")){if(branch==null || branch.isBlank() || branch.equals("null"))fields.putNull("branchId");else fields.put("branchId",branch);}if(targetKind!=null)fields.put("targetKind",targetKind);if(targetId!=null)fields.put("targetId",targetId);if(purpose!=null)fields.put("purpose",purpose);
         contracts.validateSchema("FileUpload",fields);var branchId=fields.hasNonNull("branchId")?UUID.fromString(branch):null;return service.upload(file,branchId,targetKind,UUID.fromString(targetId),purpose,key,actor).response();
     }
     @GetMapping("/{id}")public ResponseEntity<JsonNode> get(@PathVariable UUID id){return ApiResult.ok(service.get(id,actors.current())).response();}

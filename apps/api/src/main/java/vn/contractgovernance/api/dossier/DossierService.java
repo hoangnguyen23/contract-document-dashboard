@@ -127,7 +127,7 @@ public class DossierService {
         if(maker && state.equals("IN_REVIEW")){if(approval.getIfAvailable()!=null)allowed.add("WITHDRAW");else blocked.add(json.object().put("action","WITHDRAW").put("code","SERVICE_UNAVAILABLE").put("reason","Module xét duyệt chưa triển khai."));}
         body.set("allowedActions",allowed);body.set("blockedActions",blocked);
         boolean fullBusinessRole=actor.hasAnyRole("CHECKER","MANAGER","DATA_OFFICER") || (actor.hasRole("MAKER") && actor.id().toString().equals(relationship.body().path("assignedMakerId").asString()));
-        if(actor.hasRole("AUDITOR") && !fullBusinessRole) {
+        if(actor.hasRole("AUDITOR") && !actor.hasPermission("SENSITIVE_READ") && !fullBusinessRole) {
             var r=(ObjectNode)body.path("representation");for(var field:java.util.List.of("personName","title","scopeText"))r.put(field,"[REDACTED]");
             var c=(ObjectNode)body.path("contactSnapshot");c.put("personName","[REDACTED]");c.put("roleLabel","[REDACTED]");c.put("email","redacted@example.invalid");c.put("phone","0000000000");
         }

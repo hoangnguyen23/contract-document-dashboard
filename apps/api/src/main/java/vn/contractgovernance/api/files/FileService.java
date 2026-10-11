@@ -19,6 +19,7 @@ import java.util.UUID;
 
 @Service
 public class FileService {
+    private static final org.slf4j.Logger LOG=org.slf4j.LoggerFactory.getLogger(FileService.class);
     public record Download(byte[] bytes,String mediaType,String filename,String hash,int version) {}
     private final EntityStore store; private final EvidenceAccess access; private final PrivateBlobStore blobs;
     private final JsonSupport json; private final Clock clock; private final CommandExecutor commands; private final AuditService audit;private final JobQueue jobs;private final ListQueries lists;
@@ -27,7 +28,7 @@ public class FileService {
     }
     public EntityStore.Entity requireClean(UUID id,String kind,UUID parent,UUID branch,Actor actor) {return access.requireClean(id,kind,parent,branch,actor);}
     public JsonNode get(UUID id,Actor actor) {return project(access.requireFile(id,actor),actor);}
-    public JsonNode list(Map<String,String> query,Actor actor){var args=new java.util.ArrayList<Object>();var scope=access.sqlScope(false,actor,args);return lists.page("File",actor,query,true,scope,args,body->project(new EntityStore.Entity("File",UUID.fromString(body.path("id").asString()),body.hasNonNull("branchId")?UUID.fromString(body.path("branchId").asString()):null,body.path("version").asInt(),body),actor));}
+    public JsonNode list(Map<String,String> query,Actor actor){if(query.containsKey("branchId"))actor.requireBranch(UUID.fromString(query.get("branchId")));var args=new java.util.ArrayList<Object>();var scope=access.sqlScope(false,actor,args);return lists.page("File",actor,query,true,scope,args,body->project(new EntityStore.Entity("File",UUID.fromString(body.path("id").asString()),body.hasNonNull("branchId")?UUID.fromString(body.path("branchId").asString()):null,body.path("version").asInt(),body),actor));}
     public ApiResult upload(MultipartFile upload,UUID branchId,String targetKind,UUID targetId,String purpose,String key,Actor actor) {
         var parent=access.authorizeWriter(targetKind,targetId,actor);if(!Objects.equals(branchId,parent.branchId()))throw ApiException.of("NOT_FOUND","Không tìm thấy tài nguyên.");
         if(targetKind.equals("POLICY") && purpose.equals("IDENTITY_IMAGE"))throw ApiException.validation("/purpose","Policy chỉ nhận evidence không chứa dữ liệu cá nhân.");
@@ -43,12 +44,13 @@ public class FileService {
                 var file=store.create("File",id,branchId,body);store.jdbc().update("insert into cg_file_blob(file_id,storage_key,original_sha256,size_bytes,created_at) values(?,?,?,?,?)",id,stored.key(),stored.sha256(),stored.sizeBytes(),Timestamp.from(clock.instant()));
                 contribute(locked,actor);audit.record(actor,"CREATE",file,null);return ApiResult.created(project(file,actor),"/api/v1/files/"+id);
             });
-            if(result.replayed())blobs.delete(stored.key());return result;
+            if(result.replayed())discardOrphan(stored.key());return result;
         } catch(RuntimeException exception) {
             // Finalized orphan bytes are safe to remove only when no committed database record refers to them.
-            if(store.jdbc().queryForObject("select count(*) from cg_file_blob where storage_key=?",Long.class,stored.key())==0L)blobs.delete(stored.key());throw exception;
+            discardOrphan(stored.key());throw exception;
         }
     }
+    private void discardOrphan(String key){try{if(store.jdbc().queryForObject("select count(*) from cg_file_blob where storage_key=?",Long.class,key)==0L)blobs.delete(key);}catch(RuntimeException cleanupFailure){LOG.warn("Unreferenced replay/upload bytes need private maintenance reconciliation");}}
     private ObjectNode base(PrivateBlobStore.Stored stored,String kind,UUID target,UUID branch,String purpose,String filename,UUID actorId) {
         var body=json.object();var now=JsonSupport.timestamp(clock.instant());body.put("createdAt",now);body.put("updatedAt",now);body.set("allowedActions",json.array());body.set("blockedActions",json.array());if(branch==null)body.putNull("branchId");else body.put("branchId",branch.toString());body.put("state","SCANNING");body.put("targetKind",kind);body.put("targetId",target.toString());body.put("purpose",purpose);body.put("mediaType",stored.mediaType());body.put("filename",filename);body.put("sizeBytes",stored.sizeBytes());body.put("sha256",stored.sha256());body.putNull("scanJobId");body.putNull("scannerVersion");body.putNull("signatureDatabaseVersion");body.putNull("scannedAt");body.put("humanVerification","NOT_CHECKED");body.put("sensitive",purpose.equals("IDENTITY_IMAGE"));body.put("attached",false);body.put("uploadedBy",actorId.toString());body.put("origin","UPLOADED");body.putNull("rendererVersion");body.putNull("generatedAt");return body;
     }
@@ -71,8 +73,10 @@ public class FileService {
         access.requireFile(file.id(),actor);access.requireWritableParent(file.body().path("targetKind").asString(),UUID.fromString(file.body().path("targetId").asString()),actor);
         if(!file.body().path("state").asString().equals("SCAN_FAILED"))throw ApiException.of("STATE_CONFLICT","Chỉ tệp SCAN_FAILED được quét lại.");
         if(!actor.id().toString().equals(file.body().path("uploadedBy").asString()))throw ApiException.of("ROLE_FORBIDDEN","Chỉ người tải tệp còn có quyền trên nguồn mới được quét lại.");
+        if(!retryJobEligible(file))throw ApiException.of("STATE_CONFLICT","Tệp không có job FAILED khớp nguồn hiện tại để thực hiện lại.");
         var blob=blob(file.id());blobs.read(blob.key(),file.body().path("sha256").asString());
     }
+    private boolean retryJobEligible(EntityStore.Entity file){if(!file.body().hasNonNull("scanJobId"))return false;return store.jdbc().queryForObject("select count(*) from cg_job where id=? and target_type='FILE' and target_id=? and kind='FILE_SCAN' and state='FAILED' and expected_hash=?",Long.class,UUID.fromString(file.body().path("scanJobId").asString()),file.id(),file.body().path("sha256").asString())==1L;}
     public EntityStore.Entity authorizeRetry(UUID id,Actor actor){var file=access.requireFile(id,actor);access.authorizeWriter(file.body().path("targetKind").asString(),UUID.fromString(file.body().path("targetId").asString()),actor);if(!actor.id().toString().equals(file.body().path("uploadedBy").asString()))throw ApiException.of("ROLE_FORBIDDEN","Chỉ người tải lên còn quyền trên nguồn được quét lại.");return file;}
     public ApiResult delete(UUID id,JsonNode request,String tag,String key,Actor actor) {
         authorizeDelete(id,actor);ETags.require(tag);
@@ -135,9 +139,11 @@ public class FileService {
     }
     public JsonNode project(EntityStore.Entity file,Actor actor) {
         var body=(ObjectNode)file.body().deepCopy();var actions=json.array();var blocked=json.array();var state=body.path("state").asString();
+        if(actor.hasRole("AUDITOR") && !actor.hasPermission("SENSITIVE_READ") && !access.fullBusinessFacts(body.path("targetKind").asString(),UUID.fromString(body.path("targetId").asString()),actor))body.put("filename","redacted-file"+(body.path("mediaType").asString().equals("application/pdf")?".pdf":body.path("mediaType").asString().equals("image/png")?".png":".jpg"));
         if(state.equals("CLEAN")){try{access.requireFull(file,actor);actions.add("DOWNLOAD_FULL");}catch(ApiException denied){blocked.add(json.object().put("action","DOWNLOAD_FULL").put("code",denied.code()).put("reason","Cần quyền đọc bản đầy đủ nhạy cảm."));}var blob=blob(file.id());if(blob.redactedKey()!=null && blob.verifiedBy()!=null)actions.add("DOWNLOAD_REDACTED");else blocked.add(json.object().put("action","DOWNLOAD_REDACTED").put("code","READINESS_BLOCKED").put("reason","Chưa có bản che dữ liệu an toàn."));}
-        if(state.equals("SCAN_FAILED") && actor.id().toString().equals(body.path("uploadedBy").asString())) {try{access.requireWritableParent(body.path("targetKind").asString(),UUID.fromString(body.path("targetId").asString()),actor);actions.add("RETRY");}catch(ApiException denied){blocked.add(json.object().put("action","RETRY").put("code",denied.code()).put("reason","Nguồn không còn cho phép quét lại."));}}
+        if(state.equals("SCAN_FAILED") && actor.id().toString().equals(body.path("uploadedBy").asString())) {try{access.requireWritableParent(body.path("targetKind").asString(),UUID.fromString(body.path("targetId").asString()),actor);if(!retryJobEligible(file))throw ApiException.of("STATE_CONFLICT","Job nguồn không ở trạng thái FAILED.");actions.add("RETRY");}catch(ApiException denied){blocked.add(json.object().put("action","RETRY").put("code",denied.code()).put("reason","Nguồn không còn cho phép quét lại."));}}
         body.set("allowedActions",actions);body.set("blockedActions",blocked);return body;
     }
 }
+
 
