@@ -35,7 +35,7 @@ begin
     return case when tg_op = 'DELETE' then old else new end;
 end $$;
 create trigger cg_file_association_history before update or delete on cg_file_association for each row execute function cg_protect_file_history();
-create unique index cg_one_live_dossier_round on cg_entity ((body->>'targetId')) where entity_type='Round' and body->>'targetType'='DOSSIER' and body->>'state'='OPEN';
+create unique index cg_one_live_dossier_round on cg_entity ((body->>'targetId')) where entity_type='Round' and body->>'targetKind'='DOSSIER' and body->>'state'='OPEN';
 create index cg_dossier_relationship on cg_entity ((body->>'relationshipId'),created_at desc,id desc) where entity_type='Dossier';
 alter table cg_job add column version integer not null default 1 check (version > 0);
 alter table cg_job add column started_at timestamptz;
