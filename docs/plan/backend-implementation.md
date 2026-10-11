@@ -4,6 +4,8 @@ Sources: `docs/Final_Project_Specification.md` (A1.0.0), `docs/FE_BE_Shared_Deve
 
 The user requested Backend implementation and explicitly waived writing/running tests on 11 October 2026. Compilation, dependency resolution and independent static code review remain required. No automated test suites or manual HTTP acceptance scenarios will be run in this delivery. Build success does not establish G1–G6 integrated acceptance.
 
+The current tranche implements the Backend part of G1/G2: platform, identity/customer, dossier drafts and private evidence/scanning. G3–G5 are the subsequent roadmap below; they are not declared implemented or accepted in this tranche. Future operations must remain explicit in the coverage report, with no simulated success. This preserves the project's foundation-first development sequence.
+
 ## Delivery sequence
 
 1. Platform: Java 25 / Spring Boot 4.1.1 / Modulith 2.1.1; Maven wrapper; PostgreSQL/Flyway; canonical contract extraction; HTTP validation/errors/concurrency/idempotency; session/CSRF; jobs/audit and private storage boundaries.
