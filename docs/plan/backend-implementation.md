@@ -1,6 +1,6 @@
 # Backend implementation
 
-Sources: `docs/Final_Project_Specification.md` (A1.0.0), `docs/FE_BE_Shared_Development_Contract.md` (B1.0.0). These remain the only canonical product and wire specifications.
+Sources: `docs/Final_Project_Specification.md` (A1.1.0), `docs/FE_BE_Shared_Development_Contract.md` (B1.1.0). These remain the only canonical product and wire specifications. Compatibility patch 1.1.0 closes the documented POLICY file/job branch scope contradiction; business scope is unchanged.
 
 The user requested Backend implementation and explicitly waived writing/running tests on 11 October 2026. Compilation, dependency resolution and independent static code review remain required. No automated test suites or manual HTTP acceptance scenarios will be run in this delivery. Build success does not establish G1–G6 integrated acceptance.
 
