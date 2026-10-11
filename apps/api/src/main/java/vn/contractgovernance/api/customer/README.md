@@ -1,0 +1,11 @@
+# Customer boundary
+
+Owns `/parties`, `/relationships`, `/contact-requests` and `/reviewer-options` (13 canonical operations). PostgreSQL unique indexes preserve bankwide tax IDs, branch codes and `(branch, Party)` Relationship identity, including inactive rows. Canonical tax IDs contain exactly ten or thirteen digits; leading zeros are retained. Admin global Party search is separate from scoped business access.
+
+`CustomerAccess.requireRelationship` permits branch-scoped business readers and narrows MAKER to the assigned Relationship. `authorizeAssignedMaker` checks role/scope/assignment only, before idempotency replay; `requireAssignedMaker` additionally requires an active Relationship for a new effect. No BANK_ADMIN business-record bypass exists. SQL list scope and assignment filters run before keyset paging. Ordinary AUDITOR contact projections are redacted unless supplemental SENSITIVE_READ permits full data.
+
+Admin reassignment records old/new maker, actor and reason without editing historical dossier contributors, receipts or due dates. Initial contact is the explicit RelationshipCreate input. Later contact updates require a new immutable ContactRequest with exact expected Relationship version, requester/contributors and a separate CHECKER decision. Decision locks the Relationship before its request; approval rechecks request ETag, stored and command Relationship versions, current scope and separation of duties. Stale requests can be rejected but cannot overwrite a newer confirmed contact. Contact history increments independently of Relationship version. Notices and other frozen snapshots are never rewritten by this module.
+
+`UserDirectory.requireEligible` validates current active role/branch and stable excluded contributor IDs for source review. Reviewer options resolve the target's Relationship and contributors before querying eligible user IDs/display names; credentials/grants are never projected into the selection response.
+
+All canonical response properties, nulls, UUIDs, timestamps and action hints use A/B meaning and shared wire validation. Package compilation is the delivery evidence available here. The user explicitly waived tests; runtime scope denial, concurrent contact decisions and FE integration remain unverified acceptance work.
