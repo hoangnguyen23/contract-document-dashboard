@@ -1,6 +1,6 @@
 # Dossier foundation
 
-Canonical authority: A/B 1.1.0; the user's current delivery omits tests and limits implementation to careful G1/G2 foundation.
+Canonical authority: A/B 1.1.0. The user waived writing and running tests. This first delivery tranche implements the G1/G2 Backend foundation; later gates remain on the delivery plan.
 
 Implemented operations: `listDossiers`, `createDossier`, `getDossier`, `updateDossier`. `commandDossier` currently implements `CANCEL` and `CLONE`; `SUBMIT` and `WITHDRAW` return canonical `503 SERVICE_UNAVAILABLE` without effects until the approval module supplies `DossierApprovalBridge`. This is partial command coverage, not completed G3 approval.
 
