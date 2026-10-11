@@ -41,6 +41,7 @@ public class IdentityAdministration {
                 if (!username.matches("^[a-z][a-z0-9._-]{2,39}$"))
                     throw ApiException.validation("/username", "Tên đăng nhập phải bắt đầu bằng chữ thường và có 3–40 ký tự hợp lệ.");
                 validateBranches(input.path("branchIds"));
+                validateStringSet(input,"roles"); validateStringSet(input,"permissions");
                 body.put("username", username); body.put("active", true);
                 copy(input, body, "displayName", "roles", "branchIds", "permissions");
             }
@@ -60,6 +61,7 @@ public class IdentityAdministration {
         var body = (ObjectNode)current.body().deepCopy();
         if (type.equals("User")) {
             validateBranches(input.path("branchIds"));
+            validateStringSet(input,"roles"); validateStringSet(input,"permissions");
             copy(input, body, "displayName", "active", "roles", "branchIds", "permissions");
         } else if (type.equals("Branch")) copy(input, body, "name", "active");
         else throw new IllegalArgumentException("Not an identity resource");
@@ -86,6 +88,12 @@ public class IdentityAdministration {
             if (branch.isEmpty())
                 throw ApiException.validation("/branchIds", "Phạm vi chi nhánh phải tham chiếu chi nhánh có trong danh mục.");
         }
+    }
+
+    private static void validateStringSet(JsonNode input,String field) {
+        Set<String> values=new java.util.HashSet<>();
+        for(JsonNode value:input.path(field))if(!values.add(value.asString()))
+            throw ApiException.validation("/"+field,"Danh sách quyền và vai trò không được chứa giá trị lặp.");
     }
 
     private ObjectNode base() {

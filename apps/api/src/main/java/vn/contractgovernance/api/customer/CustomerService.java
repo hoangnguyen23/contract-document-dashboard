@@ -196,7 +196,13 @@ public class CustomerService {
                 else {var item=json.object();item.put("action",action);item.put("code",actionCode);item.put("reason",actionReason);blocked.add(item);}
             }
         }
-        if (actor.hasRole("AUDITOR") && !actor.hasAnyRole("MAKER","CHECKER","MANAGER","DATA_OFFICER","BANK_ADMIN") && !actor.hasPermission("SENSITIVE_READ")) {
+        boolean fullBusinessRole=actor.hasAnyRole("CHECKER","MANAGER","DATA_OFFICER","BANK_ADMIN");
+        if(!fullBusinessRole && actor.hasRole("MAKER")){
+            EntityStore.Entity relationship=entity.type().equals("Relationship")?entity:
+                    entity.type().equals("ContactRequest")?store.find("Relationship",uuid(body,"relationshipId")).orElse(null):null;
+            fullBusinessRole=relationship!=null && relationship.body().path("assignedMakerId").asString().equals(actor.id().toString());
+        }
+        if (actor.hasRole("AUDITOR") && !fullBusinessRole && !actor.hasPermission("SENSITIVE_READ")) {
             if(body.has("confirmedContact"))body.set("confirmedContact",redact(body.path("confirmedContact")));
             if(body.has("requestedContact"))body.set("requestedContact",redact(body.path("requestedContact")));
         }
