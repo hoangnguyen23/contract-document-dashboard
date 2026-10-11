@@ -40875,7 +40875,7 @@ Job.branchId cho phép null chỉ khi parent FILE thuộc POLICY namespace toàn
     "A": "1.1.0",
     "B": "1.1.0"
   },
-  "specificationFileSha256": "a6dfc56b2fef37716520ffc7e206ddcce783b96b68fe0562417ec2d9c3b2acc2",
+  "specificationFileSha256": "e848ac18ac25fdfca8c39be7d6d85988cb788304fe0b12e44bf3e660bfb2b0de",
   "hashAlgorithm": "SHA-256 over JSON UTF-8 ensure_ascii=false sorted keys separators comma/colon; no BOM",
   "blocks": {
     "business-catalog-v1": "8992e8f911d97e5eaa775059edccd5a991b41e44b89dda386cd40792b37ad5fe",
