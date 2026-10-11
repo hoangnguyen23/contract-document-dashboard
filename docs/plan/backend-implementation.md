@@ -15,7 +15,7 @@ The current tranche implements the Backend part of G1/G2: platform, identity/cus
 5. Lifecycle/data: obligations, incidents, control/closeout, holds/disposition, scoped dashboards and exports.
 6. Static integration review, build with tests skipped, setup instructions and an explicit operation coverage report.
 
-Independent develop worktrees own distinct module paths. Shared interfaces are established by the platform task before dependent module implementation; no duplicate shared DTO/error/schema meanings. Integration occurs on `feature/backend-implementation`, based on current `dev`. Neither `main` nor `dev` is merged automatically. Publication is reviewable; FE integration and runtime acceptance remain pending.
+Independent develop worktrees own distinct module paths. Shared interfaces are established by the platform task before dependent module implementation; no duplicate shared DTO/error/schema meanings. Integration occurs on `feature/backend-foundation`, based on current `dev`. Neither `main` nor `dev` is merged automatically. Publication is reviewable; FE integration and runtime acceptance remain pending.
 
 ## Required connections
 
