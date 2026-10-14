@@ -1,0 +1,9 @@
+apps/api/target/
+apps/web/node_modules/
+apps/web/dist/
+var/
+.env
+*.log
+.idea/
+*.iml
+.vscode/
