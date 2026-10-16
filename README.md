@@ -18,6 +18,14 @@ Xem [bảng đủ 85 operation](docs/plan/backend-operation-coverage.md): 36 ope
 
 Đọc [hướng dẫn Backend](apps/api/README.md) để cấu hình Java 25, PostgreSQL, ClamAV, secret và profile demo. Docker Compose cung cấp PostgreSQL/scanner; Java API được khởi chạy riêng. Browser dùng cùng origin HTTPS qua proxy theo contract.
 
+Trên Windows, từ thư mục repo:
+
+```powershell
+.\scripts\start-backend.ps1 -DatabasePort 56432 -Demo
+```
+
+Script mặc định dùng PostgreSQL `127.0.0.1:55432`, scanner `127.0.0.1:3310` và API `127.0.0.1:8081`, chạy Java nền với timezone UTC và kiểm tra tiến trình đúng dự án. Ví dụ trên đổi database sang `56432` vì Windows trên máy hiện tại giữ dải cổng có `55432`. Secret được tạo vào `.env` nếu chưa có; cấu hình hiện có được giữ nguyên. Dừng API bằng `scripts/stop-backend.ps1`; thêm `-StopServices` để dừng hai container của dự án và giữ dữ liệu.
+
 Build tại `apps/api`, bỏ qua cả biên dịch và chạy test theo yêu cầu của chủ dự án:
 
 ```powershell
@@ -32,4 +40,4 @@ Build tại `apps/api`, bỏ qua cả biên dịch và chạy test theo yêu c�
 - `compose.yml`: PostgreSQL và ClamAV được pin bằng image digest.
 - `.github/workflows/backend-build.yml`: trích xuất contract và package build, không chạy test.
 
-Build thành công và review nguồn không thay thế nghiệm thu tích hợp G1/G2. Chưa có bằng chứng chạy PostgreSQL/scanner, browser, race hoặc NFR trong đợt này.
+Đã quan sát PostgreSQL/Flyway, ClamAV và API khởi động thực; xem [bằng chứng runtime](docs/plan/reviews/backend-runtime-startup.md). Build, review nguồn và kết nối hạ tầng không thay thế nghiệm thu tích hợp G1/G2. Browser, các luồng nghiệp vụ, race/recovery và NFR chưa được xác nhận trong đợt này.
