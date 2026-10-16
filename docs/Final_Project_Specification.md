@@ -118,7 +118,7 @@ Các quy tắc này là chính sách giả lập, không phải biểu phí/th�
 | ACTIVE → RETIRED | Chỉ khi policy kế tiếp thành ACTIVE, không tạo gap; historic policy vẫn truy cập được |
 | REJECTED/RETIRED → DRAFT mới | Clone tạo ID/version mới, không khôi phục state bản cũ |
 
-Không sửa/cancel SCHEDULED hoặc ACTIVE trong baseline; thay đổi bằng version kế tiếp, chờ slot future trống. Nếu submit/review cần sửa config, reject rồi clone; không auto-publish khi report cũ còn xanh. Simulation read-only với explicit facts/file flags và version đã chọn; không tạo dossier, approval hay effect. Policy publication không đổi điều khoản khách đã chấp nhận.
+Schedule mới chưa có policy có counter=0; publication đầu tiên dùng expectedScheduleVersion=0 và effectiveFrom từ ngày mai trở đi. Trước lần ACTIVE đầu, không có applicable policy thì submit nghiệp vụ fail closed, không nạp fixture ACTIVE làm kết quả live. Không sửa/cancel SCHEDULED hoặc ACTIVE trong baseline; thay đổi bằng version kế tiếp, chờ slot future trống. Nếu submit/review cần sửa config, reject rồi clone; không auto-publish khi report cũ còn xanh. Simulation read-only với explicit facts/file flags và version đã chọn; không tạo dossier, approval hay effect. Policy publication không đổi điều khoản khách đã chấp nhận.
 
 Round đang OPEN giữ policy lúc submit. RETURNED rồi resubmit là round mới dùng policy đang áp dụng tại lần nộp mới. Điều kiện bắt buộc bên ngoài hoặc thẩm quyền hiện tại thay đổi có thể chặn decision/effect dù old policy PASS; ghi evaluation mới và preserve old snapshot, không âm thầm sửa P1.
 

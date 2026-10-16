@@ -132,7 +132,7 @@ Job.branchId cho phép null chỉ khi parent FILE thuộc POLICY namespace toàn
 
 ### 9.3. Compatibility patch 1.2.0 — finite policy boundaries và generated metadata
 
-A §4.1 và seed-v1.policyCorpusSemantics làm rõ oracle hữu hạn cho cấu hình fee bounds bằng nhau và allowedTermKinds là subset. Giữ nguyên miền config, route formula, enum và wire fields; literal corpus là P1/P2, expected conditional độc lập với evaluator. Generated File trong mọi profile/scenario có uploadedBy=null đúng §7; không thay file bytes/hash. Đây là sửa nhất quán kỹ thuật, không thêm scope nghiệp vụ.
+A §4.1 và seed-v1.policyCorpusSemantics làm rõ oracle hữu hạn cho cấu hình fee bounds bằng nhau và allowedTermKinds là subset. Giữ nguyên miền config, route formula, enum và wire fields; literal corpus là P1/P2, expected conditional độc lập với evaluator. Generated File trong mọi profile/scenario có uploadedBy=null đúng §7; không thay file bytes/hash. REQUEST_PUBLICATION và APPROVE_PUBLICATION chấp nhận expectedScheduleVersion=0 cho schedule rỗng; counter tăng khi schedule/activate, không tạo ACTIVE giả từ fixture. Đây là sửa nhất quán kỹ thuật, không thêm scope nghiệp vụ.
 
 ## 10. Canonical blocks
 
@@ -15765,7 +15765,7 @@ A §4.1 và seed-v1.policyCorpusSemantics làm rõ oracle hữu hạn cho cấu 
           },
           "expectedScheduleVersion": {
             "type": "integer",
-            "minimum": 1
+            "minimum": 0
           },
           "regressionConfigHash": {
             "type": "string",
@@ -15791,7 +15791,7 @@ A §4.1 và seed-v1.policyCorpusSemantics làm rõ oracle hữu hạn cho cấu 
           },
           "expectedScheduleVersion": {
             "type": "integer",
-            "minimum": 1
+            "minimum": 0
           },
           "reason": {
             "type": "string",
@@ -40879,11 +40879,11 @@ A §4.1 và seed-v1.policyCorpusSemantics làm rõ oracle hữu hạn cho cấu 
     "A": "1.2.0",
     "B": "1.2.0"
   },
-  "specificationFileSha256": "0dd2b1071d70b6de11c0e6523926ee44ef86e4c48102c806939aec3b6c86d798",
+  "specificationFileSha256": "6f1733c76ceec17415e9f95038986177c50602d7c195cb99e29032019e4e3c1b",
   "hashAlgorithm": "SHA-256 over JSON UTF-8 ensure_ascii=false sorted keys separators comma/colon; no BOM",
   "blocks": {
     "business-catalog-v1": "3b8ee7a5c5c53e6df08068042092073b02bad016d6c13e3ea13551db9db9492c",
-    "openapi-v1": "e5c2468f861302a3816d7770c6a89ae03b3f8a4a598d8fd49052f3d34bc16299",
+    "openapi-v1": "ccdfbcba7f4aeb55f3803680ba5b9cad47b53e4b129b6b28827037161b04daaa",
     "seed-v1": "c073f51488fb0b6a8041c0ef4d1903ae8be6259f58561e95e7749b67504ff8bd",
     "scenarios-v1": "f99e9388e6dc4e7a50604fc9e53b8668633fc1e6b6d53d089edc5808088b7efe",
     "protocol-rules-v1": "03941b7c78c7e9aed63bc52769cf21eb136e53169b0e9e11111e2d7a9b4cb7a5"
