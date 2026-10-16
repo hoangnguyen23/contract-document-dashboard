@@ -1,6 +1,6 @@
 # B — FE/BE Shared Development Contract
 
-**Version 1.1.0 · Business authority: A1.1.0 · Chốt ngày 11/10/2026.**
+**Version 1.2.0 · Business authority: A1.2.0 · Chốt ngày 11/10/2026.**
 
 Tài liệu này là hợp đồng kỹ thuật duy nhất giữa developer Frontend và Backend. A quyết định nghiệp vụ; B quyết định bytes trên wire, quyền theo operation, fixture, integration và thay đổi schema. Các JSON blocks ở cuối là canonical, không phải minh họa rút gọn. Chúng nằm trong hai tài liệu chính thức; file trích xuất và test harness sau này là sản phẩm dẫn xuất của repository triển khai.
 
@@ -113,7 +113,7 @@ Worker/race cases là oracle bổ sung ngoài HTTP đơn bước: double approva
 
 ## 9. Contract change control và DoD
 
-A1.1.0 và B1.1.0 hash-linked bằng manifest, canonical JSON UTF-8 sorted keys/separators(',',':') cho block digest; RFC8785 dùng riêng HTTP fingerprint như §4. Manifest không tự hash chính nó. Trích đúng fenced block có marker, reject duplicate block/key hoặc external $ref; không copy một phần schema từ chat. OpenAPI block JSON là JSON hợp lệ cũng là YAML, file dẫn xuất openapi.json. Codegen kiểm tra operationIds/required/nullable/enum, provider validates all requests/responses, FE consumer tests validate MSW fixture. Không có custom TS DTO/Jackson DTO song song khác nghĩa.
+A1.2.0 và B1.2.0 hash-linked bằng manifest, canonical JSON UTF-8 sorted keys/separators(',',':') cho block digest; RFC8785 dùng riêng HTTP fingerprint như §4. Manifest không tự hash chính nó. Trích đúng fenced block có marker, reject duplicate block/key hoặc external $ref; không copy một phần schema từ chat. OpenAPI block JSON là JSON hợp lệ cũng là YAML, file dẫn xuất openapi.json. Codegen kiểm tra operationIds/required/nullable/enum, provider validates all requests/responses, FE consumer tests validate MSW fixture. Không có custom TS DTO/Jackson DTO song song khác nghĩa.
 
 Schema patch compatible chỉ thêm optional response field hoặc operation không đổi behavior; request mới optional có server default rõ và oracle. Enum/action/required/nullability/status/permission/date/money meaning change là breaking, nâng minor/major thích hợp và cập nhật A/B/fixtures/tests cùng PR. FE/BE đọc diff cụ thể, ghi acceptance impact, generateclient/lint/provider+consumer và real E2E target before merge. Scope/domain module addition phải owner-approved concrete patch; không hỏi lại phạm vi đã duyệt.
 
@@ -130,6 +130,10 @@ Independent FE/product reading và Backend/wire reading đã khép các finding 
 
 Job.branchId cho phép null chỉ khi parent FILE thuộc POLICY namespace toàn ngân hàng. Job kế thừa quyền từ file và Policy; không cấp business scope cho POLICY_AUTHOR/POLICY_REVIEWER. Các parent business khác vẫn bắt branchId nonnull bằng branch parent. Patch khép mâu thuẫn giữa File POLICY branchId=null và Job schema trước đó; không thay nghiệp vụ, trạng thái hay action.
 
+### 9.3. Compatibility patch 1.2.0 — finite policy boundaries và generated metadata
+
+A §4.1 và seed-v1.policyCorpusSemantics làm rõ oracle hữu hạn cho cấu hình fee bounds bằng nhau và allowedTermKinds là subset. Giữ nguyên miền config, route formula, enum và wire fields; literal corpus là P1/P2, expected conditional độc lập với evaluator. Generated File trong mọi profile/scenario có uploadedBy=null đúng §7; không thay file bytes/hash. Đây là sửa nhất quán kỹ thuật, không thêm scope nghiệp vụ.
+
 ## 10. Canonical blocks
 
 
@@ -142,8 +146,8 @@ Job.branchId cho phép null chỉ khi parent FILE thuộc POLICY namespace toàn
   "jsonSchemaDialect": "https://json-schema.org/draft/2020-12/schema",
   "info": {
     "title": "Contract Governance — FE/BE Shared Contract",
-    "version": "1.1.0",
-    "description": "Canonical B1.1.0; business authority A1.1.0; synthetic documentary VA profile only."
+    "version": "1.2.0",
+    "description": "Canonical B1.2.0; business authority A1.2.0; synthetic documentary VA profile only."
   },
   "servers": [
     {
@@ -19465,7 +19469,7 @@ Job.branchId cho phép null chỉ khi parent FILE thuộc POLICY namespace toàn
 <!-- contract:block seed-v1 -->
 ```json
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "syntheticOnly": true,
   "clock": "2027-01-05T02:00:00.000Z",
   "timezone": "Asia/Ho_Chi_Minh",
@@ -22494,7 +22498,7 @@ Job.branchId cho phép null chỉ khi parent FILE thuộc POLICY namespace toàn
             "humanVerification": "PASS",
             "sensitive": false,
             "attached": true,
-            "uploadedBy": "00000000-0000-4000-8000-000000000004",
+            "uploadedBy": null,
             "origin": "GENERATED",
             "rendererVersion": "FIXTURE-PDF-1",
             "generatedAt": "2027-01-05T00:15:00.000Z",
@@ -23554,7 +23558,7 @@ Job.branchId cho phép null chỉ khi parent FILE thuộc POLICY namespace toàn
             "humanVerification": "PASS",
             "sensitive": false,
             "attached": true,
-            "uploadedBy": "00000000-0000-4000-8000-000000000004",
+            "uploadedBy": null,
             "origin": "GENERATED",
             "rendererVersion": "FIXTURE-PDF-1",
             "generatedAt": "2026-12-30T01:00:00.000Z",
@@ -23694,7 +23698,7 @@ Job.branchId cho phép null chỉ khi parent FILE thuộc POLICY namespace toàn
             "humanVerification": "PASS",
             "sensitive": false,
             "attached": true,
-            "uploadedBy": "00000000-0000-4000-8000-000000000004",
+            "uploadedBy": null,
             "origin": "GENERATED",
             "rendererVersion": "FIXTURE-PDF-1",
             "generatedAt": "2027-01-04T01:10:00.000Z",
@@ -25275,7 +25279,7 @@ Job.branchId cho phép null chỉ khi parent FILE thuộc POLICY namespace toàn
             "humanVerification": "PASS",
             "sensitive": false,
             "attached": true,
-            "uploadedBy": "00000000-0000-4000-8000-000000000004",
+            "uploadedBy": null,
             "origin": "GENERATED",
             "rendererVersion": "FIXTURE-PDF-1",
             "generatedAt": "2026-12-30T01:00:00.000Z",
@@ -25415,7 +25419,7 @@ Job.branchId cho phép null chỉ khi parent FILE thuộc POLICY namespace toàn
             "humanVerification": "PASS",
             "sensitive": false,
             "attached": true,
-            "uploadedBy": "00000000-0000-4000-8000-000000000004",
+            "uploadedBy": null,
             "origin": "GENERATED",
             "rendererVersion": "FIXTURE-PDF-1",
             "generatedAt": "2027-01-04T01:10:00.000Z",
@@ -25583,7 +25587,7 @@ Job.branchId cho phép null chỉ khi parent FILE thuộc POLICY namespace toàn
             "humanVerification": "PASS",
             "sensitive": false,
             "attached": true,
-            "uploadedBy": "00000000-0000-4000-8000-000000000004",
+            "uploadedBy": null,
             "origin": "GENERATED",
             "rendererVersion": "FIXTURE-PDF-1",
             "generatedAt": "2027-01-04T01:15:00.000Z",
@@ -27061,7 +27065,7 @@ Job.branchId cho phép null chỉ khi parent FILE thuộc POLICY namespace toàn
             "humanVerification": "PASS",
             "sensitive": false,
             "attached": true,
-            "uploadedBy": "00000000-0000-4000-8000-000000000004",
+            "uploadedBy": null,
             "origin": "GENERATED",
             "rendererVersion": "FIXTURE-PDF-1",
             "generatedAt": "2026-12-30T01:00:00.000Z",
@@ -27201,7 +27205,7 @@ Job.branchId cho phép null chỉ khi parent FILE thuộc POLICY namespace toàn
             "humanVerification": "PASS",
             "sensitive": false,
             "attached": true,
-            "uploadedBy": "00000000-0000-4000-8000-000000000004",
+            "uploadedBy": null,
             "origin": "GENERATED",
             "rendererVersion": "FIXTURE-PDF-1",
             "generatedAt": "2027-01-04T01:10:00.000Z",
@@ -29789,7 +29793,7 @@ Job.branchId cho phép null chỉ khi parent FILE thuộc POLICY namespace toàn
             "humanVerification": "PASS",
             "sensitive": false,
             "attached": true,
-            "uploadedBy": "00000000-0000-4000-8000-000000000004",
+            "uploadedBy": null,
             "origin": "GENERATED",
             "rendererVersion": "FIXTURE-PDF-1",
             "generatedAt": "2026-12-30T01:00:00.000Z",
@@ -29929,7 +29933,7 @@ Job.branchId cho phép null chỉ khi parent FILE thuộc POLICY namespace toàn
             "humanVerification": "PASS",
             "sensitive": false,
             "attached": true,
-            "uploadedBy": "00000000-0000-4000-8000-000000000004",
+            "uploadedBy": null,
             "origin": "GENERATED",
             "rendererVersion": "FIXTURE-PDF-1",
             "generatedAt": "2027-01-04T01:10:00.000Z",
@@ -30069,7 +30073,7 @@ Job.branchId cho phép null chỉ khi parent FILE thuộc POLICY namespace toàn
             "humanVerification": "PASS",
             "sensitive": false,
             "attached": true,
-            "uploadedBy": "00000000-0000-4000-8000-000000000004",
+            "uploadedBy": null,
             "origin": "GENERATED",
             "rendererVersion": "FIXTURE-PDF-1",
             "generatedAt": "2028-01-05T01:00:00.000Z",
@@ -31305,7 +31309,7 @@ Job.branchId cho phép null chỉ khi parent FILE thuộc POLICY namespace toàn
     "changeEvaluationFactsHash": "Normalized consolidated terms policy input using the factsHash projection above, not the full change source hash; frozen evaluation retained with full ChangeRevision factsHash."
   },
   "profileImportSemantics": "Import only selected profile resources and immutableRevisions, then apply scenario.seedOverrides transactionally. Templates/resources are never imported wholesale. Decode blobFixtures for imported File IDs only, verify sha256. Current actor roles/scopes from imported User records. Clock injection and UUID allocation exist only inside provider test profile, no production routes.",
-  "policyCorpusSemantics": "Finite authored vectors, not runtime expression DSL. feeExpression/fixedDaysExpression labels are enumerated corpus-template substitutions inside server test corpus. Base vector uses fee=referenceFeeVnd, terms FIXED minFixedTermDays, CLEAN mandatory documents, active scoped independent L1 checker; each case overrides only listed fixture facts. P2 uses its own configured reference1200, so FEE_AT_REF stays expected L1."
+  "policyCorpusSemantics": "Finite authored vectors, not runtime expression DSL. Enumerated substitutions only; base fee=referenceFeeVnd, CLEAN required purposes, independent active scoped L1; base term FIXED at minFixedTermDays if allowed, otherwise OPEN_ENDED with null end. Static expectedRoute literals describe P1/P2 fixture configs. Independent authored oracle per config: FEE_AT_MIN L1 iff minFeeVnd==referenceFeeVnd else L1_L2; FEE_BELOW_REF BLOCKED iff referenceFeeVnd-1<minFeeVnd else L1_L2; FIXED_AT_MIN/FIXED_AT_MAX L1 iff FIXED allowed else BLOCKED; OPEN_NULL_END L1 iff OPEN_ENDED allowed else BLOCKED. Other expected routes remain authored literals. Negative or >9999999999 fee and fixedDays outside1..3650 boundary vectors BLOCKED, never skipped/clamped. SAME_L1_L2 always BLOCKED if both IDs equal, even L1-only route. Expected oracle must not call evaluator or derive from actual route."
 }
 ```
 
@@ -31314,8 +31318,8 @@ Job.branchId cho phép null chỉ khi parent FILE thuộc POLICY namespace toàn
 <!-- contract:block scenarios-v1 -->
 ```json
 {
-  "version": "1.1.0",
-  "seedVersion": "1.1.0",
+  "version": "1.2.0",
+  "seedVersion": "1.2.0",
   "requestMode": "real wire; headers below are fixture tokens, provider uses tokens from real session",
   "scenarios": [
     {
@@ -33712,7 +33716,7 @@ Job.branchId cho phép null chỉ khi parent FILE thuộc POLICY namespace toàn
             "humanVerification": "PASS",
             "sensitive": false,
             "attached": true,
-            "uploadedBy": "00000000-0000-4000-8000-000000000004",
+            "uploadedBy": null,
             "origin": "GENERATED",
             "rendererVersion": "FIXTURE-PDF-1",
             "generatedAt": "2027-01-03T01:10:00.000Z",
@@ -34281,7 +34285,7 @@ Job.branchId cho phép null chỉ khi parent FILE thuộc POLICY namespace toàn
             "humanVerification": "PASS",
             "sensitive": false,
             "attached": true,
-            "uploadedBy": "00000000-0000-4000-8000-000000000004",
+            "uploadedBy": null,
             "origin": "GENERATED",
             "rendererVersion": "FIXTURE-PDF-1",
             "generatedAt": "2027-01-03T01:10:00.000Z",
@@ -39863,7 +39867,7 @@ Job.branchId cho phép null chỉ khi parent FILE thuộc POLICY namespace toàn
             "humanVerification": "PASS",
             "sensitive": false,
             "attached": true,
-            "uploadedBy": "00000000-0000-4000-8000-000000000004",
+            "uploadedBy": null,
             "origin": "GENERATED",
             "rendererVersion": "FIXTURE-PDF-1",
             "generatedAt": "2027-01-03T01:10:00.000Z",
@@ -40110,7 +40114,7 @@ Job.branchId cho phép null chỉ khi parent FILE thuộc POLICY namespace toàn
 <!-- contract:block protocol-rules-v1 -->
 ```json
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "errorStatus": {
     "BAD_JSON": 400,
     "UNAUTHENTICATED": 401,
@@ -40872,17 +40876,17 @@ Job.branchId cho phép null chỉ khi parent FILE thuộc POLICY namespace toàn
 ```json
 {
   "documentVersions": {
-    "A": "1.1.0",
-    "B": "1.1.0"
+    "A": "1.2.0",
+    "B": "1.2.0"
   },
-  "specificationFileSha256": "e848ac18ac25fdfca8c39be7d6d85988cb788304fe0b12e44bf3e660bfb2b0de",
+  "specificationFileSha256": "0dd2b1071d70b6de11c0e6523926ee44ef86e4c48102c806939aec3b6c86d798",
   "hashAlgorithm": "SHA-256 over JSON UTF-8 ensure_ascii=false sorted keys separators comma/colon; no BOM",
   "blocks": {
-    "business-catalog-v1": "8992e8f911d97e5eaa775059edccd5a991b41e44b89dda386cd40792b37ad5fe",
-    "openapi-v1": "c9a57cc059c9b9088de57ea6b91775157b741e5eef902784918c5d08d0ae95f5",
-    "seed-v1": "9d2ca9be2dff73165e47bcc9a8065f8a5c41b708eb7aad17b86701357571e11a",
-    "scenarios-v1": "1240e03847963562c73f72ee31def2e6cb7ff8a4a617a531c269c21574877d1e",
-    "protocol-rules-v1": "390930806ca5e217f53b4b0f94b18d3d9e446a88fd0e27dab386a10e25da1868"
+    "business-catalog-v1": "3b8ee7a5c5c53e6df08068042092073b02bad016d6c13e3ea13551db9db9492c",
+    "openapi-v1": "e5c2468f861302a3816d7770c6a89ae03b3f8a4a598d8fd49052f3d34bc16299",
+    "seed-v1": "c073f51488fb0b6a8041c0ef4d1903ae8be6259f58561e95e7749b67504ff8bd",
+    "scenarios-v1": "f99e9388e6dc4e7a50604fc9e53b8668633fc1e6b6d53d089edc5808088b7efe",
+    "protocol-rules-v1": "03941b7c78c7e9aed63bc52769cf21eb136e53169b0e9e11111e2d7a9b4cb7a5"
   },
   "officialFiles": [
     "Final_Project_Specification.md",

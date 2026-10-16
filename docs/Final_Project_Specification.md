@@ -4,11 +4,11 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Mã tài liệu / phiên bản | A / 1.1.0 |
+| Mã tài liệu / phiên bản | A / 1.2.0 |
 | Ngày chốt thiết kế | 11/10/2026 |
 | Trạng thái | FINAL DESIGN BASELINE — owner đã chấp thuận hướng sản phẩm; chưa triển khai ứng dụng |
 | Thẩm quyền | Nguồn sự thật về phạm vi, ý nghĩa dữ liệu, quy tắc, trạng thái, quyền và kết quả nghiệm thu |
-| Tài liệu đi cùng | [FE/BE Shared Development Contract](FE_BE_Shared_Development_Contract.md), B / 1.1.0 |
+| Tài liệu đi cùng | [FE/BE Shared Development Contract](FE_BE_Shared_Development_Contract.md), B / 1.2.0 |
 | Đầu ra chính thức | Chính xác hai tài liệu A và B; các schema/client/fixture được trích xuất khi triển khai là sản phẩm phát sinh trong repository |
 
 ## 1. Sản phẩm và quyết định đã chốt
@@ -100,7 +100,9 @@ Mỗi evaluation ghi `sourceKind = INTERNAL_POLICY | HARD_INVARIANT | REVIEWED_E
 | requiredDocumentPurposes | Unique subset SERVICE_APPLICATION, CORPORATE_ID, REPRESENTATION_BASIS, SERVICE_TERMS, IDENTITY_IMAGE | Base trio đầu luôn bắt buộc; thêm hai purpose sau tùy phiên bản |
 | pricing route | Không cho custom graph/operator; fixed formula dưới đây | Fee dưới reference → L1_L2; từ reference → L1 |
 
-Fee dưới min hoặc trên max bị BLOCK, không override bằng L2. Ở min được nộp với L1_L2. Ở reference được L1. Ví dụ P1: `499` BLOCK, `500` L1_L2, `999` L1_L2, `1000` L1, `5000` L1, `5001` BLOCK. P2 fee `1000` thành L1_L2. Fee payer UNAGREED chỉ được lưu draft, không submit. Simulation cũng trả các hard failures và thiếu bằng chứng, không chỉ route.
+Fee dưới min hoặc trên max bị BLOCK, không override bằng L2. Ở min được nộp với L1_L2 khi min < reference; nếu min = reference thì L1. Ở reference được L1. Ví dụ P1: `499` BLOCK, `500` L1_L2, `999` L1_L2, `1000` L1, `5000` L1, `5001` BLOCK. P2 fee `1000` thành L1_L2. Fee payer UNAGREED chỉ được lưu draft, không submit. Simulation cũng trả các hard failures và thiếu bằng chứng, không chỉ route.
+
+Corpus hữu hạn dùng oracle độc lập theo từng cấu hình: base chọn FIXED nếu được phép, nếu không chọn OPEN_ENDED với endExclusive=null; fee=reference. Expected route của FEE_AT_MIN là L1 khi min=reference, ngược lại L1_L2; FEE_BELOW_REF bị BLOCKED khi reference-1<min, ngược lại L1_L2. Các vector FIXED_AT_MIN/FIXED_AT_MAX chỉ L1 nếu FIXED được phép; OPEN_NULL_END chỉ L1 nếu OPEN_ENDED được phép, nếu không BLOCKED. Các vector ngoài miền input (fee=-1 hoặc 10000000000, fixedDays=0 hoặc 3651) vẫn BLOCKED; không bỏ vector và không clamp giá trị. SoD L1=L2 luôn BLOCKED khi cả hai ID có mặt, kể cả route chỉ cần L1. Expected được tính từ các điều kiện hữu hạn đã viết này, độc lập với kết quả evaluator; không copy actual thành expected.
 
 Các quy tắc này là chính sách giả lập, không phải biểu phí/thẩm quyền của ngân hàng Việt Nam. Người triển khai không được thêm expression evaluator, script execution hoặc approval step thứ ba.
 
@@ -629,7 +631,7 @@ Catalogue dưới đây chỉ số hóa A; tên field wire chính thức nằm t
 <!-- contract:block business-catalog-v1 -->
 ```json
 {
-  "version": "1.1.0",
+  "version": "1.2.0",
   "roles": [
     "BANK_ADMIN",
     "MAKER",
