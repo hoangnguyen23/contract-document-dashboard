@@ -96,27 +96,54 @@ function ConvertTo-BackendNativeArgument([string] $Argument) {
     return '"' + (($Argument -replace '(\\*)"', '$1$1\"') -replace '(\\+)$', '$1$1') + '"'
 }
 
+function Read-BackendLog([string] $Path) {
+    # Start-Process redirection can keep its writer open even after a spawning shim exits.
+    $stream = [IO.File]::Open($Path, [IO.FileMode]::Open, [IO.FileAccess]::Read,
+        ([IO.FileShare]::ReadWrite -bor [IO.FileShare]::Delete))
+    $reader = $null
+    try {
+        $reader = [IO.StreamReader]::new($stream, [Text.Encoding]::UTF8, $true)
+        return $reader.ReadToEnd()
+    } finally {
+        if ($null -ne $reader) { $reader.Dispose() } else { $stream.Dispose() }
+    }
+}
+
 function Invoke-BackendNative {
     param([string] $Executable, [string[]] $Arguments, [hashtable] $Paths,
-        [string] $Name, [int] $TimeoutSeconds, [string[]] $Secrets = @(), [switch] $CaptureStandardError)
+        [string] $Name, [int] $TimeoutSeconds, [string[]] $Secrets = @(), [switch] $CaptureStandardError,
+        [string[]] $RequiredOutputPatterns = @())
     $id = [Guid]::NewGuid().ToString('N')
     $stdout = Join-Path $Paths.Runtime "$Name-$id.stdout.log"
     $stderr = Join-Path $Paths.Runtime "$Name-$id.stderr.log"
     $quoted = @($Arguments | ForEach-Object { ConvertTo-BackendNativeArgument $_ })
     $child = Start-Process -FilePath $Executable -ArgumentList $quoted -WorkingDirectory $Paths.Repository `
         -WindowStyle Hidden -RedirectStandardOutput $stdout -RedirectStandardError $stderr -PassThru
+    $elapsed = [Diagnostics.Stopwatch]::StartNew()
     try {
         if (-not $child.WaitForExit($TimeoutSeconds * 1000)) {
             $child.Kill()
             $null = $child.WaitForExit(5000)
             throw "$Name exceeded ${TimeoutSeconds}s. Logs: $stdout and $stderr."
         }
-        $output = [IO.File]::ReadAllText($stdout)
         if ($child.ExitCode -ne 0) {
-            $tail = ([IO.File]::ReadAllLines($stderr) | Select-Object -Last 12) -join "`n"
+            $tail = ''
+            try { $tail = ((Read-BackendLog $stderr) -split '\r?\n' | Select-Object -Last 12) -join "`n" } catch { }
             throw "$Name failed (exit $($child.ExitCode)). $(Protect-BackendOutput $tail $Secrets)"
         }
-        if ($CaptureStandardError) { $output += [IO.File]::ReadAllText($stderr) }
+        do {
+            $output = Read-BackendLog $stdout
+            if ($CaptureStandardError) { $output += Read-BackendLog $stderr }
+            $complete = $true
+            foreach ($pattern in $RequiredOutputPatterns) {
+                if ($output -notmatch $pattern) { $complete = $false; break }
+            }
+            if ($complete) { break }
+            if ($elapsed.Elapsed.TotalSeconds -ge $TimeoutSeconds) {
+                throw "$Name did not provide the required runtime metadata within ${TimeoutSeconds}s. Logs: $stdout and $stderr."
+            }
+            Start-Sleep -Milliseconds 100
+        } while ($true)
         return $output.Trim()
     } finally { $child.Dispose() }
 }
@@ -211,7 +238,7 @@ function Show-BackendFailureLogs([string[]] $LogPaths, [string[]] $Secrets) {
     foreach ($log in $LogPaths) {
         if ([IO.File]::Exists($log)) {
             Write-Host "Startup log: $log"
-            $tail = ([IO.File]::ReadAllLines($log) | Select-Object -Last 25) -join "`n"
+            $tail = ((Read-BackendLog $log) -split '\r?\n' | Select-Object -Last 25) -join "`n"
             Write-Host (Protect-BackendOutput $tail $Secrets)
         }
     }
