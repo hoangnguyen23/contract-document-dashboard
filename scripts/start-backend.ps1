@@ -72,11 +72,20 @@ try {
     try { $listener.Start() } catch { throw "API port $ApiPort is already occupied. Choose -ApiPort; no other process will be stopped." }
     finally { $listener.Stop() }
 
-    $java = (Get-Command java.exe -CommandType Application | Select-Object -First 1).Source
+    $javaCommand = (Get-Command java.exe -CommandType Application | Select-Object -First 1).Source
     $docker = (Get-Command docker.exe -CommandType Application | Select-Object -First 1).Source
-    $javaVersion = Invoke-BackendNative $java @('-version') $paths 'java-version' 10 $secrets -CaptureStandardError
-    if ($javaVersion -notmatch '(?:java|openjdk) version "25(?:\.|\")') {
+    $javaProperties = Invoke-BackendNative $javaCommand @('-XshowSettings:properties', '-version') `
+        $paths 'java-properties' 10 $secrets -CaptureStandardError -RequiredOutputPatterns @(
+            '(?m)^\s*java\.home\s*=\s*[^\r\n]+\r?$', '(?:java|openjdk) version "[^"\r\n]+"')
+    if ($javaProperties -notmatch '(?:java|openjdk) version "25(?:\.|\")') {
         throw 'A Java 25 JDK must be available as java.exe on PATH.'
+    }
+    # Oracle javapath can spawn a separate JVM. Launch the real JDK binary, retaining its own handle/PID.
+    $javaHome = [regex]::Match($javaProperties, '(?m)^\s*java\.home\s*=\s*([^\r\n]+)\r?$').Groups[1].Value.Trim()
+    if (-not [IO.Path]::IsPathRooted($javaHome)) { throw 'The Java probe did not identify an absolute java.home.' }
+    $java = [IO.Path]::GetFullPath((Join-Path $javaHome 'bin/java.exe'))
+    if (-not [IO.File]::Exists($java) -or -not [IO.File]::Exists((Join-Path $javaHome 'bin/javac.exe'))) {
+        throw 'The Java probe did not identify a complete JDK. Install Java 25 JDK and configure PATH.'
     }
     if (-not $SkipBuild) {
         Push-Location (Join-Path $paths.Repository 'apps/api')
@@ -150,12 +159,15 @@ services:
     $stdout = Join-Path $paths.Runtime "api-$id.stdout.log"
     $stderr = Join-Path $paths.Runtime "api-$id.stderr.log"
     $apiLogs = @($stdout, $stderr)
-    $arguments = @('-Duser.timezone=UTC', '-jar', (ConvertTo-BackendNativeArgument $paths.Jar))
+    $arguments = @('--enable-native-access=ALL-UNNAMED', '-Duser.timezone=UTC', '-jar', (ConvertTo-BackendNativeArgument $paths.Jar))
     $startedProcess = Start-Process -FilePath $java -ArgumentList $arguments -WorkingDirectory $paths.Repository `
         -WindowStyle Hidden -RedirectStandardOutput $stdout -RedirectStandardError $stderr -PassThru
     $null = $startedProcess.Handle
     $actualJava = (Get-CimInstance Win32_Process -Filter "ProcessId=$($startedProcess.Id)").ExecutablePath
-    if ([string]::IsNullOrWhiteSpace($actualJava)) { throw 'Cannot verify the new Java executable path.' }
+    if ([string]::IsNullOrWhiteSpace($actualJava) -or
+        -not [string]::Equals($actualJava, $java, [StringComparison]::OrdinalIgnoreCase)) {
+        throw 'The new process executable does not match the probed JDK binary.'
+    }
     Write-BackendMetadata $paths.ProcessMetadata @{
         schemaVersion = 1; repositoryPath = $paths.Repository; jarPath = $paths.Jar; javaPath = $actualJava
         processId = $startedProcess.Id; startTimeUtcTicks = $startedProcess.StartTime.ToUniversalTime().Ticks.ToString()
@@ -168,7 +180,7 @@ services:
         $null = Get-BackendRemainingSeconds $deadline
         $startedProcess.Refresh()
         if ($startedProcess.HasExited) { throw "API exited during startup (exit $($startedProcess.ExitCode))." }
-        $log = [IO.File]::ReadAllText($stdout)
+        $log = Read-BackendLog $stdout
         if ($log -match '(?m)\bCG_BACKEND_READY\s*$' -and (Assert-BackendApiPort $ApiPort $startedProcess.Id)) { break }
         Start-Sleep -Milliseconds 500
     } while ($true)
@@ -176,13 +188,25 @@ services:
     Write-Host "Logs and process metadata: $($paths.Runtime)"
     Write-Host 'Browser authentication requires a same-origin HTTPS proxy. No HTTP requests or business acceptance scenarios were run.'
 } catch {
-    Show-BackendFailureLogs $apiLogs $secrets
-    if ($null -ne $startedProcess -and -not $startedProcess.HasExited) {
-        # Stop only the exact retained process handle created by this invocation.
-        $startedProcess.Kill()
-        $null = $startedProcess.WaitForExit(15000)
+    $originalFailure = $_.Exception.Message
+    $cleanupFailure = $null
+    try {
+        if ($null -ne $startedProcess) {
+            $startedProcess.Refresh()
+            if (-not $startedProcess.HasExited) {
+                # Stop only the exact retained process handle created by this invocation, before diagnostics.
+                $startedProcess.Kill()
+                if (-not $startedProcess.WaitForExit(15000)) { throw 'The retained Java process has not exited.' }
+            }
+        }
+    } catch { $cleanupFailure = $_.Exception.Message }
+    try {
+        Show-BackendFailureLogs $apiLogs $secrets
+        if ($null -ne $cleanupFailure) { Write-Warning (Protect-BackendOutput "API cleanup: $cleanupFailure" $secrets) }
+    } catch {
+        # Diagnostic/logging failures must never bypass cleanup or replace the original startup failure.
     }
-    throw (Protect-BackendOutput $_.Exception.Message $secrets)
+    throw (Protect-BackendOutput $originalFailure $secrets)
 } finally {
     foreach ($key in $previousEnvironment.Keys) { [Environment]::SetEnvironmentVariable($key, $previousEnvironment[$key], 'Process') }
     if ($null -ne $startedProcess) { $startedProcess.Dispose() }
