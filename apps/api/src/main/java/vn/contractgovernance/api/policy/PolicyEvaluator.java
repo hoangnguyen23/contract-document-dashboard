@@ -16,12 +16,21 @@ public class PolicyEvaluator {
     private final JsonSupport json;private final Clock clock;private final UserDirectory users;
     public PolicyEvaluator(JsonSupport json,Clock clock,UserDirectory users){this.json=json;this.clock=clock;this.users=users;}
     public JsonNode evaluateBusiness(EntityStore.Entity policy,JsonNode facts,UUID branchId,String sourceFactsHash,boolean humanRequired) {
+        return evaluateBusinessAt(policy,facts,branchId,sourceFactsHash,humanRequired,clock.instant());
+    }
+    public JsonNode evaluateBusinessAt(EntityStore.Entity policy,JsonNode facts,UUID branchId,String sourceFactsHash,boolean humanRequired,Instant authorityAt) {
+        Objects.requireNonNull(authorityAt,"Real business evaluation requires an action instant");
         Objects.requireNonNull(branchId,"Real business evaluation requires a target branch");
-        return evaluate(policy,facts,sourceFactsHash,(id,role)->{
+        return evaluateAt(policy,facts,sourceFactsHash,(id,role)->{
             try {var actor=users.actor(id);return actor.hasRole(role)&&actor.inBranch(branchId);}catch(ApiException invalid){return false;}
-        },humanRequired);
+        },humanRequired,authorityAt);
     }
     JsonNode evaluate(EntityStore.Entity policy,JsonNode facts,String factsHash,BiPredicate<UUID,String> eligible,boolean humanRequired) {
+        Instant startInstant;
+        try{startInstant=LocalDate.parse(facts.path("terms").path("startOn").asString()).atStartOfDay(CalendarService.ZONE).toInstant();}catch(DateTimeException invalid){startInstant=clock.instant();}
+        return evaluateAt(policy,facts,factsHash,eligible,humanRequired,startInstant);
+    }
+    private JsonNode evaluateAt(EntityStore.Entity policy,JsonNode facts,String factsHash,BiPredicate<UUID,String> eligible,boolean humanRequired,Instant authorityAt) {
         JsonNode config=policy.body().path("config"),terms=facts.path("terms");var results=json.array();
         String source=policy.id().toString();long fee;
         try{fee=Long.parseLong(terms.path("feeVnd").asString());}catch(NumberFormatException invalid){fee=-1;}
@@ -38,9 +47,9 @@ public class PolicyEvaluator {
         add(results,"REQUIRED_DOCUMENTS",documents,"HARD_INVARIANT","A1.2.0",documents?"CLEAN":"MISSING_OR_UNCLEAN","CLEAN required purposes","Bằng chứng bắt buộc phải được scanner xác nhận.");
         if(humanRequired){add(results,"EVIDENCE_REVIEW",human,"HARD_INVARIANT","A1.2.0",human?"VERIFIED":"NOT_VERIFIED","Human VERIFIED","Đánh giá của con người độc lập với scanner.");if(!human)((ObjectNode)results.get(results.size()-1)).put("result","REVIEW_REQUIRED");}
         var representation=facts.path("representation");boolean authority=false;
-        try{LocalDate from=LocalDate.parse(representation.path("validFrom").asString());authority=start!=null&&!start.isBefore(from)&&(!representation.hasNonNull("validTo")||!start.isAfter(LocalDate.parse(representation.path("validTo").asString())))&&!representation.hasNonNull("knownRevocationAt")&&representation.hasNonNull("sourceFileId");}catch(DateTimeException ignored){}
+        try{Instant from=LocalDate.parse(representation.path("validFrom").asString()).atStartOfDay(CalendarService.ZONE).toInstant();authority=!authorityAt.isBefore(from)&&(!representation.hasNonNull("validTo")||authorityAt.isBefore(LocalDate.parse(representation.path("validTo").asString()).atStartOfDay(CalendarService.ZONE).toInstant()))&&(!representation.hasNonNull("knownRevocationAt")||authorityAt.isBefore(Instant.parse(representation.path("knownRevocationAt").asString())))&&representation.hasNonNull("sourceFileId");}catch(DateTimeException ignored){}
         if(humanRequired)authority=authority&&representation.hasNonNull("checkedAt")&&representation.hasNonNull("checkEvidenceFileId")&&!Instant.parse(representation.path("checkedAt").asString()).isAfter(clock.instant());
-        add(results,"AUTHORITY",authority,"HARD_INVARIANT","A1.2.0",authority?"VALID":"INVALID","Nguồn thẩm quyền còn hiệu lực tại startOn","Cần nguồn thẩm quyền và không có thu hồi đã biết.");
+        add(results,"AUTHORITY",authority,"HARD_INVARIANT","A1.2.0",authority?"VALID":"INVALID","Nguồn thẩm quyền còn hiệu lực tại mốc action","Interval validTo exclusive; thu hồi chỉ chặn từ instant có hiệu lực.");
         UUID l1=uuid(facts.path("candidateL1Id")),l2=uuid(facts.path("candidateL2Id"));Set<UUID> contributors=new HashSet<>();facts.path("contributorIds").forEach(id->contributors.add(UUID.fromString(id.asString())));
         boolean dual=fee<ref;boolean sod=l1!=null&&!contributors.contains(l1)&&(l2==null||(!l2.equals(l1)&&!contributors.contains(l2)));
         add(results,"REVIEWER_SOD",sod,"HARD_INVARIANT","A1.2.0",sod?"INDEPENDENT":"CONFLICT","L1/L2 khác nhau và không contributor","Stable IDs giữ lịch sử đóng góp.");
