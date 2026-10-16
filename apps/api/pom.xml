@@ -17,6 +17,7 @@
     <dependency><groupId>com.networknt</groupId><artifactId>json-schema-validator</artifactId><version>${networknt.version}</version></dependency>
     <dependency><groupId>io.github.erdtman</groupId><artifactId>java-json-canonicalization</artifactId><version>1.1</version></dependency>
     <dependency><groupId>org.apache.pdfbox</groupId><artifactId>pdfbox</artifactId><version>3.0.6</version></dependency>
+    <dependency><groupId>net.java.dev.jna</groupId><artifactId>jna-platform</artifactId><version>5.19.1</version></dependency>
   </dependencies>
   <build><plugins><plugin><groupId>org.springframework.boot</groupId><artifactId>spring-boot-maven-plugin</artifactId></plugin></plugins></build>
 </project>

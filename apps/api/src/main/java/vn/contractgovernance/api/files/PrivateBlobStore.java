@@ -137,6 +137,7 @@ public class PrivateBlobStore {
             var attributes = Files.readAttributes(path, BasicFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
             if (!attributes.isRegularFile() || attributes.isSymbolicLink() || attributes.isOther() || attributes.size() > MAX_BYTES)
                 throw ApiException.of("STORAGE_INTEGRITY", "Không xác minh được tệp đã lưu.");
+            var identity = ManagedFileIdentity.capture(path, attributes);
             byte[] bytes;
             try (var channel = FileChannel.open(path, StandardOpenOption.READ, LinkOption.NOFOLLOW_LINKS)) {
                 var output = new java.io.ByteArrayOutputStream();
@@ -151,7 +152,7 @@ public class PrivateBlobStore {
             }
             verifyRoot();
             var after = Files.readAttributes(path, BasicFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
-            if (!Objects.equals(attributes.fileKey(), after.fileKey()) || !after.isRegularFile() || after.isSymbolicLink()
+            if (!Objects.equals(identity, ManagedFileIdentity.capture(path, after)) || !after.isRegularFile() || after.isSymbolicLink()
                     || !JsonSupport.sha256(bytes).equals(expectedHash)) throw ApiException.of("STORAGE_INTEGRITY", "Hash hoặc identity tệp không khớp bản ghi.");
             return bytes;
         } catch (IOException exception) { throw ApiException.of("STORAGE_INTEGRITY", "Không đọc được tệp đã lưu."); }
@@ -195,9 +196,10 @@ public class PrivateBlobStore {
     Optional<Candidate> candidate(String name) throws IOException {
         verifyRoot();
         if (!managedName(name)) return Optional.empty();
-        var attributes = Files.readAttributes(root.resolve(name), BasicFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
-        if (!attributes.isRegularFile() || attributes.isSymbolicLink() || attributes.isOther() || attributes.fileKey() == null) return Optional.empty();
-        return Optional.of(new Candidate(name, attributes.fileKey(), attributes.lastModifiedTime().toInstant()));
+        var path = root.resolve(name);
+        var attributes = Files.readAttributes(path, BasicFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
+        if (!attributes.isRegularFile() || attributes.isSymbolicLink() || attributes.isOther()) return Optional.empty();
+        return Optional.of(new Candidate(name, ManagedFileIdentity.capture(path, attributes), attributes.lastModifiedTime().toInstant()));
     }
     Optional<Guard> maintenanceGuard(String name) throws IOException {
         if (!managedName(name)) return Optional.empty();
@@ -265,8 +267,8 @@ public class PrivateBlobStore {
     }
     private static Object directoryIdentity(Path path) throws IOException {
         var attributes = Files.readAttributes(path, BasicFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
-        if (!attributes.isDirectory() || attributes.isSymbolicLink() || attributes.isOther() || attributes.fileKey() == null) throw new IOException("Unsafe managed directory");
-        return attributes.fileKey();
+        if (!attributes.isDirectory() || attributes.isSymbolicLink() || attributes.isOther()) throw new IOException("Unsafe managed directory");
+        return ManagedFileIdentity.capture(path, attributes);
     }
     private String sniff(byte[] bytes) {
         if (bytes.length >= 5 && bytes[0] == '%' && bytes[1] == 'P' && bytes[2] == 'D' && bytes[3] == 'F' && bytes[4] == '-') return "application/pdf";
