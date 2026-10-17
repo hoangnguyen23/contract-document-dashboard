@@ -38,3 +38,9 @@ create unique index cg_control_live_kind on cg_entity((body->>'contractId'),(bod
  where entity_type='ControlRequest' and body->>'state' not in ('CONFIRMED','REJECTED','CANCELLED');
 create trigger cg_contract_contributor_immutable before update or delete on cg_contract_contributor
  for each row execute function cg_original_source_immutable();
+create table cg_contract_version_closure (
+ version_id uuid primary key references cg_contract_version(id), effective_to date not null,
+ recorded_at timestamptz not null
+);
+create trigger cg_contract_version_closure_immutable before update or delete on cg_contract_version_closure
+ for each row execute function cg_original_source_immutable();

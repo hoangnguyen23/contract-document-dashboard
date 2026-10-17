@@ -27,6 +27,14 @@ public class CommandExecutor {
         return execute(actor,key,method,path,body,ifMatch,()->{},operation);
     }
     public ApiResult execute(Actor actor, String key, String method, String path, JsonNode body, String ifMatch, Runnable authorization, Supplier<ApiResult> operation) {
+        return execute(actor,key,method,path,body,ifMatch,authorization,()->{},operation);
+    }
+    /** Maintenance runs only for a cache miss, while the original key arbitration is retained.
+     * The hook uses its own REQUIRES_NEW domain transaction before this new mutation checks ETag.
+     * Authorization must not hold domain row locks across the hook.
+     */
+    public ApiResult execute(Actor actor, String key, String method, String path, JsonNode body, String ifMatch,
+            Runnable authorization, Runnable afterCacheMiss, Supplier<ApiResult> operation) {
         UUID parsedKey = requireKey(key);
         String fingerprint = fingerprint(method,path,body,ifMatch);
         var contractOperation=contracts.match(method.toUpperCase(java.util.Locale.ROOT),java.net.URI.create(path).normalize().getPath()).orElseThrow(()->new IllegalStateException("Command operation is absent from the frozen contract"));
@@ -43,6 +51,8 @@ public class CommandExecutor {
                 contracts.validateResponse(contractOperation,cached.getFirst().result().status(),cached.getFirst().result().body());
                 return cached.getFirst().result();
             }
+            afterCacheMiss.run();
+            authorization.run();
             ApiResult result=operation.get();
             boolean cache = result.status()>=200 && result.status()<300;
             if (result.status()==409 && result.body()!=null) cache=java.util.Set.of("BASE_CONFLICT","SCHEDULE_CONFLICT").contains(result.body().path("code").asString());

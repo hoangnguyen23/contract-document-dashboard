@@ -96,10 +96,16 @@ public class ContractLifecycle {
                 }
                 return contract;
             }
+            if (!contract.body().path("readiness").asString().equals("READY") || unresolvedRisk(contract.body())) return contract;
+            try {
+                requireReadyEvidence(contract);
+            } catch (ApiException guard) {
+                var blocked = (ObjectNode) contract.body().deepCopy();
+                blocked.put("readiness", "REVIEW_REQUIRED");
+                return save(contract, blocked, null, "READINESS_GUARD_BLOCKED", guard.code() + ": current readiness evidence requires review");
+            }
             if (now.isBefore(start)) return contract;
             pendingChangeGuard(contract);
-            if (!contract.body().path("readiness").asString().equals("READY") || unresolvedRisk(contract.body())) return contract;
-            requireReadyEvidence(contract);
             if (!Instant.parse(contract.body().path("readinessVerifiedAt").asString()).isBefore(start)) {
                 throw ApiException.of("LATE_SIGNING", "Xác minh readiness không đúng hạn.");
             }
@@ -110,8 +116,8 @@ public class ContractLifecycle {
                     .put("artifactHash", contract.body().path("approvedArtifactHash").asString())
                     .put("createdAt", JsonSupport.timestamp(now));
             version.set("terms", terms.deepCopy());
-            // Original interval is known at creation; immutable history never needs an expiry rewrite.
-            version.set("effectiveTo", terms.path("endExclusive").deepCopy());
+            // Version interval stays open while current; contractual endExclusive is immutable terms.
+            version.putNull("effectiveTo");
             schemas.validateSchema("ContractVersion", version);
             store.jdbc().update("insert into cg_contract_version(id,contract_id,number,body) values(?,?,1,?::jsonb)",
                     SigningEvidence.uuid(version, "id"), contract.id(), json.stringify(version));
@@ -119,7 +125,6 @@ public class ContractLifecycle {
             var body = (ObjectNode) contract.body().deepCopy();
             body.put("state", "ACTIVE").put("effectiveAt", JsonSupport.timestamp(start)).put("recordedAt", JsonSupport.timestamp(now));
             body.set("currentVersion", version);
-            body.put("scheduleVersion", body.path("scheduleVersion").asInt() + 1);
             contract = save(contract, body, null, "ACTIVATE", "Original effectivity; observed service unchanged");
             var dossier = store.require("Dossier", SigningEvidence.uuid(body, "dossierId"));
             if (!dossier.body().path("state").asString().equals("APPROVED")) throw ApiException.of("STATE_CONFLICT", "Hồ sơ không còn APPROVED.");
@@ -136,8 +141,11 @@ public class ContractLifecycle {
                 pendingChangeGuard(contract);
                 var body = (ObjectNode) contract.body().deepCopy();
                 body.put("state", "EXPIRED").put("recordedAt", JsonSupport.timestamp(now));
-                body.put("scheduleVersion", body.path("scheduleVersion").asInt() + 1);
-                var version = body.path("currentVersion");
+                    var version = (ObjectNode) body.path("currentVersion").deepCopy();
+                version.set("effectiveTo", terms.path("endExclusive").deepCopy());
+                body.set("currentVersion", version);
+                store.jdbc().update("insert into cg_contract_version_closure(version_id,effective_to,recorded_at) values(?,?::date,?)",
+                        SigningEvidence.uuid(version, "id"), terms.path("endExclusive").asString(), Timestamp.from(now));
                 obligations.closeout(contract, version, originals.source(contract.id()).body().path("revision").path("contributorIds"), end);
                 controls.stop(contract, version, end);
                 effect(contract.id(), "EXPIRED", end);
@@ -196,10 +204,9 @@ public class ContractLifecycle {
     public ApiResult command(UUID id, JsonNode request, String tag, String key, Actor actor) {
         authorizeCommand(id, request.path("action").asString(), actor);
         ETags.require(tag);
-        // Separate committed maintenance transaction, before CommandExecutor starts its mutation TX.
-        maintain(id, actor);
         return commands.execute(actor, key, "POST", "/api/v1/contracts/" + id + "/commands", request, tag,
-                () -> authorizeCommand(id, request.path("action").asString(), actor), () -> {
+                () -> authorizeCommand(id, request.path("action").asString(), actor),
+                () -> maintain(id, actor), () -> {
                     var contract = lock(id);
                     authorizeCommand(id, request.path("action").asString(), actor);
                     ETags.check(tag, contract.version());
@@ -240,7 +247,6 @@ public class ContractLifecycle {
         evidence.manifest(contract, ids, actor);
         historical.retain(contract.id(), ids);
         body.put("state", "CANCELLED");
-        body.put("scheduleVersion", body.path("scheduleVersion").asInt() + 1);
         var dossier = store.require("Dossier", SigningEvidence.uuid(body, "dossierId"));
         var dossierBody = (ObjectNode) dossier.body().deepCopy();
         dossierBody.put("state", "CANCELLED").put("updatedAt", JsonSupport.timestamp(clock.instant()));

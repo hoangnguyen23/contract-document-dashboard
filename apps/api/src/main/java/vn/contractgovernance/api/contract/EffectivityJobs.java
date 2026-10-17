@@ -63,7 +63,7 @@ public class EffectivityJobs {
         try {
             tx.executeWithoutResult(status -> {
                 if (!job.targetType().equals("CONTRACT")) {
-                    queue.fail(job,"SERVICE_UNAVAILABLE","CHANGE effectivity adapter unavailable"); return;
+                    queue.fail(job,"GUARD_BLOCKED","CHANGE effectivity adapter unavailable"); return;
                 }
                 var contract=lifecycle.lock(job.targetId());
                 if (!validSource(job,contract)) {
@@ -76,7 +76,7 @@ public class EffectivityJobs {
                         ? updated.body().hasNonNull("currentVersion")
                         : updated.body().path("state").asString().equals("EXPIRED");
                 if (!due || !completed) {
-                    if (!queue.fail(job,"READINESS_BLOCKED","Current readiness/risk/material guard prevents the due original effect")) {
+                    if (!queue.fail(job,"GUARD_BLOCKED","Current readiness/risk/material guard prevents the due original effect")) {
                         throw new IllegalStateException("Effectivity lease lost before blocked outcome");
                     }
                 } else if (!queue.succeed(job)) {
@@ -86,7 +86,8 @@ public class EffectivityJobs {
             });
         } catch (RuntimeException failure) {
             tx.executeWithoutResult(status -> {
-                var code=failure instanceof ApiException api ? api.code() : "SERVICE_UNAVAILABLE";
+                var code=failure instanceof ApiException api && api.code().equals("STORAGE_INTEGRITY")
+                        ? "STORAGE_INTEGRITY" : "GUARD_BLOCKED";
                 queue.fail(job,code,"Original effectivity rolled back; current dependency or guard blocked");
             });
         }

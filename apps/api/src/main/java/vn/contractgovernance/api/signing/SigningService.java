@@ -17,6 +17,7 @@ import vn.contractgovernance.api.shared.*;
 /** Original CONTRACT adapter. CHANGE is deliberately unavailable until its real source adapter exists. */
 @Service
 public class SigningService {
+    private final EvidenceAccess access;
     private final EntityStore store;
     private final OriginalAgreementService originals;
     private final ContractLifecycle lifecycle;
@@ -34,12 +35,12 @@ public class SigningService {
     private final JobQueue jobs;
     private final ContractRegistry schemas;
 
-    public SigningService(EntityStore store, OriginalAgreementService originals, ContractLifecycle lifecycle,
+    public SigningService(EvidenceAccess access, EntityStore store, OriginalAgreementService originals, ContractLifecycle lifecycle,
             SigningEvidence evidence, ContractContributions contributions, HistoricalContractFiles historical,
             CustomerAccess customers, UserDirectory users, JsonSupport json, Clock clock,
             CalendarService calendar, CommandExecutor commands, AuditService audit, ListQueries lists,
             JobQueue jobs, ContractRegistry schemas) {
-        this.store=store; this.originals=originals; this.lifecycle=lifecycle; this.evidence=evidence;
+        this.access=access; this.store=store; this.originals=originals; this.lifecycle=lifecycle; this.evidence=evidence;
         this.contributions=contributions; this.historical=historical; this.customers=customers; this.users=users;
         this.json=json; this.clock=clock; this.calendar=calendar; this.commands=commands;
         this.audit=audit; this.lists=lists; this.jobs=jobs; this.schemas=schemas;
@@ -47,7 +48,9 @@ public class SigningService {
 
     private EntityStore.Entity contractForPacket(UUID id, Actor actor) {
         var packet=store.require("SigningPacket",id);
+        users.actor(actor.id()).requireBranch(packet.branchId());
         if (!packet.body().path("targetKind").asString().equals("CONTRACT")) {
+            access.parent(packet.body().path("targetKind").asString(),SigningEvidence.uuid(packet.body(),"targetId"),users.actor(actor.id()));
             throw ApiException.of("SERVICE_UNAVAILABLE","Signing CHANGE adapter chưa triển khai.");
         }
         return lifecycle.require(SigningEvidence.uuid(packet.body(),"targetId"),actor);
@@ -63,14 +66,15 @@ public class SigningService {
     }
 
     public ApiResult create(JsonNode request, String key, Actor actor) {
+        users.actor(actor.id()).requireRole("MAKER");
         if (!request.path("targetKind").asString().equals("CONTRACT")) {
+            access.parent(request.path("targetKind").asString(),SigningEvidence.uuid(request,"targetId"),users.actor(actor.id()));
             throw ApiException.of("SERVICE_UNAVAILABLE","Signing CHANGE adapter chưa triển khai.");
         }
         var contractId=SigningEvidence.uuid(request,"targetId");
         maker(contractId,actor);
-        lifecycle.maintain(contractId,actor);
         return commands.execute(actor,key,"POST","/api/v1/signing-packets",request,null,
-                () -> maker(contractId,actor), () -> {
+                () -> maker(contractId,actor), () -> lifecycle.maintain(contractId,actor), () -> {
                     var contract=lifecycle.lock(contractId);
                     maker(contractId,actor);
                     customers.requireAssignedMaker(SigningEvidence.uuid(contract.body(),"relationshipId"),actor);
@@ -107,9 +111,8 @@ public class SigningService {
     public ApiResult command(UUID id, JsonNode request, String tag, String key, Actor actor) {
         checker(id,actor); ETags.require(tag);
         var preview=contractForPacket(id,actor);
-        lifecycle.maintain(preview.id(),actor);
         return commands.execute(actor,key,"POST","/api/v1/signing-packets/"+id+"/commands",request,tag,
-                () -> checker(id,actor), () -> {
+                () -> checker(id,actor), () -> lifecycle.maintain(preview.id(),actor), () -> {
                     var contract=lifecycle.lock(preview.id());
                     checker(id,actor);
                     var packet=store.lock("SigningPacket",id);
@@ -159,7 +162,6 @@ public class SigningService {
         body.put("state","SCHEDULED").put("readiness","READY").put("readinessVerifiedAt",JsonSupport.timestamp(verifiedAt))
                 .put("signingPacketId",packet.id().toString());
         body.set("mandatoryChecks",request.path("mandatoryChecks").deepCopy());
-        body.put("scheduleVersion",body.path("scheduleVersion").asInt()+1);
         var updated=lifecycle.save(contract,body,actor,"VERIFY_SIGNING",request.path("reason").asString());
         EffectivityJobs.enqueue(jobs,store,json,clock,updated,packet.body(),start);
     }

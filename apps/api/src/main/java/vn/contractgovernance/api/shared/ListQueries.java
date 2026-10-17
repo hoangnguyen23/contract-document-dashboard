@@ -68,7 +68,7 @@ public class ListQueries {
             args.add(cursor.path("lastNumber").asInt()); args.add(UUID.fromString(cursor.path("lastId").asString()));
         }
         args.add(limit+1);
-        var rows=jdbc.query("select body::text from cg_contract_version where "+where+" order by number desc,id desc limit ?",
+        var rows=jdbc.query("select (case when i.version_id is null then v.body else jsonb_set(v.body,'{effectiveTo}',to_jsonb(i.effective_to::text)) end)::text from cg_contract_version v left join cg_contract_version_closure i on i.version_id=v.id where "+where+" order by v.number desc,v.id desc limit ?",
                 (rs,row)->json.parse(rs.getString(1)),args.toArray());
         boolean more=rows.size()>limit;
         var visible=rows.subList(0,Math.min(limit,rows.size()));
