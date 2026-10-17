@@ -92,9 +92,11 @@ Canonical A/B1.2.0 defines 85 operations. This foundation, Policy and dossier-ap
 
 ## Verification boundary
 
-Source review covers role/scope/assignment, stable contributor SoD, closed schema/nullability, current auth before idempotency replay, transactional response validation, private finalized byte references, scanner source/lease guards and migration definitions. Build and extraction evidence appears in docs/plan/reviews/backend-foundation-follow-up.md. Operational startup, scanner connectivity and Flyway001–007 have been observed separately in the primary runtime report. V008 migration execution, HTTP scope/session behavior, FE browser integration, actual PDF/signing/activation workflows, races/recovery and integrated acceptance remain pending.
+Source review covers role/scope/assignment, stable contributor SoD, closed schema/nullability, current auth before idempotency replay, transactional response validation, private finalized byte references, scanner source/lease guards and migration definitions. Build and extraction evidence appears in docs/plan/reviews/backend-foundation-follow-up.md. Operational startup, scanner connectivity and Flyway001–008 have been observed separately in the primary runtime report. HTTP scope/session behavior, FE browser integration, actual PDF/signing/activation workflows, races/recovery and integrated acceptance remain pending.
 
 PowerShell package from `apps/api`: `.\mvnw.cmd '-Dmaven.test.skip=true' package`; quote the full Maven `-D` argument. This skips both test compilation and execution.
 
 
 Original agreement artifact tranche: final dossier APPROVE now invokes a real mandatory-transaction original-contract port, persists immutable render source and durable PDF intent. FILE_SCAN and original CONTRACT ARTIFACT_PDF/EFFECTIVITY retry paths are implemented; other job kinds remain partial. Original signing, readiness commands and immutable version/effectivity source are implemented, with real creation-only G5 consequence factories. CHANGE signing/renewal/apply, public G5 completion and termination remain absent. Compilation is not artifact rendering, scanner/provider or business acceptance.
+
+Current source review and 73-source package passed at 6585c4f; primary V008/bean initialization also passed. These do not establish business acceptance. S060 maker action-hint fixture conflicts with CHECKER-only A/B prose; see contract-change-proposals/S060-action-hints.md (owner/shared review pending, no canonical edit).

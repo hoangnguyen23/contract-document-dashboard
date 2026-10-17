@@ -15,3 +15,6 @@ Implementation plans and module setup notes are derived operational documentatio
 - [Original agreement artifact source review](plan/reviews/backend-agreement-artifact-source-review.md): PREPARED/PDF integration; later signing/timeline remain pending.
 
 - [Original signing and lifecycle](plan/signing-implementation.md): CONTRACT-only signing, original readiness/effectivity and real lifecycle consequence creation; not integrated acceptance.
+
+- [Original signing source review](plan/reviews/backend-g3-signing-source-review.md): bounded source/build verdict, separate from workflow acceptance.
+- [S060 shared fixture proposal](plan/contract-change-proposals/S060-action-hints.md): owner/shared review pending; canonical unchanged.

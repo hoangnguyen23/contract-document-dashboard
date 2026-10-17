@@ -36,3 +36,9 @@ Canonical schema, fields, enums and request shapes are unchanged. No breaking ch
 CHANGE signing/effectivity, qualifying renewal, public G5 duty/control completion, service acknowledgements, termination, notices, incidents and privacy workflows remain absent. Lifecycle factories create required initial tasks only; their closure APIs are not claimed. No Frontend files were edited. No HTTP workflow, actual PDF generation/download, FE/browser, race/recovery, NFR or whole-G3 acceptance has been performed. Automated tests remain waived; no test sources or dependencies were added.
 
 Developer initial compilation packaged 73 Java sources with all test phases skipped at 2026-10-17T21:47:40+07:00 on Maven3.10.0/JDK25.0.1 release25. Further static corrections followed that build; exact final source compilation and independent review must be recorded separately. V008 is defined but has NOT run in the isolated developer checkout. No Docker/runtime/data was touched here.
+
+## Final delivery evidence
+
+Independent review passed application source6585c4f after all recorded implementation findings closed. Clean/package passed73 sources at2026-10-17T21:57:22+07:00, all test phases skipped. Reviewed JAR SHA-25697bfb98cf9e21fbb309fae0201d7189ae1bdf67a813e1e926c0429de48921068 was reused unchanged in primary. Actual ApplicationReady, V001–V008 migration history, healthy services and listener were observed; new workflow tables remain empty. See reviews/backend-g3-signing-source-review.md and reviews/backend-runtime-startup.md. No HTTP/PDF/signing/effectivity workflow acceptance is claimed.
+
+S060 getContract fixture grants a MAKER the CHECKER-only HOLD_READINESS hint. Implementation preserves canonical prose authorization; proposal contract-change-proposals/S060-action-hints.md awaits owner/shared FE review. No schema, canonical JSON, request or FE file changed. Exact fixture integration remains pending.

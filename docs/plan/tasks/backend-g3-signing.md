@@ -1,7 +1,7 @@
 ---
 id: backend-g3-signing
 scope: original CONTRACT signing, readiness and lifecycle
-status: implemented-awaiting-independent-review
+status: done
 depends-on: [reviewed-original-artifact-af7d109]
 ---
 
@@ -37,3 +37,4 @@ Own signing/**, contract/** lifecycle integration, minimal files-owned contribut
 User explicitly forbids automated tests; do not write/run tests, HTTP scenarios, manual PDF generation or synthetic business data. Smoke requires separate owner approval after concrete reviewable scope; do not execute it. Allowed: static source review, canonical extraction/hash checks, clean/package with all test phases skipped, actual operational startup/migration/read-only counts later in primary by independent reviewer. No Docker/runtime in isolated developer worktree. Preserve .env/volumes/private files.
 
 Commit coherent source, module README, refreshed derived plans/coverage and FE impact matrix (operation IDs, fields, breaking=no if unchanged, owner approval status). Build with PowerShell quoted '-Dmaven.test.skip=true'. Independent reviewer owns final review and package; root manages worktrees/publication. No force/reset/rebase, existing PR merge or main/dev merge. No G3 acceptance claim without evidence.
+Delivery boundary: done means this bounded source implementation, independent source review/package and operational V008 startup. HTTP/business/FE/race acceptance and S060 shared fixture correction remain pending. Source 6585c4f; review efc4ccc; runtime report8909b04. No tests or smoke were executed.
