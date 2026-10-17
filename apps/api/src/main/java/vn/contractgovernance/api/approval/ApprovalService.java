@@ -41,7 +41,9 @@ public class ApprovalService implements DossierApprovalBridge {
     /** Caller already holds Dossier. All mutations use Dossier -> Relationship -> Round -> sorted File locks. */
     @Override public void requireSubmissionReady(EntityStore.Entity dossier,Actor actor) {
         access.requireEditable(dossier);access.requireMaker(dossier.id(),actor);
-        var source=dossier.body();var terms=source.path("terms");var config=policies.requireApplicable().body().path("config");
+        var source=dossier.body();var terms=source.path("terms");
+        var policy=policies.findApplicableHint().orElseThrow(()->ApiException.of("POLICY_BLOCKED","Chưa có chính sách áp dụng."));
+        var config=policy.body().path("config");
         if(!LocalDate.parse(terms.path("startOn").asString()).isAfter(calendar.localDate(clock.instant())))throw ApiException.validation("/terms/startOn","Ngày bắt đầu phải từ ngày địa phương kế tiếp.");
         if(!source.path("representation").hasNonNull("sourceFileId"))throw ApiException.of("AUTHORITY_INVALID","Thiếu nguồn thẩm quyền.");
         long fee=Long.parseLong(terms.path("feeVnd").asString());
@@ -112,7 +114,7 @@ public class ApprovalService implements DossierApprovalBridge {
         var round=store.lock("Round",uuid(dossier.body(),"roundId"));requireBinding(round,dossier);requireOpen(round,dossier);
         var body=(ObjectNode)round.body().deepCopy();body.put("state","CANCELLED");cancelUndecided(body);body.put("updatedAt",now());
         var closed=store.update(round,body);audit.record(actor,"WITHDRAW",closed,reason);
-        var next=(ObjectNode)dossier.body().deepCopy();next.put("state","DRAFT");next.put("updatedAt",now());return store.update(dossier,next);
+        var next=(ObjectNode)dossier.body().deepCopy();next.put("state","DRAFT");next.set("mandatoryChecks",round.body().path("mandatoryChecks").deepCopy());next.put("updatedAt",now());return store.update(dossier,next);
     }
     public JsonNode list(Map<String,String> query,Actor actor) {
         actor.requireRole("MAKER","CHECKER","MANAGER","DATA_OFFICER","AUDITOR");
@@ -154,7 +156,7 @@ public class ApprovalService implements DossierApprovalBridge {
                 } else if(action.equals("RETURN")||action.equals("REJECT")) {
                     decide(step,action.equals("RETURN")?"RETURNED":"REJECTED",request,actor);recordDecision(round,request,actor);
                     body.put("state",action.equals("RETURN")?"RETURNED":"REJECTED");cancelUndecided(body);
-                    var next=(ObjectNode)dossier.body().deepCopy();next.set("state",body.path("state"));next.put("updatedAt",now());var source=store.update(dossier,next);audit.record(actor,action,source,request.path("reason").asString());
+                    var next=(ObjectNode)dossier.body().deepCopy();next.set("state",body.path("state"));next.set("mandatoryChecks",body.path("mandatoryChecks").deepCopy());next.put("updatedAt",now());var source=store.update(dossier,next);audit.record(actor,action,source,request.path("reason").asString());
                 } else throw ApiException.validation("/action","Thao tác xét duyệt không hợp lệ.");
             }
             body.put("updatedAt",now());var next=store.update(round,body);audit.record(actor,action,next,request.hasNonNull("reason")?request.path("reason").asString():null);return ApiResult.ok(project(next,actor));
