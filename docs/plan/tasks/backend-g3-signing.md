@@ -1,7 +1,7 @@
 ---
 id: backend-g3-signing
 scope: original CONTRACT signing, readiness and lifecycle
-status: ready
+status: implemented-awaiting-independent-review
 depends-on: [reviewed-original-artifact-af7d109]
 ---
 
