@@ -1,6 +1,6 @@
 # Backend operation coverage
 
-Canonical A/B1.2.0 defines 85 operations. This foundation and Policy tranche registers 44 operations: 42 have their foundation handler paths implemented and 2 have explicit partial command scope. 41 later-gate operations are not implemented. “Implemented” is source coverage, not runtime/provider/business acceptance. No tests were requested or executed; G1/G2 integrated acceptance is not claimed.
+Canonical A/B1.2.0 defines 85 operations. This foundation, Policy and dossier-approval tranche registers 48 operations: 43 have their current handler paths implemented and 5 have explicit partial scope. 37 later-gate operations are not implemented. “Implemented” is source coverage, not runtime/provider/business acceptance. No tests were requested or executed; G1/G2 integrated acceptance is not claimed.
 
 | Method | Path | Canonical operationId | Source coverage | Limitation |
 |---|---|---|---|---|
@@ -35,7 +35,7 @@ Canonical A/B1.2.0 defines 85 operations. This foundation and Policy tranche reg
 | POST | `/api/v1/dossiers` | `createDossier` | implemented | Runtime verification pending. |
 | GET | `/api/v1/dossiers/{id}` | `getDossier` | implemented | Runtime verification pending. |
 | PUT | `/api/v1/dossiers/{id}` | `updateDossier` | implemented | Runtime verification pending. |
-| POST | `/api/v1/dossiers/{id}/commands` | `commandDossier` | partial | CANCEL/CLONE present; SUBMIT/WITHDRAW return 503 with no effect until approval bridge. |
+| POST | `/api/v1/dossiers/{id}/commands` | `commandDossier` | implemented | Real dossier submit/frozen Revision and withdrawal; final round approval still awaits original-contract/PDF dependency. |
 | GET | `/api/v1/exports/audit` | `exportAuditCsv` | not implemented | Later gate; schema availability alone does not register a handler. |
 | GET | `/api/v1/files` | `listFiles` | implemented | Runtime verification pending. |
 | POST | `/api/v1/files` | `uploadFile` | implemented | Runtime verification pending. |
@@ -74,10 +74,10 @@ Canonical A/B1.2.0 defines 85 operations. This foundation and Policy tranche reg
 | GET | `/api/v1/relationships/{id}` | `getRelationship` | implemented | Runtime verification pending. |
 | PUT | `/api/v1/relationships/{id}` | `updateRelationship` | implemented | Runtime verification pending. |
 | GET | `/api/v1/reviewer-options` | `getReviewerOptions` | implemented | Current scoped eligible reviewers for an existing target; later aggregate types depend on later modules. |
-| GET | `/api/v1/rounds` | `listRounds` | not implemented | Later gate; schema availability alone does not register a handler. |
-| GET | `/api/v1/rounds/{id}` | `getRound` | not implemented | Later gate; schema availability alone does not register a handler. |
-| POST | `/api/v1/rounds/{id}/commands` | `commandRound` | not implemented | Later gate; schema availability alone does not register a handler. |
-| GET | `/api/v1/rounds/{id}/snapshot` | `getRoundSnapshot` | not implemented | Later gate; schema availability alone does not register a handler. |
+| GET | `/api/v1/rounds` | `listRounds` | partial | DOSSIER adapter implemented; CHANGE/CONTROL_REQUEST adapters absent. Final APPROVE returns 503 atomically until real original-contract/PDF port exists. |
+| GET | `/api/v1/rounds/{id}` | `getRound` | partial | DOSSIER adapter implemented; CHANGE/CONTROL_REQUEST adapters absent. Final APPROVE returns 503 atomically until real original-contract/PDF port exists. |
+| POST | `/api/v1/rounds/{id}/commands` | `commandRound` | partial | DOSSIER adapter implemented; CHANGE/CONTROL_REQUEST adapters absent. Final APPROVE returns 503 atomically until real original-contract/PDF port exists. |
+| GET | `/api/v1/rounds/{id}/snapshot` | `getRoundSnapshot` | partial | DOSSIER adapter implemented; CHANGE/CONTROL_REQUEST adapters absent. Final APPROVE returns 503 atomically until real original-contract/PDF port exists. |
 | GET | `/api/v1/session` | `getSession` | implemented | Runtime verification pending. |
 | POST | `/api/v1/session/login` | `login` | implemented | Runtime verification pending. |
 | POST | `/api/v1/session/logout` | `logout` | implemented | Runtime verification pending. |
