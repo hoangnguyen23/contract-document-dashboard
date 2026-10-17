@@ -49,6 +49,8 @@ Packaged JAR SHA-256: `97bfb98cf9e21fbb309fae0201d7189ae1bdf67a813e1e926c0429de4
 
 ## Unperformed verification and remaining scope
 
+Confirmed shared fixture inconsistency: S060 uses actor `00000000-0000-4000-8000-000000000004`, whose seed roles are only MAKER, but its expected Contract.allowedActions includes HOLD_READINESS. A section6.2 and B section6 consistently reserve that action to CHECKER, including a contributing checker. The implementation follows the prose role guard; it must not grant MAKER this permission to imitate the fixture. No canonical file was silently edited. S060 action-hint integration requires a concrete owner-reviewed canonical fixture patch; the source GO above does not declare that contradictory expected response accepted.
+
 No tests, product regression execution, HTTP requests, PDF generation, scanner exercise, synthetic business data, SQL/migration execution, Docker changes or application startup were performed for this tranche review. **V008 has not been run here**, and actual bean initialization is unverified. Earlier startup of V001-V007 with zero workflow rows does not verify this newer package or a successful dossier-to-download flow.
 
 No browser/FE integration, authority/SoD negative scenario, late-midnight case, cancellation/hold race, replay/412 transaction scenario, lease/restart/recovery, PDF scan/download, actual lifecycle/task outcome, NFR or backup/restore acceptance is claimed. Public G5 duty/control completion, service acknowledgement, termination, G4 changes/renewals/notices and other remaining operations are outside this source tranche. G3 remains unaccepted as an integrated gate.
