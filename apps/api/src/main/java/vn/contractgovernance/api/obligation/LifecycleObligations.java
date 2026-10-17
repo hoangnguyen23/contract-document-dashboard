@@ -41,13 +41,16 @@ public class LifecycleObligations {
             Instant due, Instant eventAt, JsonNode sourceContributors) {
         if (store.jdbc().queryForObject("select count(*) from cg_lifecycle_consequence where kind=? and source_id=? and source_version=?",
                 Long.class, type, sourceId, sourceVersion) != 0L) return;
+        var relationship = store.lock("Relationship", UUID.fromString(contract.body().path("relationshipId").asString()));
+        var assignedMaker = relationship.body().path("assignedMakerId").asString();
         var now = JsonSupport.timestamp(clock.instant());
+        boolean missed = !clock.instant().isBefore(due);
         var body = json.object().put("createdAt", now).put("updatedAt", now)
                 .put("branchId", contract.branchId().toString()).put("state", "OPEN")
                 .put("contractId", contract.id().toString()).put("sourceId", sourceId.toString())
                 .put("type", type).put("basisType", "INTERNAL")
                 .put("basisText", type.equals("TERM_REVIEW") ? "A §9.1: rà soát kỳ hạn phiên bản FIXED" : "A §9.1: closeout sau kết thúc kỳ hạn")
-                .put("assignedMakerId", contract.body().path("assignedMakerId").asString())
+                .put("assignedMakerId", assignedMaker)
                 .put("originalDueAt", JsonSupport.timestamp(due)).put("currentDueAt", JsonSupport.timestamp(due)).put("dueRevision", 1);
         for (var field : List.of("breachedAt", "evidenceSummary", "closureOutcome", "extensionRequest", "waiverRequest", "supersededById")) body.putNull(field);
         for (var field : List.of("allowedActions", "blockedActions", "evidenceFileIds", "unresolvedIncidentIds", "externalConfirmations")) body.set(field, json.array());
@@ -55,11 +58,20 @@ public class LifecycleObligations {
         var history = json.object().put("number", 1).put("dueAt", JsonSupport.timestamp(due))
                 .put("effectiveAt", JsonSupport.timestamp(eventAt)).put("basis", "DEMO_CAL_2027-v1; nguồn lifecycle bất biến");
         history.putNull("decisionBy").putNull("breachedAt");
+        if (missed) {
+            body.put("breachedAt", JsonSupport.timestamp(due));
+            history.put("breachedAt", JsonSupport.timestamp(due));
+        }
         body.set("deadlineHistory", json.array().add(history));
         var entity = store.create("Obligation", UUID.randomUUID(), contract.branchId(), body);
         schemas.validateSchema("Obligation", entity.body());
         store.jdbc().update("insert into cg_lifecycle_consequence(kind,source_id,source_version,entity_id,created_at) values(?,?,?,?,?)",
                 type, sourceId, sourceVersion, entity.id(), Timestamp.from(clock.instant()));
         audit.record(null, "CREATE", entity, "Lifecycle consequence; pending independent G5 completion");
+        if (missed) {
+            store.jdbc().update("insert into cg_lifecycle_obligation_breach(obligation_id,due_revision,breached_at,recorded_at) values(?,1,?,?)",
+                    entity.id(), Timestamp.from(due), Timestamp.from(clock.instant()));
+            audit.record(null, "BREACH", entity, "Operative source due missed at " + JsonSupport.timestamp(due));
+        }
     }
 }

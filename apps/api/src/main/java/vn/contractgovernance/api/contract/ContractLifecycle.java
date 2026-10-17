@@ -141,7 +141,7 @@ public class ContractLifecycle {
                 pendingChangeGuard(contract);
                 var body = (ObjectNode) contract.body().deepCopy();
                 body.put("state", "EXPIRED").put("recordedAt", JsonSupport.timestamp(now));
-                    var version = (ObjectNode) body.path("currentVersion").deepCopy();
+                var version = (ObjectNode) body.path("currentVersion").deepCopy();
                 version.set("effectiveTo", terms.path("endExclusive").deepCopy());
                 body.set("currentVersion", version);
                 store.jdbc().update("insert into cg_contract_version_closure(version_id,effective_to,recorded_at) values(?,?::date,?)",

@@ -44,3 +44,10 @@ create table cg_contract_version_closure (
 );
 create trigger cg_contract_version_closure_immutable before update or delete on cg_contract_version_closure
  for each row execute function cg_original_source_immutable();
+create table cg_lifecycle_obligation_breach (
+ obligation_id uuid not null, due_revision integer not null check(due_revision>0),
+ breached_at timestamptz not null, recorded_at timestamptz not null,
+ primary key(obligation_id,due_revision)
+);
+create trigger cg_lifecycle_obligation_breach_immutable before update or delete on cg_lifecycle_obligation_breach
+ for each row execute function cg_original_source_immutable();
