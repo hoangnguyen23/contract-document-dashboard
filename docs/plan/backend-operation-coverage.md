@@ -1,6 +1,6 @@
 # Backend operation coverage
 
-Canonical A/B1.2.0 defines 85 operations. This foundation, Policy and dossier-approval tranche registers 48 operations: 43 have their current handler paths implemented and 5 have explicit partial scope. 37 later-gate operations are not implemented. “Implemented” is source coverage, not runtime/provider/business acceptance. No tests were requested or executed; G1/G2 integrated acceptance is not claimed.
+Canonical A/B1.2.0 defines 85 operations. This foundation, Policy and dossier-approval tranche registers 50 operations: 45 have their current handler paths implemented and 5 have explicit partial scope. 35 later-gate operations are not implemented. “Implemented” is source coverage, not runtime/provider/business acceptance. No tests were requested or executed; G1/G2 integrated acceptance is not claimed.
 
 | Method | Path | Canonical operationId | Source coverage | Limitation |
 |---|---|---|---|---|
@@ -18,8 +18,8 @@ Canonical A/B1.2.0 defines 85 operations. This foundation, Policy and dossier-ap
 | POST | `/api/v1/contact-requests` | `createContactRequest` | implemented | Runtime verification pending. |
 | GET | `/api/v1/contact-requests/{id}` | `getContactRequest` | implemented | Runtime verification pending. |
 | POST | `/api/v1/contact-requests/{id}/commands` | `commandContactRequest` | implemented | Runtime verification pending. |
-| GET | `/api/v1/contracts` | `listContracts` | not implemented | Later gate; schema availability alone does not register a handler. |
-| GET | `/api/v1/contracts/{id}` | `getContract` | not implemented | Later gate; schema availability alone does not register a handler. |
+| GET | `/api/v1/contracts` | `listContracts` | implemented | PREPARED/artifact tranche; signing and timeline pending; runtime verification pending. |
+| GET | `/api/v1/contracts/{id}` | `getContract` | implemented | PREPARED/artifact tranche; signing and timeline pending; runtime verification pending. |
 | POST | `/api/v1/contracts/{id}/commands` | `commandContract` | not implemented | Later gate; schema availability alone does not register a handler. |
 | GET | `/api/v1/contracts/{id}/versions` | `listContractVersions` | not implemented | Later gate; schema availability alone does not register a handler. |
 | GET | `/api/v1/control-requests` | `listControlRequests` | not implemented | Later gate; schema availability alone does not register a handler. |
@@ -95,3 +95,6 @@ Canonical A/B1.2.0 defines 85 operations. This foundation, Policy and dossier-ap
 Source review covers role/scope/assignment, stable contributor SoD, closed schema/nullability, current auth before idempotency replay, transactional response validation, private finalized byte references, scanner source/lease guards and migration definitions. Build and extraction evidence appears in docs/plan/reviews/backend-foundation-follow-up.md. PostgreSQL/Flyway execution, scanner connectivity, HTTP scope/session behavior, FE browser integration, races/recovery and G1/G2 acceptance remain unverified.
 
 PowerShell package from `apps/api`: `.\mvnw.cmd '-Dmaven.test.skip=true' package`; quote the full Maven `-D` argument. This skips both test compilation and execution.
+
+
+Original agreement artifact tranche: final dossier APPROVE now invokes a real mandatory-transaction original-contract port, persists immutable render source and durable PDF intent. FILE_SCAN and original CONTRACT ARTIFACT_PDF retry paths are implemented; other job kinds remain partial. Contract commands, signing, effectivity and version history remain unimplemented. Compilation is not artifact rendering, scanner/provider or business acceptance.

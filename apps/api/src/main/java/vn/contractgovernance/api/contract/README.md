@@ -1,0 +1,15 @@
+# Original agreement and private artifact tranche
+
+Final dossier approval calls the real OriginalAgreementPort in the existing transaction. It creates one PREPARED original per dossier, immutable approved Revision/party/contact/evidence/template source, exact approved-round mandatory checks, PDF intent and audit. V007 enforces original/source/artifact uniqueness and immutable history. No ContractVersion or readiness/effectivity success is synthesized.
+
+GET contracts and GET contract detail implement current relationship/branch access, cursor filters and canonical DTO. Contract commands, signing and timeline/version history are pending. allowedActions remains empty; unavailable readiness commands are explained. Existing final approval and job commands retain CommandExecutor transactional idempotency/current authorization semantics.
+
+A bounded single worker claims ARTIFACT_PDF with a fresh UUID lease token on every attempt; renew/complete use that attempt token. Rendering and real ClamAV scanning happen outside domain transactions. The source hash covers full immutable render envelope and resource/font manifest. The final transaction locks Contract, rechecks source/current intent/cancellation, conditionally completes the live job, registers files-owned private bytes and a historical association, then binds Contract artifact and job result with audit atomically. A PendingWrite stays held through transaction commit/rollback. Failed work is retryable with source authorization/FAILED/ETag/hash/current-intent guards; scanner outage cannot produce CLEAN. No referenced bytes are deleted on rollback.
+
+Generated File is CONTRACT/SERVICE_TERMS, GENERATED/uploadedBy=null, sensitive=true, humanVerification=NOT_CHECKED. It contains actual bytes/hash and actual scanner versions. No signature/legal verification is inferred. Original artifact generation does not create a second approval of identical terms.
+
+Renderer resources BASE-VA-1 and TERMS-VA-1 are authored synthetic product templates, never represented as a bank's legal document. They include approved frozen data and explicit template precedence. PDFBox 3.0.6 embeds static Noto Sans; unsupported glyphs fail instead of being dropped. Date, PDF document IDs and manifest derive from captured immutable source, not workstation date/fonts/customer state.
+
+Fonts are unmodified official notofonts/noto-fonts assets pinned at ffebf8c1ee449e544955a7e813c54f9b73848eac. Download base: https://raw.githubusercontent.com/notofonts/noto-fonts/ffebf8c1ee449e544955a7e813c54f9b73848eac/ . Regular and Bold come from hinted/ttf/NotoSans; OFL.txt is upstream LICENSE. Full copyright/OFL1.1 license is packaged. SHA-256 pins are verified at renderer construction and recorded in the source manifest. No runtime download is needed.
+
+Verification: Java25 release compilation/package only, all test resources/compilation/execution skipped. No manual PDF rendering, HTTP/domain scenarios, scanner exercise, Docker or migration execution was performed for this isolated tranche. Independent source review remains required; full G3 acceptance is not claimed.
