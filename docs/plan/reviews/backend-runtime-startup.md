@@ -174,3 +174,35 @@ At the final read-only snapshot, `2026-10-17T06:02:26Z` (13:02:26 local), there 
 The existing private `.env` was not changed or printed; its last-write timestamp remained `2026-10-11T16:32:35Z`. No secrets were put in commands/reports. Existing database/private-file data and volumes were preserved. The untracked `docs/plan/agreement-implementation.md` was preserved and is excluded from the report-only commit.
 
 Policy source review and compilation remain PASS within their stated limits. Policy operational startup is BLOCKED by this host runtime condition, and HTTP/business/FE/G3 acceptance remains unperformed. No tests, product regression request, business HTTP request or deletion/race scenario was run.
+
+## Policy operational startup after engine recovery — 17 October 2026, 20:20 local
+
+A fresh read-only preflight observed Docker Engine `29.8.0` available after the earlier host startup crash. The primary checkout remained `feature/backend-approval-policies`, HEAD `4771ab8bc1a2d949b777e415cfcc3826fa812462`. The already packaged JAR was verified unchanged against the earlier build: SHA-256 `3A975B8D192D75B4812A488788E36CBC6D2C1BDA29D921E87879C8DEBBE90CE5`, built from `61af581` over independently reviewed application `29d1993`. No rebuild or application source change was made for this operational run.
+
+The existing reviewed launcher was invoked from the primary repository:
+
+```powershell
+.\scripts\start-backend.ps1 -DatabasePort 56432 -Demo -SkipBuild
+```
+
+It returned `API startup complete`. Existing project PostgreSQL/scanner containers were started with their retained volumes; no database reset, volume deletion, global configuration change or unrelated process/container action occurred. The private `.env` SHA-256 compared byte-identical before and after launch, without printing its contents or digest. Existing private-file storage and the untracked agreement implementation plan were preserved.
+
+| Observation | Actual result |
+| --- | --- |
+| API process | PID `9360`, `C:\Program Files\Java\jdk-25\bin\java.exe` |
+| Process start | `2026-10-17T13:19:22.8925723Z` = 20:19:22 local |
+| Post-runner marker | `CG_BACKEND_READY` at `2026-10-17T13:19:27.250Z` |
+| Listener | `127.0.0.1:8081`, owner PID `9360` |
+| PostgreSQL | `18.6`, healthy, `127.0.0.1:56432` |
+| Scanner | Healthy, `127.0.0.1:3310`; protocol `PING` returned `PONG` |
+| Scanner VERSION | `ClamAV 1.5.4/28155/Fri Oct 16 06:24:17 2026` |
+| Flyway | Validated five migrations; actually migrated `003` → `004 - policy` → `005 - policy publication request`; both new migrations succeeded |
+| Persistent schedule | Singleton version `0`; active/future policy IDs null |
+| Core rows | User `11`, Branch `2`, Party `1`, Relationship `1` |
+| Workflow rows | Policy `0`; jobs `0`; file blobs `0`; publication requester metadata `0` |
+
+The migration observations came from actual startup logs and a read-only PostgreSQL query of `flyway_schema_history`, `cg_policy_schedule`, entity counts, jobs, blobs and requester metadata. All migrations `001`–`005` reported `success=true`. No fixture ACTIVE policy or successful workflow/job was inserted to make startup appear successful.
+
+At the final passive snapshot `2026-10-17T13:20:03.2042686Z` (20:20:03 local), the launcher's exact executable/PID/start-time/JAR identity verifier still accepted the process. Its current unique logs are `var/local-runtime/api-ebcbfedcb2df4700b18710ebda5d0870.stdout.log` and `.stderr.log`. The ready marker remained present; there were zero ERROR or Exception entries, no generated security password, and stderr was empty. The Policy scheduler initialized without an observed startup exception while the schedule was empty; no publication, regression or activation business scenario was requested or executed.
+
+This closes the earlier host-engine blocker for the reviewed Policy package and establishes actual migrations, bean initialization, container health and listener readiness only. Runtime Java remains installed Oracle JDK `25.0.1`, so this is not certification against the specification's exact `25.0.4.1` patch. It does not verify Policy publication/SoD/evaluation behavior, approval/contract/signing, SQL races, scanner file outcomes, recovery, HTTP/session/FE behavior or integrated G3 acceptance. No tests, HTTP business requests, product regression request, EICAR, orphan deletion or synthetic concurrency scenarios were run. Approval V006 and later artifact/signing migrations are absent from this Policy JAR and have not been executed here.
