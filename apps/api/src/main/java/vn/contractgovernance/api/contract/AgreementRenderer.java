@@ -26,8 +26,8 @@ public class AgreementRenderer {
    var ids=new COSArray();var hash=json.hash(source);ids.add(new COSString(hash));ids.add(new COSString(hash));doc.getDocument().setDocumentID(ids);
    PDPageContentStream stream=null;float y=0;
    try{for(String text:lines){StringBuilder row=new StringBuilder();for(int offset=0;offset<text.length();){int cp=text.codePointAt(offset);offset+=Character.charCount(cp);if(Character.isISOControl(cp))cp=' ';String next=new String(Character.toChars(cp));String trial=row+next;float width=font.getStringWidth(trial)*9/1000;
-    if(width>490&&row.length()>0){if(stream==null||y<55){if(stream!=null)stream.close();var page=new PDPage();doc.addPage(page);stream=new PDPageContentStream(doc,page);y=785;}draw(stream,font,row.toString(),y);y-=14;row.setLength(0);}row.append(next);}
-    if(stream==null||y<55){if(stream!=null)stream.close();var page=new PDPage();doc.addPage(page);stream=new PDPageContentStream(doc,page);y=785;}draw(stream,font,row.toString(),y);y-=18;
+    if(width>490&&row.length()>0){if(stream==null||y<55){if(stream!=null)stream.close();var page=new PDPage(org.apache.pdfbox.pdmodel.common.PDRectangle.A4);doc.addPage(page);stream=new PDPageContentStream(doc,page);y=page.getMediaBox().getHeight()-50-12;}draw(stream,font,row.toString(),y);y-=14;row.setLength(0);}row.append(next);}
+    if(stream==null||y<55){if(stream!=null)stream.close();var page=new PDPage(org.apache.pdfbox.pdmodel.common.PDRectangle.A4);doc.addPage(page);stream=new PDPageContentStream(doc,page);y=page.getMediaBox().getHeight()-50-12;}draw(stream,font,row.toString(),y);y-=18;
    }}finally{if(stream!=null)stream.close();}doc.save(out);return out.toByteArray();
   }
  }
