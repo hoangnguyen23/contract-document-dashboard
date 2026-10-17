@@ -1,6 +1,6 @@
 # Backend operation coverage
 
-Canonical A/B1.1.0 defines 85 operations. This foundation tranche registers 38 operations: 36 have their foundation handler paths implemented and 2 have explicit partial command scope. 47 later-gate operations are not implemented. “Implemented” is source coverage, not runtime/provider/business acceptance. No tests were requested or executed; G1/G2 integrated acceptance is not claimed.
+Canonical A/B1.2.0 defines 85 operations. This foundation and Policy tranche registers 44 operations: 42 have their foundation handler paths implemented and 2 have explicit partial command scope. 41 later-gate operations are not implemented. “Implemented” is source coverage, not runtime/provider/business acceptance. No tests were requested or executed; G1/G2 integrated acceptance is not claimed.
 
 | Method | Path | Canonical operationId | Source coverage | Limitation |
 |---|---|---|---|---|
@@ -63,12 +63,12 @@ Canonical A/B1.1.0 defines 85 operations. This foundation tranche registers 38 o
 | POST | `/api/v1/parties` | `createParty` | implemented | Runtime verification pending. |
 | GET | `/api/v1/parties/{id}` | `getParty` | implemented | Runtime verification pending. |
 | PUT | `/api/v1/parties/{id}` | `updateParty` | implemented | Runtime verification pending. |
-| GET | `/api/v1/policies` | `listPolicys` | not implemented | Later gate; schema availability alone does not register a handler. |
-| POST | `/api/v1/policies` | `createPolicy` | not implemented | Later gate; schema availability alone does not register a handler. |
-| GET | `/api/v1/policies/{id}` | `getPolicy` | not implemented | Later gate; schema availability alone does not register a handler. |
-| PUT | `/api/v1/policies/{id}` | `updatePolicy` | not implemented | Later gate; schema availability alone does not register a handler. |
-| POST | `/api/v1/policies/{id}/commands` | `commandPolicy` | not implemented | Later gate; schema availability alone does not register a handler. |
-| POST | `/api/v1/policies/{id}/simulation` | `simulatePolicy` | not implemented | Later gate; schema availability alone does not register a handler. |
+| GET | `/api/v1/policies` | `listPolicys` | implemented | Policy source reviewed; compilation passed; runtime and business acceptance pending. |
+| POST | `/api/v1/policies` | `createPolicy` | implemented | Policy source reviewed; compilation passed; runtime and business acceptance pending. |
+| GET | `/api/v1/policies/{id}` | `getPolicy` | implemented | Policy source reviewed; compilation passed; runtime and business acceptance pending. |
+| PUT | `/api/v1/policies/{id}` | `updatePolicy` | implemented | Policy source reviewed; compilation passed; runtime and business acceptance pending. |
+| POST | `/api/v1/policies/{id}/commands` | `commandPolicy` | implemented | Policy source reviewed; compilation passed; runtime and business acceptance pending. |
+| POST | `/api/v1/policies/{id}/simulation` | `simulatePolicy` | implemented | Policy source reviewed; compilation passed; runtime and business acceptance pending. |
 | GET | `/api/v1/relationships` | `listRelationships` | implemented | Runtime verification pending. |
 | POST | `/api/v1/relationships` | `createRelationship` | implemented | Runtime verification pending. |
 | GET | `/api/v1/relationships/{id}` | `getRelationship` | implemented | Runtime verification pending. |

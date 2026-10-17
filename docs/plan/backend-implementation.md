@@ -1,6 +1,6 @@
 # Backend implementation
 
-Sources: `docs/Final_Project_Specification.md` (A1.1.0), `docs/FE_BE_Shared_Development_Contract.md` (B1.1.0). These remain the only canonical product and wire specifications. Compatibility patch 1.1.0 closes the documented POLICY file/job branch scope contradiction; business scope is unchanged.
+Sources: `docs/Final_Project_Specification.md` (A1.2.0), `docs/FE_BE_Shared_Development_Contract.md` (B1.2.0). These remain the only canonical product and wire specifications. Compatibility patch 1.1.0 closes the documented POLICY file/job branch scope contradiction; business scope is unchanged.
 
 The user requested Backend implementation and explicitly waived writing/running tests on 11 October 2026. Compilation, dependency resolution and independent static code review remain required. No automated test suites or manual HTTP acceptance scenarios will be run in this delivery. Build success does not establish G1–G6 integrated acceptance.
 
@@ -24,3 +24,5 @@ HTTP contract → session/current actor → object scope → request validation 
 Customer scope supplies dossier/file access. Submission freezes policy/facts/evidence; final approval creates one contract and artifact job. Signing/readiness precede timeline activation. Change/notice jobs recheck immutable source plus current guards. Lifecycle transitions create/control duties and closeout. Record holds serialize against disposition. Reports/files/jobs reuse object scope and redact per permission.
 
 No success placeholders, fixture-as-live-business-output, in-memory persistence, silent fallback for invalid states, or blanket admin bypass. Operations not yet implemented must be listed honestly rather than returning synthetic success.
+
+Policy compatibility patch 1.2.0 clarifies finite corpus boundaries, empty schedule version zero, generated-file uploader metadata and full simulation facts hashing. Six Policy operations passed independent source review at 29d1993; operational migration/startup and business acceptance remain separate gates.
