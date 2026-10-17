@@ -49,7 +49,7 @@ Canonical A/B1.2.0 defines 85 operations. This foundation, Policy and dossier-ap
 | POST | `/api/v1/incidents/{id}/commands` | `commandIncident` | not implemented | Later gate; schema availability alone does not register a handler. |
 | GET | `/api/v1/jobs` | `listJobs` | implemented | Runtime verification pending. |
 | GET | `/api/v1/jobs/{id}` | `getJob` | implemented | Runtime verification pending. |
-| POST | `/api/v1/jobs/{id}/commands` | `commandJob` | partial | RETRY for current FAILED FILE_SCAN source only; other job kinds return 503 with no effect. |
+| POST | `/api/v1/jobs/{id}/commands` | `commandJob` | partial | RETRY for current FAILED FILE_SCAN and original CONTRACT ARTIFACT_PDF sources; other job kinds fail closed. |
 | GET | `/api/v1/notices` | `listNotices` | not implemented | Later gate; schema availability alone does not register a handler. |
 | POST | `/api/v1/notices` | `createNotice` | not implemented | Later gate; schema availability alone does not register a handler. |
 | GET | `/api/v1/notices/{id}` | `getNotice` | not implemented | Later gate; schema availability alone does not register a handler. |
@@ -74,10 +74,10 @@ Canonical A/B1.2.0 defines 85 operations. This foundation, Policy and dossier-ap
 | GET | `/api/v1/relationships/{id}` | `getRelationship` | implemented | Runtime verification pending. |
 | PUT | `/api/v1/relationships/{id}` | `updateRelationship` | implemented | Runtime verification pending. |
 | GET | `/api/v1/reviewer-options` | `getReviewerOptions` | implemented | Current scoped eligible reviewers for an existing target; later aggregate types depend on later modules. |
-| GET | `/api/v1/rounds` | `listRounds` | partial | DOSSIER adapter implemented; CHANGE/CONTROL_REQUEST adapters absent. Final APPROVE returns 503 atomically until real original-contract/PDF port exists. |
-| GET | `/api/v1/rounds/{id}` | `getRound` | partial | DOSSIER adapter implemented; CHANGE/CONTROL_REQUEST adapters absent. Final APPROVE returns 503 atomically until real original-contract/PDF port exists. |
-| POST | `/api/v1/rounds/{id}/commands` | `commandRound` | partial | DOSSIER adapter implemented; CHANGE/CONTROL_REQUEST adapters absent. Final APPROVE returns 503 atomically until real original-contract/PDF port exists. |
-| GET | `/api/v1/rounds/{id}/snapshot` | `getRoundSnapshot` | partial | DOSSIER adapter implemented; CHANGE/CONTROL_REQUEST adapters absent. Final APPROVE returns 503 atomically until real original-contract/PDF port exists. |
+| GET | `/api/v1/rounds` | `listRounds` | partial | DOSSIER adapter implemented; CHANGE/CONTROL_REQUEST adapters absent. Final DOSSIER APPROVE creates the real PREPARED original and durable artifact intent. |
+| GET | `/api/v1/rounds/{id}` | `getRound` | partial | DOSSIER adapter implemented; CHANGE/CONTROL_REQUEST adapters absent. Final DOSSIER APPROVE creates the real PREPARED original and durable artifact intent. |
+| POST | `/api/v1/rounds/{id}/commands` | `commandRound` | partial | DOSSIER adapter implemented; CHANGE/CONTROL_REQUEST adapters absent. Final DOSSIER APPROVE creates the real PREPARED original and durable artifact intent. |
+| GET | `/api/v1/rounds/{id}/snapshot` | `getRoundSnapshot` | partial | DOSSIER adapter implemented; CHANGE/CONTROL_REQUEST adapters absent. Final DOSSIER APPROVE creates the real PREPARED original and durable artifact intent. |
 | GET | `/api/v1/session` | `getSession` | implemented | Runtime verification pending. |
 | POST | `/api/v1/session/login` | `login` | implemented | Runtime verification pending. |
 | POST | `/api/v1/session/logout` | `logout` | implemented | Runtime verification pending. |
@@ -92,7 +92,7 @@ Canonical A/B1.2.0 defines 85 operations. This foundation, Policy and dossier-ap
 
 ## Verification boundary
 
-Source review covers role/scope/assignment, stable contributor SoD, closed schema/nullability, current auth before idempotency replay, transactional response validation, private finalized byte references, scanner source/lease guards and migration definitions. Build and extraction evidence appears in docs/plan/reviews/backend-foundation-follow-up.md. PostgreSQL/Flyway execution, scanner connectivity, HTTP scope/session behavior, FE browser integration, races/recovery and G1/G2 acceptance remain unverified.
+Source review covers role/scope/assignment, stable contributor SoD, closed schema/nullability, current auth before idempotency replay, transactional response validation, private finalized byte references, scanner source/lease guards and migration definitions. Build and extraction evidence appears in docs/plan/reviews/backend-foundation-follow-up.md. Operational startup, scanner connectivity and Flyway001–005 have been observed separately in the runtime report. Approval/artifact migration execution, HTTP scope/session behavior, FE browser integration, races/recovery and integrated acceptance remain pending.
 
 PowerShell package from `apps/api`: `.\mvnw.cmd '-Dmaven.test.skip=true' package`; quote the full Maven `-D` argument. This skips both test compilation and execution.
 

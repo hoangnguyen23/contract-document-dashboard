@@ -14,7 +14,7 @@ Backend cho hệ thống quản trị hồ sơ và hợp đồng thu hộ doanh 
 
 Hợp đồng/PDF, ký/effectivity, thay đổi hợp đồng, thông báo và các luồng G3–G5 nằm trong các đợt tiếp theo. Có schema của một operation không đồng nghĩa operation đó đã được triển khai.
 
-Xem [bảng đủ 85 operation](docs/plan/backend-operation-coverage.md): 43 operation đã có handler, 5 operation mới hỗ trợ một phần và 37 operation thuộc các đợt tiếp theo. Đây là mức độ triển khai từ mã nguồn; nghiệm thu tích hợp vẫn còn chờ.
+Xem [bảng đủ 85 operation](docs/plan/backend-operation-coverage.md): 45 operation đã có handler, 5 operation mới hỗ trợ một phần và 35 operation thuộc các đợt tiếp theo. Đây là mức độ triển khai từ mã nguồn; nghiệm thu tích hợp vẫn còn chờ.
 
 ## Bắt đầu
 
