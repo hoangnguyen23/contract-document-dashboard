@@ -1,6 +1,6 @@
 # Backend operation coverage
 
-Canonical A/B1.2.0 defines 85 operations. This foundation, Policy and dossier-approval tranche registers 50 operations: 45 have their current handler paths implemented and 5 have explicit partial scope. 35 later-gate operations are not implemented. “Implemented” is source coverage, not runtime/provider/business acceptance. No tests were requested or executed; G1/G2 integrated acceptance is not claimed.
+Canonical A/B1.2.0 defines 85 operations. This foundation, Policy and dossier-approval tranche registers 56 operations: 47 have their current handler paths implemented and 9 have explicit partial scope. 29 later-gate operations are not implemented. “Implemented” is source coverage, not runtime/provider/business acceptance. No tests were requested or executed; G1/G2 integrated acceptance is not claimed.
 
 | Method | Path | Canonical operationId | Source coverage | Limitation |
 |---|---|---|---|---|
@@ -18,10 +18,10 @@ Canonical A/B1.2.0 defines 85 operations. This foundation, Policy and dossier-ap
 | POST | `/api/v1/contact-requests` | `createContactRequest` | implemented | Runtime verification pending. |
 | GET | `/api/v1/contact-requests/{id}` | `getContactRequest` | implemented | Runtime verification pending. |
 | POST | `/api/v1/contact-requests/{id}/commands` | `commandContactRequest` | implemented | Runtime verification pending. |
-| GET | `/api/v1/contracts` | `listContracts` | implemented | PREPARED/artifact tranche; signing and timeline pending; runtime verification pending. |
-| GET | `/api/v1/contracts/{id}` | `getContract` | implemented | PREPARED/artifact tranche; signing and timeline pending; runtime verification pending. |
-| POST | `/api/v1/contracts/{id}/commands` | `commandContract` | not implemented | Later gate; schema availability alone does not register a handler. |
-| GET | `/api/v1/contracts/{id}/versions` | `listContractVersions` | not implemented | Later gate; schema availability alone does not register a handler. |
+| GET | `/api/v1/contracts` | `listContracts` | implemented | Original signing/readiness/timeline source implemented; actual business/runtime acceptance pending. |
+| GET | `/api/v1/contracts/{id}` | `getContract` | implemented | Original signing/readiness/timeline source implemented; actual business/runtime acceptance pending. |
+| POST | `/api/v1/contracts/{id}/commands` | `commandContract` | implemented | Original HOLD/RELEASE/CANCEL; current guards/history; business acceptance pending. |
+| GET | `/api/v1/contracts/{id}/versions` | `listContractVersions` | implemented | Immutable original history, number DESC/id DESC with bound cursor; G4 supplies future lineage. |
 | GET | `/api/v1/control-requests` | `listControlRequests` | not implemented | Later gate; schema availability alone does not register a handler. |
 | POST | `/api/v1/control-requests` | `createControlRequest` | not implemented | Later gate; schema availability alone does not register a handler. |
 | GET | `/api/v1/control-requests/{id}` | `getControlRequest` | not implemented | Later gate; schema availability alone does not register a handler. |
@@ -35,7 +35,7 @@ Canonical A/B1.2.0 defines 85 operations. This foundation, Policy and dossier-ap
 | POST | `/api/v1/dossiers` | `createDossier` | implemented | Runtime verification pending. |
 | GET | `/api/v1/dossiers/{id}` | `getDossier` | implemented | Runtime verification pending. |
 | PUT | `/api/v1/dossiers/{id}` | `updateDossier` | implemented | Runtime verification pending. |
-| POST | `/api/v1/dossiers/{id}/commands` | `commandDossier` | implemented | Real dossier submit/frozen Revision and withdrawal; final round approval still awaits original-contract/PDF dependency. |
+| POST | `/api/v1/dossiers/{id}/commands` | `commandDossier` | implemented | Real dossier submit/frozen Revision and withdrawal; final DOSSIER approval creates real PREPARED original and durable PDF intent. |
 | GET | `/api/v1/exports/audit` | `exportAuditCsv` | not implemented | Later gate; schema availability alone does not register a handler. |
 | GET | `/api/v1/files` | `listFiles` | implemented | Runtime verification pending. |
 | POST | `/api/v1/files` | `uploadFile` | implemented | Runtime verification pending. |
@@ -49,7 +49,7 @@ Canonical A/B1.2.0 defines 85 operations. This foundation, Policy and dossier-ap
 | POST | `/api/v1/incidents/{id}/commands` | `commandIncident` | not implemented | Later gate; schema availability alone does not register a handler. |
 | GET | `/api/v1/jobs` | `listJobs` | implemented | Runtime verification pending. |
 | GET | `/api/v1/jobs/{id}` | `getJob` | implemented | Runtime verification pending. |
-| POST | `/api/v1/jobs/{id}/commands` | `commandJob` | partial | RETRY for current FAILED FILE_SCAN and original CONTRACT ARTIFACT_PDF sources; other job kinds fail closed. |
+| POST | `/api/v1/jobs/{id}/commands` | `commandJob` | partial | RETRY for current FAILED FILE_SCAN, original CONTRACT ARTIFACT_PDF and EFFECTIVITY sources; other job kinds fail closed. |
 | GET | `/api/v1/notices` | `listNotices` | not implemented | Later gate; schema availability alone does not register a handler. |
 | POST | `/api/v1/notices` | `createNotice` | not implemented | Later gate; schema availability alone does not register a handler. |
 | GET | `/api/v1/notices/{id}` | `getNotice` | not implemented | Later gate; schema availability alone does not register a handler. |
@@ -81,10 +81,10 @@ Canonical A/B1.2.0 defines 85 operations. This foundation, Policy and dossier-ap
 | GET | `/api/v1/session` | `getSession` | implemented | Runtime verification pending. |
 | POST | `/api/v1/session/login` | `login` | implemented | Runtime verification pending. |
 | POST | `/api/v1/session/logout` | `logout` | implemented | Runtime verification pending. |
-| GET | `/api/v1/signing-packets` | `listSigningPackets` | not implemented | Later gate; schema availability alone does not register a handler. |
-| POST | `/api/v1/signing-packets` | `createSigningPacket` | not implemented | Later gate; schema availability alone does not register a handler. |
-| GET | `/api/v1/signing-packets/{id}` | `getSigningPacket` | not implemented | Later gate; schema availability alone does not register a handler. |
-| POST | `/api/v1/signing-packets/{id}/commands` | `commandSigningPacket` | not implemented | Later gate; schema availability alone does not register a handler. |
+| GET | `/api/v1/signing-packets` | `listSigningPackets` | partial | CONTRACT adapter implemented with real signing/readiness effects; CHANGE adapter absent; business acceptance pending. |
+| POST | `/api/v1/signing-packets` | `createSigningPacket` | partial | CONTRACT adapter implemented with real signing/readiness effects; CHANGE adapter absent; business acceptance pending. |
+| GET | `/api/v1/signing-packets/{id}` | `getSigningPacket` | partial | CONTRACT adapter implemented with real signing/readiness effects; CHANGE adapter absent; business acceptance pending. |
+| POST | `/api/v1/signing-packets/{id}/commands` | `commandSigningPacket` | partial | CONTRACT adapter implemented with real signing/readiness effects; CHANGE adapter absent; business acceptance pending. |
 | GET | `/api/v1/users` | `listUsers` | implemented | Runtime verification pending. |
 | POST | `/api/v1/users` | `createUser` | implemented | Runtime verification pending. |
 | GET | `/api/v1/users/{id}` | `getUser` | implemented | Runtime verification pending. |
@@ -92,9 +92,9 @@ Canonical A/B1.2.0 defines 85 operations. This foundation, Policy and dossier-ap
 
 ## Verification boundary
 
-Source review covers role/scope/assignment, stable contributor SoD, closed schema/nullability, current auth before idempotency replay, transactional response validation, private finalized byte references, scanner source/lease guards and migration definitions. Build and extraction evidence appears in docs/plan/reviews/backend-foundation-follow-up.md. Operational startup, scanner connectivity and Flyway001–005 have been observed separately in the runtime report. Approval/artifact migration execution, HTTP scope/session behavior, FE browser integration, races/recovery and integrated acceptance remain pending.
+Source review covers role/scope/assignment, stable contributor SoD, closed schema/nullability, current auth before idempotency replay, transactional response validation, private finalized byte references, scanner source/lease guards and migration definitions. Build and extraction evidence appears in docs/plan/reviews/backend-foundation-follow-up.md. Operational startup, scanner connectivity and Flyway001–007 have been observed separately in the primary runtime report. V008 migration execution, HTTP scope/session behavior, FE browser integration, actual PDF/signing/activation workflows, races/recovery and integrated acceptance remain pending.
 
 PowerShell package from `apps/api`: `.\mvnw.cmd '-Dmaven.test.skip=true' package`; quote the full Maven `-D` argument. This skips both test compilation and execution.
 
 
-Original agreement artifact tranche: final dossier APPROVE now invokes a real mandatory-transaction original-contract port, persists immutable render source and durable PDF intent. FILE_SCAN and original CONTRACT ARTIFACT_PDF retry paths are implemented; other job kinds remain partial. Contract commands, signing, effectivity and version history remain unimplemented. Compilation is not artifact rendering, scanner/provider or business acceptance.
+Original agreement artifact tranche: final dossier APPROVE now invokes a real mandatory-transaction original-contract port, persists immutable render source and durable PDF intent. FILE_SCAN and original CONTRACT ARTIFACT_PDF/EFFECTIVITY retry paths are implemented; other job kinds remain partial. Original signing, readiness commands and immutable version/effectivity source are implemented, with real creation-only G5 consequence factories. CHANGE signing/renewal/apply, public G5 completion and termination remain absent. Compilation is not artifact rendering, scanner/provider or business acceptance.

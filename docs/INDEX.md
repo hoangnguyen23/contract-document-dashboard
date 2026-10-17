@@ -13,3 +13,5 @@ Implementation plans and module setup notes are derived operational documentatio
 - [Policy source review](plan/reviews/backend-policy-source-review.md): bounded Policy source findings and build.
 - [Dossier approval source review](plan/reviews/backend-approval-source-review.md): immutable revisions and DOSSIER Round scope.
 - [Original agreement artifact source review](plan/reviews/backend-agreement-artifact-source-review.md): PREPARED/PDF integration; later signing/timeline remain pending.
+
+- [Original signing and lifecycle](plan/signing-implementation.md): CONTRACT-only signing, original readiness/effectivity and real lifecycle consequence creation; not integrated acceptance.
