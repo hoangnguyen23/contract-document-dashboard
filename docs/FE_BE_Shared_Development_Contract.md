@@ -136,7 +136,7 @@ A §4.1 và seed-v1.policyCorpusSemantics làm rõ oracle hữu hạn cho cấu 
 
 ### 9.4. Compatibility patch 1.2.1 — S060 maker action hint
 
-Owner phê duyệt ngày 18/10/2026 patch duy nhất: scenarios-v1 S060 expected.body.allowedActions đổi từ ["HOLD_READINESS"] thành []. Actor MAKER, request, status, blockedActions và mọi dữ kiện khác giữ nguyên; không chuyển action sang blockedActions, không cấp thêm quyền. getContract / Contract.allowedActions khớp CHECKER-only tại A §6.2/B §6; không đổi schema, API, enum hoặc business permission. A/B cùng nâng patch metadata 1.2.1; seedVersion chỉ đồng bộ metadata. Shared review nội bộ đang chờ; chưa có acknowledgement của developer FE độc lập và chưa công bố gate tích hợp hoàn tất.
+Owner phê duyệt ngày 18/10/2026 patch duy nhất: scenarios-v1 S060 expected.body.allowedActions đổi từ ["HOLD_READINESS"] thành []. Actor MAKER, request, status, blockedActions và mọi dữ kiện khác giữ nguyên; không chuyển action sang blockedActions, không cấp thêm quyền. getContract / Contract.allowedActions khớp CHECKER-only tại A §6.2/B §6; không đổi schema, API, enum hoặc business permission. A/B cùng nâng patch metadata 1.2.1; seedVersion chỉ đồng bộ metadata. Shared review nội bộ GO tại candidate 60a436a, report 6facdbe; chưa có acknowledgement của developer FE độc lập và chưa công bố gate tích hợp hoàn tất.
 
 ## 10. Canonical blocks
 
