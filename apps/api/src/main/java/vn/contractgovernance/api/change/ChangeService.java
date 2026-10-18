@@ -35,18 +35,19 @@ public class ChangeService {
     private final PolicyAccess policies;
     private final FileService files;
     private final EvidenceAccess evidence;
+    private final SigningEvidence signingEvidence;
     private final JobQueue jobs;
     private final ObjectProvider<ChangeApproval> approval;
     private final ObjectProvider<ChangeSigning> signing;
     public ChangeService(EntityStore store,JsonSupport json,Clock clock,CalendarService calendar,
             ContractLifecycle lifecycle,OriginalAgreementService originals,CustomerAccess customers,
             UserDirectory users,CommandExecutor commands,AuditService audit,ContractRegistry schemas,
-            ListQueries lists,PolicyAccess policies,FileService files,EvidenceAccess evidence,JobQueue jobs,
+            ListQueries lists,PolicyAccess policies,FileService files,EvidenceAccess evidence,SigningEvidence signingEvidence,JobQueue jobs,
             ObjectProvider<ChangeApproval> approval,ObjectProvider<ChangeSigning> signing) {
         this.store=store; this.json=json; this.clock=clock; this.calendar=calendar; this.lifecycle=lifecycle;
         this.originals=originals; this.customers=customers; this.users=users; this.commands=commands;
         this.audit=audit; this.schemas=schemas; this.lists=lists; this.policies=policies;
-        this.files=files; this.evidence=evidence; this.jobs=jobs; this.approval=approval; this.signing=signing;
+        this.files=files; this.evidence=evidence; this.signingEvidence=signingEvidence; this.jobs=jobs; this.approval=approval; this.signing=signing;
     }
     public static UUID id(JsonNode body,String field) { return SigningEvidence.uuid(body,field); }
     public String now() { return JsonSupport.timestamp(clock.instant()); }
@@ -324,6 +325,7 @@ public class ChangeService {
             try {
                 maker(id(body,"id"),actor); beforeBoundary(entity(body));
                 var contract=store.require("Contract",id(body,"contractId")); active(contract); currentBase(contract,body); requireCurrentGuard(contract);
+                if(!signingEvidence.materialUnchanged(contract,false)) throw ApiException.of("READINESS_BLOCKED","Material source đã thay đổi.");
                 if(!body.hasNonNull("artifactId")) throw ApiException.of("READINESS_BLOCKED","Chưa có appendix artifact đã quét.");
                 if(!store.require("File",id(body,"artifactId")).body().path("state").asString().equals("CLEAN")) throw ApiException.of("FILE_NOT_CLEAN","Appendix chưa CLEAN.");
                 allowed.add("SIGN");
@@ -336,8 +338,15 @@ public class ChangeService {
     /** Read-only action hint: actual SUBMIT still checks bytes, authority and reviewer input. */
     private void submissionHint(EntityStore.Entity change,EntityStore.Entity contract,Actor actor) {
         active(contract); currentBase(contract,change.body()); requireCurrentGuard(contract);
+        if(!signingEvidence.materialUnchanged(contract,false)) throw ApiException.of("READINESS_BLOCKED","Material source đã thay đổi.");
         var policy=policies.findApplicableHint().orElseThrow(()->ApiException.of("POLICY_BLOCKED","Chưa có chính sách áp dụng."));
-        validateTerms(contract,change.body(),policy); var purposes=new HashSet<String>();
+        validateTerms(contract,change.body(),policy);
+        var terms=consolidated(contract,change.body()); var config=policy.body().path("config");
+        long fee=Long.parseLong(terms.path("feeVnd").asString());
+        if(fee<Long.parseLong(config.path("minFeeVnd").asString())||fee>Long.parseLong(config.path("maxFeeVnd").asString())||!terms.path("feePayer").asString().equals("BENEFICIARY")) throw ApiException.of("POLICY_BLOCKED","Phí hoặc bên chịu phí chưa đạt chính sách.");
+        boolean allowedTerm=false; for(var kind:config.path("allowedTermKinds")) allowedTerm|=kind.asString().equals(terms.path("termKind").asString());
+        if(!allowedTerm) throw ApiException.of("POLICY_BLOCKED","Loại thời hạn chưa đạt chính sách.");
+        var purposes=new HashSet<String>();
         for(var link:change.body().path("documents")) {
             var file=evidence.requireClean(id(link,"fileId"),"CHANGE",change.id(),change.branchId(),actor);
             if(!file.body().path("purpose").equals(link.path("purpose"))) throw ApiException.validation("/documents/purpose","Purpose không khớp nguồn.");
