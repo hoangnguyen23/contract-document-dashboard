@@ -129,7 +129,7 @@ public class LifecycleObligations {
         for (var field : List.of("allowedActions", "blockedActions", "evidenceFileIds", "unresolvedIncidentIds", "externalConfirmations")) body.set(field, json.array());
         body.set("contributorIds", sourceContributors.deepCopy());
         var history = json.object().put("number", 1).put("dueAt", JsonSupport.timestamp(due))
-                .put("effectiveAt", JsonSupport.timestamp(eventAt)).put("basis", "DEMO_CAL_2027-v1; nguồn lifecycle bất biến");
+                .put("effectiveAt", JsonSupport.timestamp(eventAt)).put("basis", basisText);
         history.putNull("decisionBy").putNull("breachedAt");
         if (missed) {
             body.put("breachedAt", JsonSupport.timestamp(due));
