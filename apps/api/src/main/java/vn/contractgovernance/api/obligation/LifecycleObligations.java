@@ -58,6 +58,12 @@ public class LifecycleObligations {
         }
     }
 
+    /** Incident owns verification; this factory derives one actual contractual 48-hour duty. */
+    @Transactional(propagation = Propagation.MANDATORY)
+    public UUID remediation(EntityStore.Entity contract,EntityStore.Entity incident,Instant triggerAt,JsonNode contributors) {
+        create(contract,"REMEDIATION",incident.id(),1,triggerAt.plus(Duration.ofHours(48)),triggerAt,contributors,"CONTRACTUAL","DEMO_REMEDIATION_48H; verified source trigger, not a statutory deadline");
+        return store.jdbc().queryForObject("select entity_id from cg_lifecycle_consequence where kind='REMEDIATION' and source_id=? and source_version=1",UUID.class,incident.id());
+    }
     private void create(EntityStore.Entity contract, String type, UUID sourceId, int sourceVersion,
             Instant due, Instant eventAt, JsonNode sourceContributors) {
         create(contract,type,sourceId,sourceVersion,due,eventAt,sourceContributors,"INTERNAL",type.equals("TERM_REVIEW")?"A §9.1: rà soát kỳ hạn phiên bản FIXED":"A §9.1: closeout sau kết thúc kỳ hạn");
@@ -71,7 +77,7 @@ public class LifecycleObligations {
     @Transactional(propagation = Propagation.MANDATORY)
     public void acceptNoticeAck(EntityStore.Entity notice,JsonNode candidate,Actor actor) {
         for(var duty:noticeDuties(notice)) {
-            synchronizeNoticeBreach(duty);
+            synchronizeBreach(duty);
             duty=store.require("Obligation",duty.id());
             if(Set.of("CLOSED","CANCELLED").contains(duty.body().path("state").asString()))continue;
             var body=(tools.jackson.databind.node.ObjectNode)duty.body().deepCopy();
@@ -84,7 +90,7 @@ public class LifecycleObligations {
     @Transactional(propagation = Propagation.MANDATORY)
     public void supersedeNoticeAck(EntityStore.Entity notice,String reason,Actor actor) {
         for(var duty:noticeDuties(notice)) {
-            synchronizeNoticeBreach(duty);duty=store.require("Obligation",duty.id());
+            synchronizeBreach(duty);duty=store.require("Obligation",duty.id());
             if(Set.of("CLOSED","CANCELLED").contains(duty.body().path("state").asString()))continue;
             var body=(tools.jackson.databind.node.ObjectNode)duty.body().deepCopy();body.put("state","CANCELLED").put("updatedAt",JsonSupport.timestamp(clock.instant()));
             var updated=store.update(duty,body);schemas.validateSchema("Obligation",updated.body());audit.record(actor,"CANCEL_INAPPLICABLE",updated,"Sole tariff source no longer applies: "+reason);
@@ -94,7 +100,7 @@ public class LifecycleObligations {
     private List<EntityStore.Entity> noticeDuties(EntityStore.Entity notice) {
         return store.jdbc().query("select entity_id from cg_lifecycle_consequence where kind='NOTICE_ACK' and source_id=? order by entity_id",(rs,n)->rs.getObject(1,UUID.class),notice.id()).stream().map(id->store.lock("Obligation",id)).toList();
     }
-    private void synchronizeNoticeBreach(EntityStore.Entity duty) {
+    public void synchronizeBreach(EntityStore.Entity duty) {
         var body=duty.body();if(Set.of("CLOSED","CANCELLED").contains(body.path("state").asString()))return;
         var due=Instant.parse(body.path("currentDueAt").asString());if(!clock.instant().isAfter(due))return;
         int inserted=store.jdbc().update("insert into cg_lifecycle_obligation_breach(obligation_id,due_revision,breached_at,recorded_at) values(?,?,?,?) on conflict do nothing",duty.id(),body.path("dueRevision").asInt(),Timestamp.from(due),Timestamp.from(clock.instant()));
@@ -133,6 +139,9 @@ public class LifecycleObligations {
         schemas.validateSchema("Obligation", entity.body());
         store.jdbc().update("insert into cg_lifecycle_consequence(kind,source_id,source_version,entity_id,created_at) values(?,?,?,?,?)",
                 type, sourceId, sourceVersion, entity.id(), Timestamp.from(clock.instant()));
+        store.jdbc().update("insert into cg_obligation_due(obligation_id,number,due_at,effective_at,decision_by,basis) values(?,1,?,?,null,?)",entity.id(),Timestamp.from(due),Timestamp.from(eventAt),basisText);
+        var source=json.object();source.set("sourceProjection",body);source.put("sourceVersion",sourceVersion).put("eventAt",JsonSupport.timestamp(eventAt));
+        store.jdbc().update("insert into cg_g5_event(id,target_type,target_id,kind,body,body_hash,actor_id,recorded_at) values(?,'Obligation',?,'SOURCE',?::jsonb,?,null,?)",UUID.randomUUID(),entity.id(),json.stringify(source),json.hash(source),Timestamp.from(clock.instant()));
         audit.record(null, "CREATE", entity, "Lifecycle consequence; pending independent G5 completion");
         if (missed) {
             store.jdbc().update("insert into cg_lifecycle_obligation_breach(obligation_id,due_revision,breached_at,recorded_at) values(?,1,?,?)",
