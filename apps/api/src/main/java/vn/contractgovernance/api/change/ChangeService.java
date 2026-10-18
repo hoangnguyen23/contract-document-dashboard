@@ -260,9 +260,9 @@ public class ChangeService {
             var id=id(link,"fileId"); if(!seen.add(id)) throw ApiException.validation("/documents","File không được trùng.");
             var file=evidence.requireClean(id,"CHANGE",change.id(),change.branchId(),actor);
             if(!file.body().path("purpose").equals(link.path("purpose"))) throw ApiException.validation("/documents/purpose","Purpose không khớp file.");
-            store.jdbc().update("insert into cg_file_association(file_id,target_type,target_id,historical,created_at) values(?,'CHANGE',?,false,?) on conflict do nothing",id,change.id(),Timestamp.from(clock.instant()));
-            if(!file.body().path("attached").asBoolean()) { var body=(ObjectNode)file.body().deepCopy(); body.put("attached",true); store.update(file,body); }
         }
+        files.validateDraftLimits("CHANGE",change.id(),seen);
+        files.synchronizeDraftReferences("CHANGE",change.id(),change.branchId(),new TreeSet<>(seen),actor);
     }
     public JsonNode manifest(EntityStore.Entity change,Collection<UUID> ids,Actor actor) {
         var values=new ArrayList<JsonNode>();

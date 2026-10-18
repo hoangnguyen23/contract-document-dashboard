@@ -73,6 +73,10 @@ public class ChangeApproval {
             representation.put("sourceFileId",authorities.getFirst().toString()).putNull("checkedAt").putNull("checkEvidenceFileId");
         }
         mandatory(request.path("mandatoryChecks"),change,changes.references(revision),actor);
+        if(change.body().hasNonNull("roundId")) {
+            var previous=store.require("Round",id(change.body(),"roundId"));
+            inputs.retainConditions(previous.body().path("mandatoryChecks"),request.path("mandatoryChecks"));
+        }
         var steps=json.array().add(step("L1",request.path("l1ReviewerId").asString(),"PENDING"));
         if(request.hasNonNull("l2ReviewerId")) steps.add(step("L2",request.path("l2ReviewerId").asString(),"WAITING"));
         eligible(change,revision,actor.id(),steps);

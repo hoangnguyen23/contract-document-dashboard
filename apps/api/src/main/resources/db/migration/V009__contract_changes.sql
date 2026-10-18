@@ -1,7 +1,8 @@
 create table cg_change_revision (
  id uuid primary key, change_id uuid not null, number integer not null check(number>0),
  revision jsonb not null, metadata jsonb not null, submitted_by uuid not null,
- created_at timestamptz not null, unique(change_id,number)
+ created_at timestamptz not null, unique(change_id,number),
+ check(revision->>'id'=id::text), check((revision->>'number')::integer=number)
 );
 create trigger cg_change_revision_immutable before update or delete on cg_change_revision
  for each row execute function cg_original_source_immutable();
@@ -16,6 +17,8 @@ create table cg_change_artifact (
  revision_id uuid primary key references cg_change_revision(id), file_id uuid not null unique,
  source_hash char(64) not null, artifact_hash char(64) not null, created_at timestamptz not null
 );
+create trigger cg_change_artifact_immutable before update or delete on cg_change_artifact
+ for each row execute function cg_original_source_immutable();
 create table cg_change_contributor (
  change_id uuid not null, actor_id uuid not null, created_at timestamptz not null,
  primary key(change_id,actor_id)
