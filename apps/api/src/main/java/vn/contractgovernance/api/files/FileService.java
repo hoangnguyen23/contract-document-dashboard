@@ -19,12 +19,13 @@ import java.util.UUID;
 
 @Service
 public class FileService {
+    private final ContractContributions contractContributions;
     private static final org.slf4j.Logger LOG=org.slf4j.LoggerFactory.getLogger(FileService.class);
     public record Download(byte[] bytes,String mediaType,String filename,String hash,int version) {}
     private final EntityStore store; private final EvidenceAccess access; private final PrivateBlobStore blobs;
     private final JsonSupport json; private final Clock clock; private final CommandExecutor commands; private final AuditService audit;private final JobQueue jobs;private final ListQueries lists;
-    public FileService(EntityStore store,EvidenceAccess access,PrivateBlobStore blobs,JsonSupport json,Clock clock,CommandExecutor commands,AuditService audit,JobQueue jobs,ListQueries lists) {
-        this.store=store;this.access=access;this.blobs=blobs;this.json=json;this.clock=clock;this.commands=commands;this.audit=audit;this.jobs=jobs;this.lists=lists;
+    public FileService(ContractContributions contractContributions,EntityStore store,EvidenceAccess access,PrivateBlobStore blobs,JsonSupport json,Clock clock,CommandExecutor commands,AuditService audit,JobQueue jobs,ListQueries lists) {
+        this.contractContributions=contractContributions;this.store=store;this.access=access;this.blobs=blobs;this.json=json;this.clock=clock;this.commands=commands;this.audit=audit;this.jobs=jobs;this.lists=lists;
     }
     public EntityStore.Entity requireClean(UUID id,String kind,UUID parent,UUID branch,Actor actor) {return access.requireClean(id,kind,parent,branch,actor);}
     public JsonNode get(UUID id,Actor actor) {return project(access.requireFile(id,actor),actor);}
@@ -58,6 +59,9 @@ public class FileService {
         var name=source==null?"upload":java.text.Normalizer.normalize(source,java.text.Normalizer.Form.NFC).replace('\\','/');var slash=name.lastIndexOf('/');if(slash>=0)name=name.substring(slash+1);name=name.replaceAll("[\\p{Cntrl}]", "_").trim();if(name.isBlank())name="upload";if(name.length()>150)name=name.substring(0,150);return name;
     }
     private void contribute(EntityStore.Entity parent,Actor actor) {
+        if (parent.type().equals("Contract")) {
+            contractContributions.record(parent.id(), actor.id());
+        }
         if(parent.body().has("contributorIds")) {var body=(ObjectNode)parent.body().deepCopy();DossierService.contribute(body,actor.id());body.put("updatedAt",JsonSupport.timestamp(clock.instant()));store.update(parent,body);}
     }
     public ApiResult retry(UUID id,JsonNode request,String tag,String key,Actor actor) {

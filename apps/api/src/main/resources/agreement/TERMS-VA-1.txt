@@ -1,0 +1,7 @@
+ĐIỀU KIỆN DỊCH VỤ GIẢ LẬP TERMS-VA-1
+Phạm vi: thu hộ theo tham chiếu dịch vụ được duyệt, không tự động xác nhận giao dịch hay tính hợp pháp cuối cùng.
+Thứ tự ưu tiên: phụ lục đã áp dụng chỉ thay trường cho phép; tiếp theo điều khoản riêng hợp đồng gốc; tiếp theo TERMS-VA-1; cuối cùng điều khoản biểu phí dẫn chiếu. Tài liệu tham khảo không thay điều khoản.
+NEGOTIATED-VA-1: phí cố định theo thỏa thuận, thay đổi phải qua quy trình phụ lục và xét duyệt độc lập.
+TARIFF-ACK-7D-1: thay đổi phí cần thông báo đúng bản, người nhận đã xác nhận và bằng chứng chấp thuận được kiểm tra độc lập; im lặng không tự là chấp thuận. Thời gian báo trước ít nhất 7 ngày theo lịch.
+FIXED áp dụng khoảng ngày bắt đầu bao gồm đến ngày kết thúc không bao gồm. OPEN_ENDED không tự hết hạn. Chấm dứt không tự xóa nghĩa vụ phát sinh và trạng thái dịch vụ được quản lý riêng.
+Đây là mẫu sản phẩm giả lập, không phải điều khoản được ban hành bởi ngân hàng hay ý kiến pháp lý.
