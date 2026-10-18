@@ -94,11 +94,15 @@ public class ListQueries {
      * Administration entities have no contract ancestry and therefore expose zero lag.
      */
     public int timelineLag(Actor actor,String selectedWhere,List<Object> selectedArgs) {
+        return timelineLag(actor,selectedWhere,selectedArgs,clock.instant());
+    }
+    /** Reporting supplies its authoritative snapshot instant, never a client clock override. */
+    public int timelineLag(Actor actor,String selectedWhere,List<Object> selectedArgs,Instant asOf) {
         var args=new ArrayList<Object>(selectedArgs);
         args.add("{"+String.join(",",actor.branchIds().stream().map(UUID::toString).sorted().toList())+"}");
         args.add(actor.hasAnyRole("CHECKER","MANAGER","DATA_OFFICER","AUDITOR"));
         args.add(actor.hasRole("MAKER")); args.add(actor.id().toString());
-        var now=Timestamp.from(clock.instant()); args.add(now); args.add(now);
+        var now=Timestamp.from(Objects.requireNonNull(asOf)); args.add(now); args.add(now);
         String sql="""
             with recursive selected as (
               select e.entity_type,e.id,e.branch_id,e.body,0 as depth
