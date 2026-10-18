@@ -18,11 +18,12 @@ public class AgreementRenderer {
  public byte[] render(JsonNode source)throws IOException{
   if(!manifest().equals(source.path("manifest")))throw new IOException("Renderer source manifest changed");
   var lines=new ArrayList<String>();for(String n:List.of("BASE-VA-1.txt","TERMS-VA-1.txt"))lines.addAll(Arrays.asList(new String(asset(n),StandardCharsets.UTF_8).split("\n")));
+  if(source.hasNonNull("changeId")) lines.add("PHỤ LỤC THAY ĐỔI HỢP ĐỒNG — nguồn Change đã duyệt, không thay thế bản gốc.");
   lines.add("Nguồn đã phê duyệt — chỉ dữ liệu chốt, không đọc dữ liệu hiện tại:");
-  append(lines,"Hồ sơ",source.path("dossierId"));append(lines,"Bản chốt",source.path("revision"));append(lines,"Nguồn bằng chứng và định danh",source.path("metadata"));append(lines,"Đánh giá phê duyệt",source.path("approvedChecks"));lines.add("Đại diện ngân hàng: __________________    Đại diện bên thụ hưởng: __________________");
+  append(lines,source.hasNonNull("changeId")?"Thay đổi":"Hồ sơ",source.path(source.hasNonNull("changeId")?"changeId":"dossierId"));append(lines,"Bản chốt",source.path("revision"));append(lines,"Nguồn bằng chứng và định danh",source.path("metadata"));append(lines,"Đánh giá phê duyệt",source.path("approvedChecks"));lines.add("Đại diện ngân hàng: __________________    Đại diện bên thụ hưởng: __________________");
   try(var doc=new PDDocument();var out=new ByteArrayOutputStream()){
    var font=PDType0Font.load(doc,new ByteArrayInputStream(asset("NotoSans-Regular.ttf")),true);
-   var info=new PDDocumentInformation();info.setTitle("Hợp đồng dịch vụ thu hộ VA — bản chưa ký");info.setProducer(VERSION);var cal=GregorianCalendar.from(java.time.Instant.parse(source.path("generatedAt").asString()).atZone(java.time.ZoneOffset.UTC));info.setCreationDate(cal);info.setModificationDate(cal);doc.setDocumentInformation(info);
+   var info=new PDDocumentInformation();info.setTitle(source.hasNonNull("changeId")?"Phụ lục hợp đồng dịch vụ thu hộ VA — bản chưa ký":"Hợp đồng dịch vụ thu hộ VA — bản chưa ký");info.setProducer(VERSION);var cal=GregorianCalendar.from(java.time.Instant.parse(source.path("generatedAt").asString()).atZone(java.time.ZoneOffset.UTC));info.setCreationDate(cal);info.setModificationDate(cal);doc.setDocumentInformation(info);
    var ids=new COSArray();var hash=json.hash(source);ids.add(new COSString(hash));ids.add(new COSString(hash));doc.getDocument().setDocumentID(ids);
    PDPageContentStream stream=null;float y=0;
    try{for(String text:lines){StringBuilder row=new StringBuilder();for(int offset=0;offset<text.length();){int cp=text.codePointAt(offset);offset+=Character.charCount(cp);if(Character.isISOControl(cp))cp=' ';String next=new String(Character.toChars(cp));String trial=row+next;float width=font.getStringWidth(trial)*9/1000;

@@ -33,6 +33,12 @@ public class PolicyAccess {
         if(!java.util.Set.of("ACTIVE","RETIRED").contains(policy.body().path("state").asString()))throw ApiException.of("POLICY_BLOCKED","Business evaluation requires an applicable or frozen historical published policy.");
         return evaluator.evaluateBusiness(policy,facts,targetBranchId,sourceFactsHash,humanVerificationRequired);
     }
+    /** Change-owned renewal extension source; no HTTP caller can override duration or clock. */
+    public JsonNode evaluateChangeFrozen(UUID policyId,JsonNode facts,UUID branchId,String evaluationHash,boolean humanRequired,java.time.LocalDate renewalFrom) {
+        var policy=store.require("Policy",policyId);
+        if(!java.util.Set.of("ACTIVE","RETIRED").contains(policy.body().path("state").asString()))throw ApiException.of("POLICY_BLOCKED","Frozen policy is not published.");
+        return evaluator.evaluateBusinessDurationAt(policy,facts,branchId,evaluationHash,humanRequired,clock.instant(),renewalFrom);
+    }
     /** Owning module supplies the real action instant (for example recorded signing/effect).
      * This Java-only port does not accept a clock override through any HTTP endpoint.
      */

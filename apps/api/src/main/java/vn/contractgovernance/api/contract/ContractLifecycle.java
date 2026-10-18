@@ -22,6 +22,7 @@ import vn.contractgovernance.api.shared.*;
  */
 @Service
 public class ContractLifecycle {
+    private final org.springframework.beans.factory.ObjectProvider<vn.contractgovernance.api.change.ChangeTimeline> changes;
     private final EntityStore store;
     private final OriginalAgreementService originals;
     private final SigningEvidence evidence;
@@ -40,12 +41,12 @@ public class ContractLifecycle {
     private final ListQueries lists;
     private final TransactionTemplate maintenance;
 
-    public ContractLifecycle(EntityStore store, OriginalAgreementService originals, SigningEvidence evidence,
+    public ContractLifecycle(org.springframework.beans.factory.ObjectProvider<vn.contractgovernance.api.change.ChangeTimeline> changes,EntityStore store, OriginalAgreementService originals, SigningEvidence evidence,
             CustomerAccess customers, UserDirectory users, HistoricalContractFiles historical,
             LifecycleObligations obligations, LifecycleControls controls, JsonSupport json, Clock clock,
             CalendarService calendar, AuditService audit, JobQueue jobs, CommandExecutor commands,
             ContractRegistry schemas, ListQueries lists, PlatformTransactionManager manager) {
-        this.store = store; this.originals = originals; this.evidence = evidence; this.customers = customers;
+        this.changes=changes; this.store = store; this.originals = originals; this.evidence = evidence; this.customers = customers;
         this.users = users; this.historical = historical; this.obligations = obligations; this.controls = controls;
         this.json = json; this.clock = clock; this.calendar = calendar; this.audit = audit; this.jobs = jobs;
         this.commands = commands; this.schemas = schemas; this.lists = lists;
@@ -84,7 +85,8 @@ public class ContractLifecycle {
             }
             return contract;
         }
-        var terms = contract.body().path("approvedTerms");
+        if(state.equals("ACTIVE")) contract=changes.getObject().advanceLocked(contract);
+        var terms = contract.body().hasNonNull("currentVersion")?contract.body().path("currentVersion").path("terms"):contract.body().path("approvedTerms");
         var start = calendar.startOfDay(LocalDate.parse(terms.path("startOn").asString()));
         var now = clock.instant();
         if (state.equals("SCHEDULED")) {
@@ -156,10 +158,11 @@ public class ContractLifecycle {
     }
 
     public void pendingChangeGuard(EntityStore.Entity contract) {
-        var count = store.jdbc().queryForObject("select count(*) from cg_entity where entity_type='Change' and body->>'contractId'=? and body->>'state' in ('READY','SCHEDULED')",
-                Long.class, contract.id().toString());
-        if (contract.body().hasNonNull("scheduledChangeId") || count != 0L) {
-            throw ApiException.of("SERVICE_UNAVAILABLE", "Có Change/renewal chờ xử lý; adapter G4 chưa sẵn sàng.");
+        // Change application is owned by advanceLocked under this same Contract lock.
+        // Pending drafts/READY proposals do not reserve a slot or block expiry.
+        if(contract.body().hasNonNull("scheduledChangeId")) {
+            var change=store.require("Change",SigningEvidence.uuid(contract.body(),"scheduledChangeId"));
+            if(!change.body().path("state").asString().equals("SCHEDULED")) throw ApiException.of("SCHEDULE_CONFLICT","Future slot is inconsistent.");
         }
     }
 

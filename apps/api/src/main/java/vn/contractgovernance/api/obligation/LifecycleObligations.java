@@ -37,6 +37,27 @@ public class LifecycleObligations {
                 version.path("number").asInt(), calendar.dueByBusinessDays(expiredAt, 5), expiredAt, sourceContributors);
     }
 
+    /** Only prospective, untouched duties are superseded; human actions/breaches remain operative. */
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void supersedeUnopenedTermReview(EntityStore.Entity contract,JsonNode previous,JsonNode replacement) {
+        var ids=store.jdbc().query("select e.id from cg_entity e where e.entity_type='Obligation' and e.body->>'contractId'=? and e.body->>'type'='TERM_REVIEW' and e.body->>'sourceId'=? order by e.id",
+                (rs,n)->rs.getObject(1,UUID.class),contract.id().toString(),previous.path("id").asString());
+        for(var id:ids) {
+            var duty=store.lock("Obligation",id); var body=duty.body();
+            boolean untouched=body.path("state").asString().equals("OPEN")&&!body.hasNonNull("breachedAt")
+                    &&body.path("evidenceFileIds").isEmpty()&&!body.hasNonNull("evidenceSummary")
+                    &&!body.hasNonNull("extensionRequest")&&!body.hasNonNull("waiverRequest")
+                    &&clock.instant().isBefore(Instant.parse(body.path("currentDueAt").asString()))
+                    &&store.jdbc().queryForObject("select count(*) from cg_audit where resource_type='Obligation' and resource_id=? and actor_id is not null",Long.class,id)==0L;
+            if(!untouched) continue;
+            var next=(tools.jackson.databind.node.ObjectNode)body.deepCopy(); next.put("state","CANCELLED").put("closureOutcome","Prospective supersession by ContractVersion "+replacement.path("id").asString()).put("updatedAt",JsonSupport.timestamp(clock.instant()));
+            var successors=store.jdbc().query("select entity_id from cg_lifecycle_consequence where kind='TERM_REVIEW' and source_id=? and source_version=?",(rs,n)->rs.getObject(1,UUID.class),UUID.fromString(replacement.path("id").asString()),replacement.path("number").asInt());
+            if(successors.size()!=1) throw ApiException.of("STATE_CONFLICT","Thiếu successor TERM_REVIEW.");
+            next.put("supersededById",successors.getFirst().toString());
+            var updated=store.update(duty,next); schemas.validateSchema("Obligation",updated.body()); audit.record(null,"SUPERSEDE",updated,"Untouched future TERM_REVIEW replaced by new fixed version");
+        }
+    }
+
     private void create(EntityStore.Entity contract, String type, UUID sourceId, int sourceVersion,
             Instant due, Instant eventAt, JsonNode sourceContributors) {
         if (store.jdbc().queryForObject("select count(*) from cg_lifecycle_consequence where kind=? and source_id=? and source_version=?",
