@@ -61,11 +61,12 @@ public class FileService {
     private void contribute(EntityStore.Entity parent,Actor actor) {
         if (parent.type().equals("Change")) {
             store.jdbc().update("insert into cg_change_contributor(change_id,actor_id,created_at) values(?,?,?) on conflict do nothing",parent.id(),actor.id(),Timestamp.from(clock.instant()));
+            if(store.jdbc().queryForObject("select count(*) from cg_change_contributor where change_id=?",Long.class,parent.id())>50L) throw ApiException.validation("/contributorIds","Nguồn vượt giới hạn 50 người đóng góp.");
         }
         if (parent.type().equals("Contract")) {
             contractContributions.record(parent.id(), actor.id());
         }
-        if(parent.body().has("contributorIds")) {var body=(ObjectNode)parent.body().deepCopy();DossierService.contribute(body,actor.id());body.put("updatedAt",JsonSupport.timestamp(clock.instant()));store.update(parent,body);}
+        if(parent.body().has("contributorIds")) {var body=(ObjectNode)parent.body().deepCopy();DossierService.contribute(body,actor.id());if(body.path("contributorIds").size()>50)throw ApiException.validation("/contributorIds","Nguồn vượt giới hạn 50 người đóng góp.");body.put("updatedAt",JsonSupport.timestamp(clock.instant()));store.update(parent,body);}
     }
     public ApiResult retry(UUID id,JsonNode request,String tag,String key,Actor actor) {
         authorizeRetry(id,actor);ETags.require(tag);

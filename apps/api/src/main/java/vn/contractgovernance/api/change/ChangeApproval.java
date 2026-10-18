@@ -192,8 +192,18 @@ public class ChangeApproval {
         if(!round.body().path("authorityChecked").asBoolean()) throw ApiException.of("AUTHORITY_INVALID","Chưa kiểm tra thẩm quyền.");
         var assessors=store.jdbc().query("select actor_id from cg_round_assessment where round_id=? order by recorded_at desc,id desc limit 1",(rs,n)->rs.getObject(1,UUID.class),round.id());
         if(assessors.isEmpty()||!assessors.getFirst().toString().equals(round.body().path("steps").get(0).path("reviewerId").asString())) throw ApiException.of("POLICY_BLOCKED","Cần assessment của L1 hiện hành.");
+        requiredDocumentPasses(frozen.revision(),round.body());
         var evaluation=policies.evaluateChangeFrozen(id(round.body(),"policyVersionId"),facts(frozen.revision(),round.body().path("steps"),round.body().path("mandatoryChecks"),round.body().path("evidenceChecks"),true),change.branchId(),json.hash(frozen.metadata().path("policyProjection")),true,renewalFrom(frozen.revision(),contract)); inputs.requireEvaluation(evaluation);
         store.jdbc().update("insert into cg_round_evaluation(id,round_id,actor_id,evaluation,recorded_at) values(?,?,?,?::jsonb,?)",UUID.randomUUID(),round.id(),actor.id(),json.stringify(evaluation),Timestamp.from(clock.instant()));
+    }
+    private void requiredDocumentPasses(JsonNode revision,JsonNode round) {
+        var required=new HashSet<String>(); store.require("Policy",id(round,"policyVersionId")).body().path("config").path("requiredDocumentPurposes").forEach(purpose->required.add(purpose.asString()));
+        for(var document:revision.path("documents")) {
+            if(!required.contains(document.path("purpose").asString())) continue;
+            boolean passed=false;
+            for(var check:round.path("evidenceChecks")) if(check.path("fileId").equals(document.path("fileId"))&&check.path("result").asString().equals("PASS")) passed=true;
+            if(!passed) throw ApiException.of("POLICY_BLOCKED","Mọi bằng chứng bắt buộc phải có human PASS riêng.");
+        }
     }
     private void digest(EntityStore.Entity change,Frozen frozen,Actor actor) {
         var actual=changes.manifest(change,changes.references(frozen.revision()),actor);
@@ -217,14 +227,38 @@ public class ChangeApproval {
         var result=json.object().put("targetKind","CHANGE"); result.set("revision",revision); return result;
     }
     public JsonNode project(EntityStore.Entity round,Actor actor) {
+        actor=users.actor(actor.id());
         var body=(ObjectNode)round.body().deepCopy(); var allowed=json.array(); var blocked=json.array();
         if(body.path("state").asString().equals("OPEN")) for(String action:List.of("VERIFY_EVIDENCE","APPROVE","RETURN","REJECT","REASSIGN")) {
             var request=json.object().put("action",action); String level="L1";
             for(var step:body.path("steps")) if(step.path("reviewerId").asString().equals(actor.id().toString())&&step.path("state").asString().equals("PENDING")) level=step.path("level").asString(); request.put("level",level);
-            try { authorize(round.id(),request,actor); if(!action.equals("REASSIGN")) pending(body,action.equals("VERIFY_EVIDENCE")?"L1":level,actor); allowed.add(action); }
+            try {
+                authorize(round.id(),request,actor);
+                if(!action.equals("REASSIGN")) pending(body,action.equals("VERIFY_EVIDENCE")?"L1":level,actor);
+                if(action.equals("APPROVE")) approvalHint(round,actor);
+                allowed.add(action);
+            }
             catch(ApiException exception) { if(!actor.hasRole("AUDITOR")&&actor.hasAnyRole("CHECKER","MANAGER")) blocked.add(json.object().put("action",action).put("code",exception.code()).put("reason",exception.getMessage())); }
         }
         body.set("allowedActions",allowed); body.set("blockedActions",blocked); return body;
+    }
+    /** Advisory read-only counterpart of current(); no assessment/history or private-file writes. */
+    private void approvalHint(EntityStore.Entity round,Actor actor) {
+        var change=changes.require(id(round.body(),"targetId"),actor); var contract=store.require("Contract",id(change.body(),"contractId")); var frozen=frozenRound(round);
+        changes.active(contract); changes.currentBase(contract,change.body()); changes.requireCurrentGuard(contract);
+        if(!signingEvidence.materialUnchanged(contract,false)) throw ApiException.of("READINESS_BLOCKED","Material source đã thay đổi.");
+        changes.validateTerms(contract,change.body(),store.require("Policy",id(round.body(),"policyVersionId")));
+        eligible(change,frozen.revision(),frozen.submittedBy(),round.body().path("steps"));
+        if(!round.body().path("authorityChecked").asBoolean()) throw ApiException.of("AUTHORITY_INVALID","Chưa kiểm tra thẩm quyền.");
+        var assessors=store.jdbc().query("select actor_id from cg_round_assessment where round_id=? order by recorded_at desc,id desc limit 1",(rs,n)->rs.getObject(1,UUID.class),round.id());
+        if(assessors.isEmpty()||!assessors.getFirst().toString().equals(round.body().path("steps").get(0).path("reviewerId").asString())) throw ApiException.of("POLICY_BLOCKED","Cần assessment của L1 hiện hành.");
+        for(var digest:frozen.metadata().path("evidence")) {
+            var file=store.require("File",id(digest,"fileId"));
+            if(!file.body().path("state").asString().equals("CLEAN")) throw ApiException.of("FILE_NOT_CLEAN","Bằng chứng không còn CLEAN.");
+            if(!file.body().path("sha256").equals(digest.path("sha256"))) throw ApiException.of("STORAGE_INTEGRITY","Evidence metadata khác nguồn chốt.");
+        }
+        requiredDocumentPasses(frozen.revision(),round.body());
+        inputs.requireEvaluation(policies.evaluateChangeFrozen(id(round.body(),"policyVersionId"),facts(frozen.revision(),round.body().path("steps"),round.body().path("mandatoryChecks"),round.body().path("evidenceChecks"),true),change.branchId(),json.hash(frozen.metadata().path("policyProjection")),true,renewalFrom(frozen.revision(),contract)));
     }
     private ObjectNode findStep(JsonNode round,String level) { for(var step:round.path("steps")) if(step.path("level").asString().equals(level)) return (ObjectNode)step; throw ApiException.of("STATE_CONFLICT","Không có bước duyệt này."); }
     private ObjectNode pending(JsonNode round,String level,Actor actor) { var step=findStep(round,level); if(!step.path("state").asString().equals("PENDING")) throw ApiException.of("STATE_CONFLICT","Bước chưa đến lượt."); if(!step.path("reviewerId").asString().equals(actor.id().toString())) throw ApiException.of("ROLE_FORBIDDEN","Không đúng reviewer."); return step; }

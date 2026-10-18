@@ -274,6 +274,9 @@ public class ChangeService {
             var hash=file.body().path("sha256").asString(); if(!hash.equals(files.blob(id).hash())) throw ApiException.of("STORAGE_INTEGRITY","Metadata không khớp bytes."); files.bytesForScan(id,hash);
             values.add(json.object().put("fileId",id.toString()).put("purpose",file.body().path("purpose").asString()).put("sha256",hash));
             store.jdbc().update("insert into cg_file_association(file_id,target_type,target_id,historical,created_at) values(?,'CHANGE',?,true,?) on conflict(file_id,target_type,target_id) do update set historical=true",id,change.id(),Timestamp.from(clock.instant()));
+            if(!body.path("attached").asBoolean()) {
+                var attached=(ObjectNode)body.deepCopy(); attached.put("attached",true).put("updatedAt",now()); store.update(file,attached);
+            }
         }
         values.sort(Comparator.comparing((JsonNode b)->b.path("purpose").asString()).thenComparing(b->b.path("fileId").asString())); var result=json.array(); values.forEach(result::add); return result;
     }
@@ -295,17 +298,52 @@ public class ChangeService {
         store.jdbc().update("update cg_job set available_at=? where id=? and attempts=0 and state='QUEUED'",Timestamp.from(Instant.parse(payload.path("boundaryAt").asString())),job);
     }
     public JsonNode project(JsonNode raw,Actor actor) {
+        actor=users.actor(actor.id());
         var body=(ObjectNode)raw.deepCopy(); var allowed=json.array(); var blocked=json.array();
         String state=body.path("state").asString();
         for(String action:List.of("UPDATE","SUBMIT","WITHDRAW","CANCEL","COMMIT","REBASE","REQUEST_CANCEL_SCHEDULE","APPROVE_CANCEL_SCHEDULE","REJECT_CANCEL_SCHEDULE")) {
             boolean relevant=switch(action) { case "UPDATE","SUBMIT"->Set.of("DRAFT","RETURNED").contains(state); case "WITHDRAW"->state.equals("IN_REVIEW"); case "CANCEL"->Set.of("DRAFT","RETURNED","APPROVED","READY").contains(state); case "COMMIT"->state.equals("READY"); case "REBASE"->Set.of("DRAFT","RETURNED","CONFLICTED").contains(state); default->state.equals("SCHEDULED"); };
             if(!relevant) continue;
-            try { authorize(id(body,"id"),action,actor); if(action.equals("COMMIT")) { beforeBoundary(entity(body)); requireCurrentGuard(store.require("Contract",id(body,"contractId"))); } allowed.add(action); }
+            try {
+                authorize(id(body,"id"),action,actor);
+                var contract=store.require("Contract",id(body,"contractId"));
+                if(action.equals("SUBMIT")) submissionHint(entity(body),contract,actor);
+                if(action.equals("COMMIT")) {
+                    beforeBoundary(entity(body)); active(contract); currentBase(contract,body); requireCurrentGuard(contract);
+                    if(contract.body().hasNonNull("scheduledChangeId")) throw ApiException.of("SCHEDULE_CONFLICT","Future slot đã có nguồn khác.");
+                }
+                if(action.contains("CANCEL_SCHEDULE")) {
+                    beforeBoundary(entity(body)); boolean pending=body.hasNonNull("cancelScheduleRequest")&&body.path("cancelScheduleRequest").path("state").asString().equals("PENDING");
+                    if(action.equals("REQUEST_CANCEL_SCHEDULE")?pending:!pending) throw ApiException.of("STATE_CONFLICT",pending?"Yêu cầu hủy đang chờ.":"Không có yêu cầu hủy đang chờ.");
+                }
+                allowed.add(action);
+            }
             catch(ApiException exception) { if(!actor.hasRole("AUDITOR")) blocked.add(json.object().put("action",action).put("code",exception.code()).put("reason",exception.getMessage())); }
+        }
+        if(state.equals("APPROVED")&&!body.path("target").path("kind").asString().equals("TARIFF_NOTICE")) {
+            try {
+                maker(id(body,"id"),actor); beforeBoundary(entity(body));
+                var contract=store.require("Contract",id(body,"contractId")); active(contract); currentBase(contract,body); requireCurrentGuard(contract);
+                if(!body.hasNonNull("artifactId")) throw ApiException.of("READINESS_BLOCKED","Chưa có appendix artifact đã quét.");
+                if(!store.require("File",id(body,"artifactId")).body().path("state").asString().equals("CLEAN")) throw ApiException.of("FILE_NOT_CLEAN","Appendix chưa CLEAN.");
+                allowed.add("SIGN");
+            } catch(ApiException exception) { if(actor.hasRole("MAKER")) blocked.add(json.object().put("action","SIGN").put("code",exception.code()).put("reason",exception.getMessage())); }
         }
         if(state.equals("APPROVED")&&body.path("target").path("kind").asString().equals("TARIFF_NOTICE")) blocked.add(json.object().put("action","COMMIT").put("code","NOTICE_NOT_READY").put("reason","Cần Notice dispatch và explicit acknowledgement được xác minh."));
         if(actor.hasRole("AUDITOR")&&!actor.hasPermission("SENSITIVE_READ")&&!actor.hasAnyRole("MAKER","CHECKER","MANAGER","DATA_OFFICER")) { body.put("reason","[REDACTED]"); if(body.hasNonNull("conflictReason")) body.put("conflictReason","[REDACTED]"); }
         body.set("allowedActions",allowed); body.set("blockedActions",blocked); return body;
+    }
+    /** Read-only action hint: actual SUBMIT still checks bytes, authority and reviewer input. */
+    private void submissionHint(EntityStore.Entity change,EntityStore.Entity contract,Actor actor) {
+        active(contract); currentBase(contract,change.body()); requireCurrentGuard(contract);
+        var policy=policies.findApplicableHint().orElseThrow(()->ApiException.of("POLICY_BLOCKED","Chưa có chính sách áp dụng."));
+        validateTerms(contract,change.body(),policy); var purposes=new HashSet<String>();
+        for(var link:change.body().path("documents")) {
+            var file=evidence.requireClean(id(link,"fileId"),"CHANGE",change.id(),change.branchId(),actor);
+            if(!file.body().path("purpose").equals(link.path("purpose"))) throw ApiException.validation("/documents/purpose","Purpose không khớp nguồn.");
+            purposes.add(link.path("purpose").asString());
+        }
+        for(var required:policy.body().path("config").path("requiredDocumentPurposes")) if(!purposes.contains(required.asString())) throw ApiException.of("FILE_NOT_CLEAN","Thiếu bằng chứng bắt buộc cho submission.");
     }
     public EntityStore.Entity entity(JsonNode body) { return new EntityStore.Entity("Change",id(body,"id"),id(body,"branchId"),body.path("version").asInt(),body); }
 }
