@@ -50,7 +50,7 @@ public class LifecycleObligations {
                     &&clock.instant().isBefore(Instant.parse(body.path("currentDueAt").asString()))
                     &&store.jdbc().queryForObject("select count(*) from cg_audit where resource_type='Obligation' and resource_id=? and actor_id is not null",Long.class,id)==0L;
             if(!untouched) continue;
-            var next=(tools.jackson.databind.node.ObjectNode)body.deepCopy(); next.put("state","CANCELLED").put("closureOutcome","Prospective supersession by ContractVersion "+replacement.path("id").asString()).put("updatedAt",JsonSupport.timestamp(clock.instant()));
+            var next=(tools.jackson.databind.node.ObjectNode)body.deepCopy(); next.put("state","CANCELLED").putNull("closureOutcome").put("updatedAt",JsonSupport.timestamp(clock.instant()));
             var successors=store.jdbc().query("select entity_id from cg_lifecycle_consequence where kind='TERM_REVIEW' and source_id=? and source_version=?",(rs,n)->rs.getObject(1,UUID.class),UUID.fromString(replacement.path("id").asString()),replacement.path("number").asInt());
             if(successors.size()!=1) throw ApiException.of("STATE_CONFLICT","Thiếu successor TERM_REVIEW.");
             next.put("supersededById",successors.getFirst().toString());
@@ -65,7 +65,7 @@ public class LifecycleObligations {
         var relationship = store.lock("Relationship", UUID.fromString(contract.body().path("relationshipId").asString()));
         var assignedMaker = relationship.body().path("assignedMakerId").asString();
         var now = JsonSupport.timestamp(clock.instant());
-        boolean missed = !clock.instant().isBefore(due);
+        boolean missed = clock.instant().isAfter(due);
         var body = json.object().put("createdAt", now).put("updatedAt", now)
                 .put("branchId", contract.branchId().toString()).put("state", "OPEN")
                 .put("contractId", contract.id().toString()).put("sourceId", sourceId.toString())
