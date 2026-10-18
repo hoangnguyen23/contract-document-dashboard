@@ -1,0 +1,9 @@
+# Original agreement, artifact and lifecycle
+
+Final DOSSIER approval creates one PREPARED original and durable ARTIFACT_PDF intent from frozen Revision/template sources. Rendering/scanning/private registration and retry use the genuine storage/scanner adapters; startup/build does not prove a rendered PDF workflow.
+
+The bounded original signing tranche adds commandContract, immutable original versions and one timeline authority for detail/signing/worker paths. On-time independently VERIFIED signing schedules genuine future EFFECTIVITY intents. First ACTIVE creates ORIGINAL version + Dossier COMPLETED + real fixed TERM_REVIEW, preserving service NOT_STARTED. Fixed expiry creates real CLOSEOUT and conditional pending SYSTEM STOP with actual artifact provenance, never fake closure or external acknowledgement.
+
+Maintenance commits separately only after an authorized idempotency cache miss and before a new command's stale ETag check; cached success has no additional timeline effect. Live original version effectiveTo remains null; a separate immutable closure record supplies effectiveTo at expiry, without changing terms or the future-Change schedule counter. Existing Contract paths acquire Dossier -> Contract -> Relationship -> Party -> File -> ledger/job; file upload already owns Contract before its ledger append. G4 READY/SCHEDULED Change or scheduledChangeId fails closed until the real renewal/apply adapter exists. Public G5 completion APIs, termination and CHANGE signing remain absent. See `docs/plan/signing-implementation.md` for exact scope and FE impact.
+
+V001–V007 operational startup was observed in the primary repository before this tranche. V008 definition, isolated compilation and source review are distinct from migration execution or runtime acceptance. No tests/HTTP/manual PDF/business scenarios were run in this developer checkout.
