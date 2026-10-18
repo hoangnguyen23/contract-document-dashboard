@@ -101,14 +101,16 @@ public class LifecycleObligations {
         return store.jdbc().query("select entity_id from cg_lifecycle_consequence where kind='NOTICE_ACK' and source_id=? order by entity_id",(rs,n)->rs.getObject(1,UUID.class),notice.id()).stream().map(id->store.lock("Obligation",id)).toList();
     }
     @Transactional(propagation = Propagation.MANDATORY)
-    public void synchronizeBreach(EntityStore.Entity duty) {
+    public void synchronizeBreach(EntityStore.Entity duty) { synchronizeBreachAt(duty,clock.instant()); }
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void synchronizeBreachAt(EntityStore.Entity duty,Instant asOf) {
         var body=duty.body();if(Set.of("CLOSED","CANCELLED").contains(body.path("state").asString()))return;
-        var asOf=clock.instant();var due=Instant.parse(body.path("currentDueAt").asString());if(!asOf.isAfter(due))return;
-        int inserted=store.jdbc().update("insert into cg_lifecycle_obligation_breach(obligation_id,due_revision,breached_at,recorded_at) values(?,?,?,?) on conflict do nothing",duty.id(),body.path("dueRevision").asInt(),Timestamp.from(due),Timestamp.from(clock.instant()));
+        var due=Instant.parse(body.path("currentDueAt").asString());if(!asOf.isAfter(due))return;
+        int inserted=store.jdbc().update("insert into cg_lifecycle_obligation_breach(obligation_id,due_revision,breached_at,recorded_at) values(?,?,?,?) on conflict do nothing",duty.id(),body.path("dueRevision").asInt(),Timestamp.from(due),Timestamp.from(asOf));
         if(inserted==0)return;var next=(tools.jackson.databind.node.ObjectNode)body.deepCopy();
         if(!next.hasNonNull("breachedAt"))next.put("breachedAt",JsonSupport.timestamp(due));
         for(var item:next.path("deadlineHistory"))if(item.path("number").asInt()==body.path("dueRevision").asInt())((tools.jackson.databind.node.ObjectNode)item).put("breachedAt",JsonSupport.timestamp(due));
-        next.put("updatedAt",JsonSupport.timestamp(clock.instant()));var updated=store.update(duty,next);schemas.validateSchema("Obligation",updated.body());audit.record(null,"BREACH",updated,"Missed operative due synchronized before source decision or by deadline recovery");
+        next.put("updatedAt",JsonSupport.timestamp(asOf));var updated=store.update(duty,next);schemas.validateSchema("Obligation",updated.body());audit.record(null,"BREACH",updated,"Missed operative due synchronized before source decision or by deadline recovery");
     }
 
     private void create(EntityStore.Entity contract, String type, UUID sourceId, int sourceVersion,
