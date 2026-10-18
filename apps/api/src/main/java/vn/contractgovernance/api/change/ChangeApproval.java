@@ -197,6 +197,14 @@ public class ChangeApproval {
         var evaluation=policies.evaluateChangeFrozen(id(round.body(),"policyVersionId"),facts(frozen.revision(),round.body().path("steps"),round.body().path("mandatoryChecks"),round.body().path("evidenceChecks"),true),change.branchId(),json.hash(frozen.metadata().path("policyProjection")),true,renewalFrom(frozen.revision(),contract)); inputs.requireEvaluation(evaluation);
         store.jdbc().update("insert into cg_round_evaluation(id,round_id,actor_id,evaluation,recorded_at) values(?,?,?,?::jsonb,?)",UUID.randomUUID(),round.id(),actor.id(),json.stringify(evaluation),Timestamp.from(clock.instant()));
     }
+    public void noticeCurrent(EntityStore.Entity change,Actor actor) {
+        var frozen=frozen(change);var round=store.require("Round",id(change.body(),"roundId"));
+        if(!round.body().path("state").asString().equals("APPROVED"))throw ApiException.of("NOTICE_NOT_READY","Change approval không còn hợp lệ.");
+        for(var check:round.body().path("mandatoryChecks")){inputs.nonfuture(check.path("checkedAt"),"/mandatoryChecks/checkedAt");var ids=SigningEvidence.uniqueIds(check.path("evidenceFileIds"),"/mandatoryChecks/evidenceFileIds");if(!changes.references(frozen.revision()).containsAll(ids))throw ApiException.of("STORAGE_INTEGRITY","Mandatory source differs.");changes.manifest(change,ids,actor,false);}
+        requiredDocumentPasses(frozen.revision(),round.body());if(!changes.manifest(change,changes.references(frozen.revision()),actor,false).equals(frozen.metadata().path("evidence")))throw ApiException.of("STORAGE_INTEGRITY","Tariff evidence source differs.");
+        if(!round.body().path("authorityChecked").asBoolean())throw ApiException.of("AUTHORITY_INVALID","Thiếu authority assessment.");
+        var contract=store.require("Contract",id(change.body(),"contractId"));var evaluation=policies.evaluateChangeFrozen(id(round.body(),"policyVersionId"),facts(frozen.revision(),round.body().path("steps"),round.body().path("mandatoryChecks"),round.body().path("evidenceChecks"),true),change.branchId(),json.hash(frozen.metadata().path("policyProjection")),true,renewalFrom(frozen.revision(),contract));inputs.requireEvaluation(evaluation);
+    }
     private void requiredDocumentPasses(JsonNode revision,JsonNode round) {
         var required=new HashSet<String>(); store.require("Policy",id(round,"policyVersionId")).body().path("config").path("requiredDocumentPurposes").forEach(purpose->required.add(purpose.asString()));
         for(var document:revision.path("documents")) {

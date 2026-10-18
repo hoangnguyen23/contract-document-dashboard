@@ -141,7 +141,7 @@ public class ChangeSigning {
         if(!changes.manifest(change,evidence.packetFiles(packet),null).equals(json.parse(row.get(2)))) throw ApiException.of("STORAGE_INTEGRITY","Packet evidence bytes bị đổi.");
     }
     public void requireReady(EntityStore.Entity change,Actor actor) {
-        if(change.body().path("target").path("kind").asString().equals("TARIFF_NOTICE")) throw ApiException.of("NOTICE_NOT_READY","Cần adapter Notice/acknowledgement thật.");
+        if(change.body().path("target").path("kind").asString().equals("TARIFF_NOTICE")){changes.noticeReady(change,actor);return;}
         if(!change.body().hasNonNull("signingPacketId")) throw ApiException.of("READINESS_BLOCKED","Thiếu packet.");
         var packet=store.require("SigningPacket",id(change.body(),"signingPacketId"));
         if(!packet.body().path("verificationStatus").asString().equals("VERIFIED")||!packet.body().path("targetId").asString().equals(change.id().toString())) throw ApiException.of("READINESS_BLOCKED","Packet không VERIFIED trên Change.");
@@ -186,6 +186,7 @@ public class ChangeSigning {
     }
     /** Read-only retry projection for previously VERIFIED on-time readiness, including late workers. */
     public void readinessHint(EntityStore.Entity change) {
+        if(change.body().path("target").path("kind").asString().equals("TARIFF_NOTICE")){changes.noticeReady(change,null);return;}
         if(!change.body().hasNonNull("signingPacketId")) throw ApiException.of("READINESS_BLOCKED","Thiếu packet.");
         var packet=store.require("SigningPacket",id(change.body(),"signingPacketId"));
         if(!packet.body().path("verificationStatus").asString().equals("VERIFIED")||!packet.body().path("targetId").asString().equals(change.id().toString())) throw ApiException.of("READINESS_BLOCKED","Packet không VERIFIED trên Change.");

@@ -59,11 +59,11 @@ public class ChangeTimeline {
             var body=(ObjectNode)change.body().deepCopy(); body.put("state","CONFLICTED").put("conflictReason",failure); changes.save(change,body,null,"APPLY_CONFLICT",failure);
             var cb=(ObjectNode)contract.body().deepCopy(); cb.putNull("scheduledChangeId").put("scheduleVersion",contract.body().path("scheduleVersion").asLong()+1); return lifecycle.save(contract,cb,null,"RELEASE_CONFLICTED_SLOT",failure);
         }
-        var frozen=approval.frozen(change); var previous=contract.body().path("currentVersion");
+        var artifact=changes.effectiveArtifact(change); var frozen=approval.frozen(change); var previous=contract.body().path("currentVersion");
         var version=json.object().put("id",UUID.randomUUID().toString()).put("number",previous.path("number").asInt()+1)
                 .put("sourceKind",change.body().path("target").path("kind").asString()).put("sourceId",change.id().toString())
-                .put("effectiveFrom",change.body().path("effectiveOn").asString()).put("artifactId",change.body().path("artifactId").asString())
-                .put("artifactHash",change.body().path("artifactHash").asString()).put("createdAt",changes.now());
+                .put("effectiveFrom",change.body().path("effectiveOn").asString()).put("artifactId",artifact.path("artifactId").asString())
+                .put("artifactHash",artifact.path("artifactHash").asString()).put("createdAt",changes.now());
         version.putNull("effectiveTo"); version.set("terms",frozen.revision().path("consolidatedTerms")); schemas.validateSchema("ContractVersion",version);
         store.jdbc().update("insert into cg_contract_version_closure(version_id,effective_to,recorded_at) values(?,?::date,?)",id(previous,"id"),change.body().path("effectiveOn").asString(),Timestamp.from(clock.instant()));
         store.jdbc().update("insert into cg_contract_version(id,contract_id,number,body) values(?,?,?,?::jsonb)",id(version,"id"),contract.id(),version.path("number").asInt(),json.stringify(version));
