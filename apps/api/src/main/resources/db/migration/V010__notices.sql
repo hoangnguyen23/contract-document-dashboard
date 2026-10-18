@@ -19,7 +19,7 @@ create table cg_notice_ack_input (
  recorded_by uuid not null, recorded_at timestamptz not null
 );
 create table cg_notice_ack_assessment (
- candidate_id uuid primary key references cg_notice_ack_input(id), assessment jsonb not null,
+ candidate_id uuid primary key references cg_notice_ack_input(id), assessment jsonb not null, assessment_hash char(64) not null,
  assessed_by uuid not null, assessed_at timestamptz not null
 );
 create trigger cg_notice_source_immutable before update or delete on cg_notice_source for each row execute function cg_immutable_audit();
