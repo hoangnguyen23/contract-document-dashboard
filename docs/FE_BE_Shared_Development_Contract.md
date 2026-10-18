@@ -1,6 +1,6 @@
 # B — FE/BE Shared Development Contract
 
-**Version 1.2.0 · Business authority: A1.2.0 · Chốt ngày 11/10/2026.**
+**Version 1.2.1 · Business authority: A1.2.1 · Chốt ngày 11/10/2026.**
 
 Tài liệu này là hợp đồng kỹ thuật duy nhất giữa developer Frontend và Backend. A quyết định nghiệp vụ; B quyết định bytes trên wire, quyền theo operation, fixture, integration và thay đổi schema. Các JSON blocks ở cuối là canonical, không phải minh họa rút gọn. Chúng nằm trong hai tài liệu chính thức; file trích xuất và test harness sau này là sản phẩm dẫn xuất của repository triển khai.
 
@@ -113,7 +113,7 @@ Worker/race cases là oracle bổ sung ngoài HTTP đơn bước: double approva
 
 ## 9. Contract change control và DoD
 
-A1.2.0 và B1.2.0 hash-linked bằng manifest, canonical JSON UTF-8 sorted keys/separators(',',':') cho block digest; RFC8785 dùng riêng HTTP fingerprint như §4. Manifest không tự hash chính nó. Trích đúng fenced block có marker, reject duplicate block/key hoặc external $ref; không copy một phần schema từ chat. OpenAPI block JSON là JSON hợp lệ cũng là YAML, file dẫn xuất openapi.json. Codegen kiểm tra operationIds/required/nullable/enum, provider validates all requests/responses, FE consumer tests validate MSW fixture. Không có custom TS DTO/Jackson DTO song song khác nghĩa.
+A1.2.1 và B1.2.1 hash-linked bằng manifest, canonical JSON UTF-8 sorted keys/separators(',',':') cho block digest; RFC8785 dùng riêng HTTP fingerprint như §4. Manifest không tự hash chính nó. Trích đúng fenced block có marker, reject duplicate block/key hoặc external $ref; không copy một phần schema từ chat. OpenAPI block JSON là JSON hợp lệ cũng là YAML, file dẫn xuất openapi.json. Codegen kiểm tra operationIds/required/nullable/enum, provider validates all requests/responses, FE consumer tests validate MSW fixture. Không có custom TS DTO/Jackson DTO song song khác nghĩa.
 
 Schema patch compatible chỉ thêm optional response field hoặc operation không đổi behavior; request mới optional có server default rõ và oracle. Enum/action/required/nullability/status/permission/date/money meaning change là breaking, nâng minor/major thích hợp và cập nhật A/B/fixtures/tests cùng PR. FE/BE đọc diff cụ thể, ghi acceptance impact, generateclient/lint/provider+consumer và real E2E target before merge. Scope/domain module addition phải owner-approved concrete patch; không hỏi lại phạm vi đã duyệt.
 
@@ -134,6 +134,10 @@ Job.branchId cho phép null chỉ khi parent FILE thuộc POLICY namespace toàn
 
 A §4.1 và seed-v1.policyCorpusSemantics làm rõ oracle hữu hạn cho cấu hình fee bounds bằng nhau và allowedTermKinds là subset. Giữ nguyên miền config, route formula, enum và wire fields; literal corpus là P1/P2, expected conditional độc lập với evaluator. Generated File trong mọi profile/scenario có uploadedBy=null đúng §7; không thay file bytes/hash. Policy.scheduleVersion, REQUEST_PUBLICATION và APPROVE_PUBLICATION chấp nhận expectedScheduleVersion=0 cho schedule rỗng; counter tăng khi schedule/activate, không tạo ACTIVE giả từ fixture. Đây là sửa nhất quán kỹ thuật, không thêm scope nghiệp vụ.
 
+### 9.4. Compatibility patch 1.2.1 — S060 maker action hint
+
+Owner phê duyệt ngày 18/10/2026 patch duy nhất: scenarios-v1 S060 expected.body.allowedActions đổi từ ["HOLD_READINESS"] thành []. Actor MAKER, request, status, blockedActions và mọi dữ kiện khác giữ nguyên; không chuyển action sang blockedActions, không cấp thêm quyền. getContract / Contract.allowedActions khớp CHECKER-only tại A §6.2/B §6; không đổi schema, API, enum hoặc business permission. A/B cùng nâng patch metadata 1.2.1; seedVersion chỉ đồng bộ metadata. Shared review nội bộ đang chờ; chưa có acknowledgement của developer FE độc lập và chưa công bố gate tích hợp hoàn tất.
+
 ## 10. Canonical blocks
 
 
@@ -146,8 +150,8 @@ A §4.1 và seed-v1.policyCorpusSemantics làm rõ oracle hữu hạn cho cấu 
   "jsonSchemaDialect": "https://json-schema.org/draft/2020-12/schema",
   "info": {
     "title": "Contract Governance — FE/BE Shared Contract",
-    "version": "1.2.0",
-    "description": "Canonical B1.2.0; business authority A1.2.0; synthetic documentary VA profile only."
+    "version": "1.2.1",
+    "description": "Canonical B1.2.1; business authority A1.2.1; synthetic documentary VA profile only."
   },
   "servers": [
     {
@@ -19469,7 +19473,7 @@ A §4.1 và seed-v1.policyCorpusSemantics làm rõ oracle hữu hạn cho cấu 
 <!-- contract:block seed-v1 -->
 ```json
 {
-  "version": "1.2.0",
+  "version": "1.2.1",
   "syntheticOnly": true,
   "clock": "2027-01-05T02:00:00.000Z",
   "timezone": "Asia/Ho_Chi_Minh",
@@ -31319,8 +31323,8 @@ A §4.1 và seed-v1.policyCorpusSemantics làm rõ oracle hữu hạn cho cấu 
 <!-- contract:block scenarios-v1 -->
 ```json
 {
-  "version": "1.2.0",
-  "seedVersion": "1.2.0",
+  "version": "1.2.1",
+  "seedVersion": "1.2.1",
   "requestMode": "real wire; headers below are fixture tokens, provider uses tokens from real session",
   "scenarios": [
     {
@@ -38706,9 +38710,7 @@ A §4.1 và seed-v1.policyCorpusSemantics làm rõ oracle hữu hạn cho cấu 
           "version": 2,
           "createdAt": "2027-01-05T00:00:00.000Z",
           "updatedAt": "2027-01-07T01:00:00.000Z",
-          "allowedActions": [
-            "HOLD_READINESS"
-          ],
+          "allowedActions": [],
           "branchId": "00000000-0000-4000-8000-000000000001",
           "state": "ACTIVE",
           "dossierId": "00000000-0000-4000-8000-000000000011",
@@ -40115,7 +40117,7 @@ A §4.1 và seed-v1.policyCorpusSemantics làm rõ oracle hữu hạn cho cấu 
 <!-- contract:block protocol-rules-v1 -->
 ```json
 {
-  "version": "1.2.0",
+  "version": "1.2.1",
   "errorStatus": {
     "BAD_JSON": 400,
     "UNAUTHENTICATED": 401,
@@ -40877,17 +40879,17 @@ A §4.1 và seed-v1.policyCorpusSemantics làm rõ oracle hữu hạn cho cấu 
 ```json
 {
   "documentVersions": {
-    "A": "1.2.0",
-    "B": "1.2.0"
+    "A": "1.2.1",
+    "B": "1.2.1"
   },
-  "specificationFileSha256": "e20ccb7b68cf22c2912bf5e689cf275679c7e635ec0bedee90453f6a7b7e2bdc",
+  "specificationFileSha256": "9b1e8984f9cbb1e4bba6367d126dbad1516f68a8b03e4de6dabf835c2edd0843",
   "hashAlgorithm": "SHA-256 over JSON UTF-8 ensure_ascii=false sorted keys separators comma/colon; no BOM",
   "blocks": {
-    "business-catalog-v1": "3b8ee7a5c5c53e6df08068042092073b02bad016d6c13e3ea13551db9db9492c",
-    "openapi-v1": "e22069bf43487b185c7ba41f7a69006c9328af53f53d1665139945101a59be9f",
-    "seed-v1": "a04907f0dae99ea017ab36514242c3d4e46b70b4f3d6063185b802290cf7d255",
-    "scenarios-v1": "f99e9388e6dc4e7a50604fc9e53b8668633fc1e6b6d53d089edc5808088b7efe",
-    "protocol-rules-v1": "03941b7c78c7e9aed63bc52769cf21eb136e53169b0e9e11111e2d7a9b4cb7a5"
+    "business-catalog-v1": "ca346c5b7545cd2aa17dc78c8f78842ccc83b5e0cfa623c83ad00de5932e0662",
+    "openapi-v1": "f7bb82c837e318a4b2b4fb6465c2b2b23d172c46f7a0b134b160123e18a4dfe5",
+    "seed-v1": "3a68852144e282048a5489569feeeb25aa1964c98f0afd39f39b795375de20af",
+    "scenarios-v1": "b1a0fdcdf5db25d4ac5283755b98bc8b6b2ca1bfcfdf5b2176a642430adc5d26",
+    "protocol-rules-v1": "d883bc2595bcae426dc3f099c3a6bf85d38f443a19617de69100d70e2525f6a4"
   },
   "officialFiles": [
     "Final_Project_Specification.md",
