@@ -288,6 +288,11 @@ public class ChangeService {
         store.jdbc().update("update cg_job set state='CANCELLED',lease_owner=null,lease_until=null,error_code='GUARD_BLOCKED',updated_at=? where target_type='CHANGE' and target_id=? and state in ('QUEUED','RUNNING','FAILED')",Timestamp.from(clock.instant()),change.id());
         event(change.id(),reason,change.body(),actor);
     }
+    public void detachNotice(EntityStore.Entity change,UUID noticeId,Actor actor){
+        if(!change.body().path("noticeId").asString().equals(noticeId.toString()))return;
+        if(!Set.of("APPROVED","READY").contains(change.body().path("state").asString()))throw ApiException.of("STATE_CONFLICT","Không thể thay Notice của Change đã scheduled/terminal.");
+        var body=(ObjectNode)change.body().deepCopy();body.putNull("noticeId").put("state","APPROVED");save(change,body,actor,"NOTICE_DETACHED",noticeId.toString());
+    }
     public void attachNotice(EntityStore.Entity change,UUID noticeId,Actor actor) {
         if(!change.body().path("target").path("kind").asString().equals("TARIFF_NOTICE")||!change.body().path("state").asString().equals("APPROVED")) throw ApiException.of("STATE_CONFLICT","Tariff source chưa APPROVED.");
         if(change.body().hasNonNull("noticeId")&&!change.body().path("noticeId").asString().equals(noticeId.toString())) throw ApiException.of("NOTICE_NOT_READY","Change đã có Notice khác; cần cleanup rõ ràng.");
