@@ -48,7 +48,7 @@ public class ListQueries {
         args.add(limit+1);
         var rows=jdbc.query("select e.body::text,e.created_at,e.id from cg_entity e where "+where+" order by e.created_at desc,e.id desc limit ?",(rs,row)->new Row(json.parse(rs.getString(1)),rs.getTimestamp(2).toInstant(),rs.getObject(3,UUID.class)),args.toArray());
         boolean more=rows.size()>limit;var visible=rows.subList(0,Math.min(limit,rows.size()));var items=json.array();visible.forEach(row->items.add(projection.apply(row.body())));
-        var response=json.object();response.set("items",items);response.put("asOf",JsonSupport.timestamp(clock.instant()));response.put("timelineProcessingLagSeconds",globalNamespace?0:timelineLag(actor,lagWhere,lagArgs));
+        var response=json.object();response.set("items",items);response.put("asOf",JsonSupport.timestamp(clock.instant()));response.put("timelineProcessingLagSeconds",Set.of("User","Branch","Party","Policy").contains(type)?0:timelineLag(actor,lagWhere,lagArgs));
         if(more){Row anchor=rows.getFirst(),last=visible.getLast();var next=json.object();next.put("fingerprint",signature);next.put("anchorTime",cursor==null?anchor.time().toString():cursor.path("anchorTime").asString());next.put("anchorId",cursor==null?anchor.id().toString():cursor.path("anchorId").asString());next.put("lastTime",last.time().toString());next.put("lastId",last.id().toString());next.put("expiresAt",cursor==null?clock.instant().plusSeconds(900).toString():cursor.path("expiresAt").asString());response.put("nextCursor",encode(next));}else response.putNull("nextCursor");
         return response;
     }
