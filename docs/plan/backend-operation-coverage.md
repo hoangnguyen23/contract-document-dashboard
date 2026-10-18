@@ -1,10 +1,10 @@
 # Backend operation coverage
 
-Canonical A/B1.2.0 defines 85 operations. This foundation, Policy and dossier-approval tranche registers 56 operations: 47 have their current handler paths implemented and 9 have explicit partial scope. 29 later-gate operations are not implemented. “Implemented” is source coverage, not runtime/provider/business acceptance. No tests were requested or executed; G1/G2 integrated acceptance is not claimed.
+Canonical A/B1.2.1 defines 85 operations. This foundation, Policy and dossier-approval tranche registers 59 operations: 50 have their current handler paths implemented and 9 have explicit partial scope. 26 later-gate operations are not implemented. “Implemented” is source coverage, not runtime/provider/business acceptance. No tests were requested or executed; G1/G2 integrated acceptance is not claimed.
 
 | Method | Path | Canonical operationId | Source coverage | Limitation |
 |---|---|---|---|---|
-| GET | `/api/v1/audit-events` | `listAuditEvents` | not implemented | Later gate; schema availability alone does not register a handler. |
+| GET | `/api/v1/audit-events` | `listAuditEvents` | implemented | Scoped reporting source reviewed;78-source package passed; HTTP/business/FE acceptance pending. |
 | GET | `/api/v1/branches` | `listBranchs` | implemented | Runtime verification pending. |
 | POST | `/api/v1/branches` | `createBranch` | implemented | Runtime verification pending. |
 | GET | `/api/v1/branches/{id}` | `getBranch` | implemented | Runtime verification pending. |
@@ -26,7 +26,7 @@ Canonical A/B1.2.0 defines 85 operations. This foundation, Policy and dossier-ap
 | POST | `/api/v1/control-requests` | `createControlRequest` | not implemented | Later gate; schema availability alone does not register a handler. |
 | GET | `/api/v1/control-requests/{id}` | `getControlRequest` | not implemented | Later gate; schema availability alone does not register a handler. |
 | POST | `/api/v1/control-requests/{id}/commands` | `commandControlRequest` | not implemented | Later gate; schema availability alone does not register a handler. |
-| GET | `/api/v1/dashboard` | `getDashboard` | not implemented | Later gate; schema availability alone does not register a handler. |
+| GET | `/api/v1/dashboard` | `getDashboard` | implemented | Scoped reporting source reviewed;78-source package passed; HTTP/business/FE acceptance pending. |
 | GET | `/api/v1/data-requests` | `listDataRequests` | not implemented | Later gate; schema availability alone does not register a handler. |
 | POST | `/api/v1/data-requests` | `createDataRequest` | not implemented | Later gate; schema availability alone does not register a handler. |
 | GET | `/api/v1/data-requests/{id}` | `getDataRequest` | not implemented | Later gate; schema availability alone does not register a handler. |
@@ -36,7 +36,7 @@ Canonical A/B1.2.0 defines 85 operations. This foundation, Policy and dossier-ap
 | GET | `/api/v1/dossiers/{id}` | `getDossier` | implemented | Runtime verification pending. |
 | PUT | `/api/v1/dossiers/{id}` | `updateDossier` | implemented | Runtime verification pending. |
 | POST | `/api/v1/dossiers/{id}/commands` | `commandDossier` | implemented | Real dossier submit/frozen Revision and withdrawal; final DOSSIER approval creates real PREPARED original and durable PDF intent. |
-| GET | `/api/v1/exports/audit` | `exportAuditCsv` | not implemented | Later gate; schema availability alone does not register a handler. |
+| GET | `/api/v1/exports/audit` | `exportAuditCsv` | implemented | Scoped reporting source reviewed;78-source package passed; HTTP/business/FE acceptance pending. |
 | GET | `/api/v1/files` | `listFiles` | implemented | Runtime verification pending. |
 | POST | `/api/v1/files` | `uploadFile` | implemented | Runtime verification pending. |
 | DELETE | `/api/v1/files/{id}` | `deleteUnattachedFile` | implemented | Runtime verification pending. |
