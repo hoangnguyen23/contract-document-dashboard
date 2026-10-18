@@ -275,8 +275,8 @@ public class ChangeService {
             var hash=file.body().path("sha256").asString(); if(!hash.equals(files.blob(id).hash())) throw ApiException.of("STORAGE_INTEGRITY","Metadata không khớp bytes."); files.bytesForScan(id,hash);
             values.add(json.object().put("fileId",id.toString()).put("purpose",file.body().path("purpose").asString()).put("sha256",hash));
             store.jdbc().update("insert into cg_file_association(file_id,target_type,target_id,historical,created_at) values(?,'CHANGE',?,true,?) on conflict(file_id,target_type,target_id) do update set historical=true",id,change.id(),Timestamp.from(clock.instant()));
-            if(!body.path("attached").asBoolean()) {
-                var attached=(ObjectNode)body.deepCopy(); attached.put("attached",true).put("updatedAt",now()); store.update(file,attached);
+            if(!file.body().path("attached").asBoolean()) {
+                var attached=(ObjectNode)file.body().deepCopy(); attached.put("attached",true).put("updatedAt",now()); store.update(file,attached);
             }
         }
         values.sort(Comparator.comparing((JsonNode b)->b.path("purpose").asString()).thenComparing(b->b.path("fileId").asString())); var result=json.array(); values.forEach(result::add); return result;
