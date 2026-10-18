@@ -4,11 +4,11 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Mã tài liệu / phiên bản | A / 1.2.0 |
+| Mã tài liệu / phiên bản | A / 1.2.1 |
 | Ngày chốt thiết kế | 11/10/2026 |
 | Trạng thái | FINAL DESIGN BASELINE — owner đã chấp thuận hướng sản phẩm; chưa triển khai ứng dụng |
 | Thẩm quyền | Nguồn sự thật về phạm vi, ý nghĩa dữ liệu, quy tắc, trạng thái, quyền và kết quả nghiệm thu |
-| Tài liệu đi cùng | [FE/BE Shared Development Contract](FE_BE_Shared_Development_Contract.md), B / 1.2.0 |
+| Tài liệu đi cùng | [FE/BE Shared Development Contract](FE_BE_Shared_Development_Contract.md), B / 1.2.1 |
 | Đầu ra chính thức | Chính xác hai tài liệu A và B; các schema/client/fixture được trích xuất khi triển khai là sản phẩm phát sinh trong repository |
 
 ## 1. Sản phẩm và quyết định đã chốt
@@ -631,7 +631,7 @@ Catalogue dưới đây chỉ số hóa A; tên field wire chính thức nằm t
 <!-- contract:block business-catalog-v1 -->
 ```json
 {
-  "version": "1.2.0",
+  "version": "1.2.1",
   "roles": [
     "BANK_ADMIN",
     "MAKER",
