@@ -43,3 +43,9 @@ Status: PRE-IMPLEMENTATION INVENTORY READY. Next: root integrates this documenta
 ## Current checkpoint18October
 
 Reporting source GO app1e721ae/review9ae5826, independent78-source packagePASS. Scoped-lag P2 closed cb87868 plus same-asOf port44040f9. Reporting branch includes owner-approved/internal-shared-reviewed S060 patch A/B1.2.1; actual external FE acknowledgement remains pending. Current branch inventory50implemented/9partial/26absent; G4 in separate feature/backend-contract-changes is still being implemented and must integrate/review before counting it here. No tests/HTTP/runtime reporting acceptance. Continue G4 then Notice/G5/privacy and source closure automatically.
+
+## Current checkpoint after negotiated Change
+
+Canonical A/B1.2.2 includes owner-approved/internal-reviewed S060 and S024 exact maker-hint fixes; external FE acknowledgement remains pending. Earlier baseline statements above are historical. G4 source7e2975c/review2310638 has bounded GO and84-source skipped-test package PASS18October18:53:59+07. Current source inventory58implemented/6partial/21absent. V009 source additive, not applied at this checkpoint. No tests, HTTP, PDF workflow or business acceptance. Next real Notice module closes tariff dependency, then public Obligation/Incident, Control, Privacy and whole-backend closure.
+
+Carry-forward review: audit strict due<asOf equality in Obligation factory/scheduler; current-version artifact may belong to CHANGE or later NOTICE, so Control evidence must validate exact authorized ancestry rather than assume CONTRACT ownership. Reporting must reconcile future writers and breach/drilldown semantics.

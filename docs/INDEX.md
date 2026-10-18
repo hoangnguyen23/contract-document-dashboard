@@ -17,6 +17,9 @@ Implementation plans and module setup notes are derived operational documentatio
 - [Original signing and lifecycle](plan/signing-implementation.md): CONTRACT-only signing, original readiness/effectivity and real lifecycle consequence creation; not integrated acceptance.
 
 - [Original signing source review](plan/reviews/backend-g3-signing-source-review.md): bounded source/build verdict, separate from workflow acceptance.
-- [S060 shared fixture proposal](plan/contract-change-proposals/S060-action-hints.md): owner-approved S060 canonical patch; internal shared review and external FE acknowledgement pending.
+- [S060 shared fixture proposal](plan/contract-change-proposals/S060-action-hints.md): owner-approved S060 canonical patch; internal shared review GO; external FE acknowledgement pending.
 
-- [S024 action hint correction](plan/contract-change-proposals/S024-action-hints.md): owner approved; internal shared review and external FE acknowledgement pending.
+- [S024 action hint correction](plan/contract-change-proposals/S024-action-hints.md): owner approved; internal shared review GO; external FE acknowledgement pending.
+
+- [Controlled Change implementation](plan/change-implementation.md): negotiated Change and remaining tariff dependency.
+- [Change source review](plan/reviews/backend-change-source-review.md): bounded source GO and skipped-test build evidence.

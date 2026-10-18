@@ -1,6 +1,6 @@
 # Controlled Change implementation
 
-Authority: canonical A/B1.2.1, A§7, B§4/6/7 and the existing closed OpenAPI schemas. This is source implementation evidence, not business acceptance.
+Authority: canonical A/B1.2.2, A§7, B§4/6/7 and the existing closed OpenAPI schemas. This is source implementation evidence, not business acceptance.
 
 ## Implemented paths
 
@@ -30,6 +30,6 @@ Change has no public revision/readiness/mandatoryChecks additions. Use `getRound
 
 ## Verification boundary and next dependency
 
-Independent source review is in progress. An initial skipped-test package compiled79 Java sources before subsequent review repairs; it does not verify the final source or runtime. No tests, HTTP workflows, manual PDF rendering/scanning/download, Docker, database migration or business data mutation has been performed for this tranche. Root records final exact reviewed-source package evidence separately.
+Independent bounded source GO at7e2975c/review2310638. Final84-source clean/package passed18October18:53:59+07 with test resources, compilation and execution skipped. Prior ba570e5 compile failed and was repaired in7e2975c; see the review report. Build does not verify runtime/business behavior. No tests, HTTP workflows, manual PDF rendering/scanning/download, Docker, database migration or business data mutation has been performed for this tranche. Root records final exact reviewed-source package evidence separately.
 
 Next implement real Notice dispatch/capture/acknowledgement and NOTICE_ACK, then replace the explicit tariff readiness/cleanup blockers and review both sides atomically. Continue remaining obligations, incidents, controls, privacy and source closure under the existing master mission.
