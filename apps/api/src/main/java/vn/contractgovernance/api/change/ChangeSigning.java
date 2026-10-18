@@ -77,9 +77,13 @@ public class ChangeSigning {
             if(action.equals("VERIFY_SIGNING")) {
                 changes.beforeBoundary(change); var contract=store.require("Contract",id(change.body(),"contractId")); changes.active(contract); changes.currentBase(contract,change.body()); changes.requireCurrentGuard(contract); evidence.requireMaterial(contract);
                 frozen(change,packet.body()); assessment(change,packet.body(),request,actor);
-                changes.beforeBoundary(change); var assessed=(ObjectNode)request.deepCopy(); assessed.set("fileManifest",changes.manifest(change,assessmentFiles(packet.body(),request),actor));
-                store.jdbc().update("insert into cg_change_signing_assessment(packet_id,assessment,assessed_by,assessed_at) values(?,?::jsonb,?,?)",id,json.stringify(assessed),actor.id(),Timestamp.from(clock.instant()));
-                body.put("verificationStatus","VERIFIED").put("verifiedBy",actor.id().toString()).put("verifiedAt",changes.now());
+                var assessed=(ObjectNode)request.deepCopy(); assessed.set("fileManifest",changes.manifest(change,assessmentFiles(packet.body(),request),actor));
+                // All private-byte verification and historical associations are complete now.
+                // One authoritative decision instant supplies both cutoff and persisted evidence.
+                var verifiedAt=clock.instant();
+                if(!verifiedAt.isBefore(calendar.startOfDay(LocalDate.parse(change.body().path("effectiveOn").asString())))) throw ApiException.of("READINESS_BLOCKED","Server hoàn tất xác minh sau effective boundary.");
+                store.jdbc().update("insert into cg_change_signing_assessment(packet_id,assessment,assessed_by,assessed_at) values(?,?::jsonb,?,?)",id,json.stringify(assessed),actor.id(),Timestamp.from(verifiedAt));
+                body.put("verificationStatus","VERIFIED").put("verifiedBy",actor.id().toString()).put("verifiedAt",JsonSupport.timestamp(verifiedAt));
                 var cb=(ObjectNode)change.body().deepCopy(); cb.put("state","READY"); changes.save(change,cb,actor,"VERIFY_SIGNING",request.path("reason").asString());
             } else if(action.equals("RETURN_SIGNING")) body.put("verificationStatus","RETURNED");
             else throw ApiException.validation("/action","Thao tác không hỗ trợ.");
