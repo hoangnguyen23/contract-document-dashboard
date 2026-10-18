@@ -154,7 +154,7 @@ public class ChangeSigning {
             try {
                 checker(id(body,"id"),actor); var change=source(id(body,"id"),actor); approved(change);
                 if(!change.body().path("signingPacketId").equals(body.path("id"))) throw ApiException.of("STATE_CONFLICT","Packet không còn candidate.");
-                if(action.equals("VERIFY_SIGNING")) verificationHint(change,body);
+                if(action.equals("VERIFY_SIGNING")) verificationHint(change,body,true);
                 allowed.add(action);
             }
             catch(ApiException exception) { blocked.add(json.object().put("action",action).put("code",exception.code()).put("reason",exception.getMessage())); }
@@ -163,9 +163,11 @@ public class ChangeSigning {
         body.set("allowedActions",allowed); body.set("blockedActions",blocked); return body;
     }
     /** Current known guards only; the submitted assessment still needs exact bytes and full checks. */
-    private void verificationHint(EntityStore.Entity change,JsonNode packet) {
-        changes.beforeBoundary(change); var contract=store.require("Contract",id(change.body(),"contractId"));
-        changes.active(contract); changes.currentBase(contract,change.body()); changes.requireCurrentGuard(contract);
+    private void verificationHint(EntityStore.Entity change,JsonNode packet,boolean beforeBoundary) {
+        if(beforeBoundary) changes.beforeBoundary(change); var contract=store.require("Contract",id(change.body(),"contractId"));
+        changes.active(contract);
+        if(beforeBoundary) changes.currentBase(contract,change.body());
+        changes.requireCurrentGuard(contract);
         if(!evidence.materialUnchanged(contract,false)) throw ApiException.of("READINESS_BLOCKED","Material source đã thay đổi.");
         evidence.authority(packet); var revision=approval.frozen(change).revision();
         if(!change.body().path("artifactId").equals(packet.path("artifactId"))||!change.body().path("artifactHash").equals(packet.path("artifactHash"))) throw ApiException.of("STORAGE_INTEGRITY","Artifact không khớp nguồn đã duyệt.");
@@ -177,5 +179,14 @@ public class ChangeSigning {
             if(!file.body().path("state").asString().equals("CLEAN")) throw ApiException.of("FILE_NOT_CLEAN","Packet evidence không còn CLEAN.");
             if(fileId.equals(id(packet,"artifactId"))&&!file.body().path("sha256").equals(packet.path("artifactHash"))) throw ApiException.of("STORAGE_INTEGRITY","Artifact metadata khác hash packet.");
         }
+    }
+    /** Read-only retry projection for previously VERIFIED on-time readiness, including late workers. */
+    public void readinessHint(EntityStore.Entity change) {
+        if(!change.body().hasNonNull("signingPacketId")) throw ApiException.of("READINESS_BLOCKED","Thiếu packet.");
+        var packet=store.require("SigningPacket",id(change.body(),"signingPacketId"));
+        if(!packet.body().path("verificationStatus").asString().equals("VERIFIED")||!packet.body().path("targetId").asString().equals(change.id().toString())) throw ApiException.of("READINESS_BLOCKED","Packet không VERIFIED trên Change.");
+        var rows=store.jdbc().query("select assessed_at from cg_change_signing_assessment where packet_id=?",(rs,n)->rs.getTimestamp(1).toInstant(),packet.id());
+        if(rows.size()!=1||!rows.getFirst().isBefore(calendar.startOfDay(LocalDate.parse(change.body().path("effectiveOn").asString())))) throw ApiException.of("READINESS_BLOCKED","Thiếu assessment đúng hạn.");
+        verificationHint(change,packet.body(),false);
     }
 }

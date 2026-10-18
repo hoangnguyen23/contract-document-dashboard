@@ -102,11 +102,19 @@ public class ChangeTimeline {
     public void requireRetry(EntityStore.Entity job,Actor actor) {
         UUID changeId=id(job.body(),"parentId"); authorize(changeId,actor); var change=store.require("Change",changeId);
         if(!job.body().path("state").asString().equals("FAILED")||!change.body().path("state").asString().equals("SCHEDULED")) throw ApiException.of("STATE_CONFLICT","Change không còn retry effectivity được.");
+        var contract=store.require("Contract",id(change.body(),"contractId")); changes.active(contract);
+        if(!contract.body().path("currentVersion").path("id").equals(change.body().path("baseContractVersionId"))) throw ApiException.of("BASE_CONFLICT","Base version đã đổi.");
+        if(!contract.body().path("scheduledChangeId").asString().equals(change.id().toString())||!ChangeService.counter(contract.body().path("scheduleVersion"),change.body().path("committedScheduleVersion"))) throw ApiException.of("SCHEDULE_CONFLICT","Committed slot không còn hiện hành.");
+        changes.requireCurrentGuard(contract);
+        if(!evidence.materialUnchanged(contract,false)) throw ApiException.of("READINESS_BLOCKED","Material source đã thay đổi.");
+        signing.readinessHint(change);
         var rows=store.jdbc().query("select payload::text,expected_hash from cg_job where id=?",(rs,n)->List.of(rs.getString(1),rs.getString(2)),job.id()); var payload=json.parse(rows.getFirst().getFirst());
         if(!json.hash(payload).equals(rows.getFirst().get(1))||!payload.path("revisionId").equals(approval.frozen(change).revision().path("id"))) throw ApiException.of("STORAGE_INTEGRITY","Nguồn retry không khớp.");
     }
     public EntityStore.Entity retry(UUID id,String tag,String reason,Actor actor) {
         var preview=store.require("Job",id); changes.lock(id(preview.body(),"parentId")); var job=store.lock("Job",id); ETags.check(tag,job.version()); requireRetry(job,actor);
+        var change=store.require("Change",id(preview.body(),"parentId"));
+        evidence.requireMaterial(store.require("Contract",id(change.body(),"contractId"))); signing.requireReady(change,actor);
         if(!jobs.retry(id)) throw ApiException.of("STATE_CONFLICT","Job đã thay đổi."); var updated=store.require("Job",id); audit.record(actor,"RETRY",updated,reason); return updated;
     }
 }
