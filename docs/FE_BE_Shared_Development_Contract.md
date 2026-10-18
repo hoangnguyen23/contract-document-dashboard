@@ -1,6 +1,6 @@
 # B — FE/BE Shared Development Contract
 
-**Version 1.2.1 · Business authority: A1.2.1 · Chốt ngày 11/10/2026.**
+**Version 1.2.2 · Business authority: A1.2.2 · Chốt ngày 11/10/2026.**
 
 Tài liệu này là hợp đồng kỹ thuật duy nhất giữa developer Frontend và Backend. A quyết định nghiệp vụ; B quyết định bytes trên wire, quyền theo operation, fixture, integration và thay đổi schema. Các JSON blocks ở cuối là canonical, không phải minh họa rút gọn. Chúng nằm trong hai tài liệu chính thức; file trích xuất và test harness sau này là sản phẩm dẫn xuất của repository triển khai.
 
@@ -113,7 +113,7 @@ Worker/race cases là oracle bổ sung ngoài HTTP đơn bước: double approva
 
 ## 9. Contract change control và DoD
 
-A1.2.1 và B1.2.1 hash-linked bằng manifest, canonical JSON UTF-8 sorted keys/separators(',',':') cho block digest; RFC8785 dùng riêng HTTP fingerprint như §4. Manifest không tự hash chính nó. Trích đúng fenced block có marker, reject duplicate block/key hoặc external $ref; không copy một phần schema từ chat. OpenAPI block JSON là JSON hợp lệ cũng là YAML, file dẫn xuất openapi.json. Codegen kiểm tra operationIds/required/nullable/enum, provider validates all requests/responses, FE consumer tests validate MSW fixture. Không có custom TS DTO/Jackson DTO song song khác nghĩa.
+A1.2.2 và B1.2.2 hash-linked bằng manifest, canonical JSON UTF-8 sorted keys/separators(',',':') cho block digest; RFC8785 dùng riêng HTTP fingerprint như §4. Manifest không tự hash chính nó. Trích đúng fenced block có marker, reject duplicate block/key hoặc external $ref; không copy một phần schema từ chat. OpenAPI block JSON là JSON hợp lệ cũng là YAML, file dẫn xuất openapi.json. Codegen kiểm tra operationIds/required/nullable/enum, provider validates all requests/responses, FE consumer tests validate MSW fixture. Không có custom TS DTO/Jackson DTO song song khác nghĩa.
 
 Schema patch compatible chỉ thêm optional response field hoặc operation không đổi behavior; request mới optional có server default rõ và oracle. Enum/action/required/nullability/status/permission/date/money meaning change là breaking, nâng minor/major thích hợp và cập nhật A/B/fixtures/tests cùng PR. FE/BE đọc diff cụ thể, ghi acceptance impact, generateclient/lint/provider+consumer và real E2E target before merge. Scope/domain module addition phải owner-approved concrete patch; không hỏi lại phạm vi đã duyệt.
 
@@ -138,6 +138,10 @@ A §4.1 và seed-v1.policyCorpusSemantics làm rõ oracle hữu hạn cho cấu 
 
 Owner phê duyệt ngày 18/10/2026 patch duy nhất: scenarios-v1 S060 expected.body.allowedActions đổi từ ["HOLD_READINESS"] thành []. Actor MAKER, request, status, blockedActions và mọi dữ kiện khác giữ nguyên; không chuyển action sang blockedActions, không cấp thêm quyền. getContract / Contract.allowedActions khớp CHECKER-only tại A §6.2/B §6; không đổi schema, API, enum hoặc business permission. A/B cùng nâng patch metadata 1.2.1; seedVersion chỉ đồng bộ metadata. Shared review nội bộ GO tại candidate 60a436a, report 6facdbe; chưa có acknowledgement của developer FE độc lập và chưa công bố gate tích hợp hoàn tất.
 
+### 9.5. Compatibility patch 1.2.2 — S024 maker action hint
+
+Owner phê duyệt ngày 18/10/2026 patch duy nhất: scenarios-v1 S024 expected.body.allowedActions đổi từ ["VERIFY_ACK"] thành []. Actor MAKER là contributor/ACK recorder, RECORD_ACK request, status200, DISPATCHED state, immutable candidate, durable effects và blockedActions giữ nguyên; không chuyển CHECKER action sang blockedActions hoặc cấp quyền. commandNotice / Notice.allowedActions khớp independent noncontributor CHECKER tại A §8.1/B §6. Không đổi schema, field, enum hoặc authorization; A/B và block/seed version metadata đồng bộ 1.2.2. Shared review nội bộ đang chờ; external FE acknowledgement chưa có và không tuyên bố gate tích hợp hoàn tất. Patch S060 giữ nguyên allowedActions=[].
+
 ## 10. Canonical blocks
 
 
@@ -150,8 +154,8 @@ Owner phê duyệt ngày 18/10/2026 patch duy nhất: scenarios-v1 S060 expected
   "jsonSchemaDialect": "https://json-schema.org/draft/2020-12/schema",
   "info": {
     "title": "Contract Governance — FE/BE Shared Contract",
-    "version": "1.2.1",
-    "description": "Canonical B1.2.1; business authority A1.2.1; synthetic documentary VA profile only."
+    "version": "1.2.2",
+    "description": "Canonical B1.2.2; business authority A1.2.2; synthetic documentary VA profile only."
   },
   "servers": [
     {
@@ -19473,7 +19477,7 @@ Owner phê duyệt ngày 18/10/2026 patch duy nhất: scenarios-v1 S060 expected
 <!-- contract:block seed-v1 -->
 ```json
 {
-  "version": "1.2.1",
+  "version": "1.2.2",
   "syntheticOnly": true,
   "clock": "2027-01-05T02:00:00.000Z",
   "timezone": "Asia/Ho_Chi_Minh",
@@ -31323,8 +31327,8 @@ Owner phê duyệt ngày 18/10/2026 patch duy nhất: scenarios-v1 S060 expected
 <!-- contract:block scenarios-v1 -->
 ```json
 {
-  "version": "1.2.1",
-  "seedVersion": "1.2.1",
+  "version": "1.2.2",
+  "seedVersion": "1.2.2",
   "requestMode": "real wire; headers below are fixture tokens, provider uses tokens from real session",
   "scenarios": [
     {
@@ -34736,9 +34740,7 @@ Owner phê duyệt ngày 18/10/2026 patch duy nhất: scenarios-v1 S060 expected
           "version": 2,
           "createdAt": "2027-01-04T01:11:00.000Z",
           "updatedAt": "2027-01-05T02:00:00.000Z",
-          "allowedActions": [
-            "VERIFY_ACK"
-          ],
+          "allowedActions": [],
           "branchId": "00000000-0000-4000-8000-000000000001",
           "state": "DISPATCHED",
           "contractId": "00000000-0000-4000-8000-000000000015",
@@ -40117,7 +40119,7 @@ Owner phê duyệt ngày 18/10/2026 patch duy nhất: scenarios-v1 S060 expected
 <!-- contract:block protocol-rules-v1 -->
 ```json
 {
-  "version": "1.2.1",
+  "version": "1.2.2",
   "errorStatus": {
     "BAD_JSON": 400,
     "UNAUTHENTICATED": 401,
@@ -40879,17 +40881,17 @@ Owner phê duyệt ngày 18/10/2026 patch duy nhất: scenarios-v1 S060 expected
 ```json
 {
   "documentVersions": {
-    "A": "1.2.1",
-    "B": "1.2.1"
+    "A": "1.2.2",
+    "B": "1.2.2"
   },
-  "specificationFileSha256": "9b1e8984f9cbb1e4bba6367d126dbad1516f68a8b03e4de6dabf835c2edd0843",
+  "specificationFileSha256": "1a991f479b707a8e097b6afc16a3d1082626234b9f237b6ff50276d17e06035d",
   "hashAlgorithm": "SHA-256 over JSON UTF-8 ensure_ascii=false sorted keys separators comma/colon; no BOM",
   "blocks": {
-    "business-catalog-v1": "ca346c5b7545cd2aa17dc78c8f78842ccc83b5e0cfa623c83ad00de5932e0662",
-    "openapi-v1": "f7bb82c837e318a4b2b4fb6465c2b2b23d172c46f7a0b134b160123e18a4dfe5",
-    "seed-v1": "3a68852144e282048a5489569feeeb25aa1964c98f0afd39f39b795375de20af",
-    "scenarios-v1": "b1a0fdcdf5db25d4ac5283755b98bc8b6b2ca1bfcfdf5b2176a642430adc5d26",
-    "protocol-rules-v1": "d883bc2595bcae426dc3f099c3a6bf85d38f443a19617de69100d70e2525f6a4"
+    "business-catalog-v1": "c2c9445ea04ab0bd764891eb919bb714ee4269cdfecc8b0df5fd86e3244adb59",
+    "openapi-v1": "24ca06ad5669ec99493ab1fa57dc632c9faf47722249dfd48705506768153d72",
+    "seed-v1": "46dcd079e8e3bb3aea5671eaf4b7dbd8d4c7a16c0eae4d43a15dfa98d4bfefdd",
+    "scenarios-v1": "b5dab930dbaab4b35ec9b57d2a2b3d36084d3db7aa53393a760e8d2ae3853dca",
+    "protocol-rules-v1": "e5076466084cd9d81874b8a69801f7f5e73ac6568abf1f206278c4d811f6eae7"
   },
   "officialFiles": [
     "Final_Project_Specification.md",
