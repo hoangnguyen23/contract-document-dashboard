@@ -191,7 +191,7 @@ public class ChangeService {
                     .put("instance","/api/v1/changes/"+change.id()+"/commands").put("code",code).put("traceId",AuditService.traceId().toString()).put("currentVersion",updated.version()); problem.set("violations",json.array());
             return new ApiResult(409,problem,ETags.format(updated.version()),null);
         }
-        signing.getObject().requireReady(change,null); requireCurrentGuard(contract);
+        signingEvidence.requireMaterial(contract); signing.getObject().requireReady(change,null); requireCurrentGuard(contract);
         long next=contract.body().path("scheduleVersion").asLong()+1;
         var cb=(ObjectNode)contract.body().deepCopy(); cb.put("scheduleVersion",next).put("scheduledChangeId",change.id().toString());
         lifecycle.save(contract,cb,actor,"CHANGE_SCHEDULED",null);
@@ -311,6 +311,7 @@ public class ChangeService {
                 if(action.equals("SUBMIT")) submissionHint(entity(body),contract,actor);
                 if(action.equals("COMMIT")) {
                     beforeBoundary(entity(body)); active(contract); currentBase(contract,body); requireCurrentGuard(contract);
+                    if(!signingEvidence.materialUnchanged(contract,false)) throw ApiException.of("READINESS_BLOCKED","Material source đã thay đổi.");
                     if(contract.body().hasNonNull("scheduledChangeId")) throw ApiException.of("SCHEDULE_CONFLICT","Future slot đã có nguồn khác.");
                 }
                 if(action.contains("CANCEL_SCHEDULE")) {
