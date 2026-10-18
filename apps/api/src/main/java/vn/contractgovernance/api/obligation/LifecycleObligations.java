@@ -64,8 +64,8 @@ public class LifecycleObligations {
     }
 
     @Transactional(propagation = Propagation.MANDATORY)
-    public void noticeAck(EntityStore.Entity contract,UUID noticeId,int sourceVersion,String effectiveOn,JsonNode contributors) {
-        create(contract,"NOTICE_ACK",noticeId,sourceVersion,calendar.startOfDay(LocalDate.parse(effectiveOn)),clock.instant(),contributors,"CONTRACTUAL","TARIFF-ACK-7D-1; explicit beneficiary acknowledgement before effective boundary");
+    public void noticeAck(EntityStore.Entity contract,UUID noticeId,int sourceVersion,String effectiveOn,Instant dispatchedAt,JsonNode contributors) {
+        create(contract,"NOTICE_ACK",noticeId,sourceVersion,calendar.startOfDay(LocalDate.parse(effectiveOn)),dispatchedAt,contributors,"CONTRACTUAL","TARIFF-ACK-7D-1; explicit beneficiary acknowledgement before effective boundary");
     }
 
     @Transactional(propagation = Propagation.MANDATORY)
