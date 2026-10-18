@@ -90,6 +90,11 @@ public class ChangeSigning {
         if(!change.body().hasNonNull("artifactId")||!change.body().path("artifactId").equals(packet.path("artifactId"))||!change.body().path("artifactHash").equals(packet.path("artifactHash"))) throw ApiException.of("STORAGE_INTEGRITY","Artifact không khớp Change đã duyệt.");
         var revision=approval.frozen(change).revision();
         if(store.jdbc().queryForObject("select count(*) from cg_change_artifact a join cg_change_artifact_source s using(revision_id) where a.revision_id=? and a.file_id=? and a.artifact_hash=? and a.source_hash=s.source_hash",Long.class,id(revision,"id"),id(packet,"artifactId"),packet.path("artifactHash").asString())!=1L) throw ApiException.of("STORAGE_INTEGRITY","Thiếu artifact binding chính xác.");
+        var sources=store.jdbc().query("select source::text,source_hash from cg_change_artifact_source where revision_id=? and change_id=?",(rs,n)->List.of(rs.getString(1),rs.getString(2)),id(revision,"id"),change.id());
+        if(sources.size()!=1||!json.hash(json.parse(sources.getFirst().getFirst())).equals(sources.getFirst().get(1))
+                ||!json.parse(sources.getFirst().getFirst()).path("revision").equals(revision)) {
+            throw ApiException.of("STORAGE_INTEGRITY","Appendix source/hash khác immutable revision.");
+        }
         for(UUID copy:SigningEvidence.uniqueIds(packet.path("signedCopyIds"),"/signedCopyIds")) {
             var file=store.require("File",copy);
             if(copy.equals(id(packet,"artifactId"))||!file.body().path("origin").asString().equals("UPLOADED")||!file.body().path("sha256").isTextual()) throw ApiException.validation("/signedCopyIds","Bản ký phải là file tải lên riêng.");

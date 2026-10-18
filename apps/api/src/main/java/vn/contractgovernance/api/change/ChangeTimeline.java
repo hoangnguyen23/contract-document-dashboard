@@ -50,7 +50,9 @@ public class ChangeTimeline {
             if(!ChangeService.counter(contract.body().path("scheduleVersion"),change.body().path("committedScheduleVersion"))) throw ApiException.of("SCHEDULE_CONFLICT","Committed schedule không khớp.");
             changes.requireCurrentGuard(contract); evidence.requireMaterial(contract); signing.requireReady(change,null);
         } catch(ApiException guard) {
-            if(Set.of("STORAGE_INTEGRITY","SERVICE_UNAVAILABLE").contains(guard.code())) throw guard;
+            // These are current business/evidence guard outcomes, including unavailable/corrupt
+            // private bytes. They cannot extend the unchanged agreement's contractual end.
+            // JDBC/transaction failures are not ApiException and still roll back atomically.
             failure=guard.code();
         }
         if(failure!=null) {

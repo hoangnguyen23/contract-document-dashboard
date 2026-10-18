@@ -47,9 +47,17 @@ public class ChangeApproval {
         return frozenRound(store.require("Round",id(change.body(),"roundId")));
     }
     public Frozen frozenRound(EntityStore.Entity round) {
-        return store.jdbc().query("select revision::text,metadata::text,submitted_by from cg_change_revision where id=? and change_id=?",
+        var frozen=store.jdbc().query("select revision::text,metadata::text,submitted_by from cg_change_revision where id=? and change_id=?",
                 (rs,n)->new Frozen(json.parse(rs.getString(1)),json.parse(rs.getString(2)),rs.getObject(3,UUID.class)),id(round.body(),"revisionId"),id(round.body(),"targetId"))
                 .stream().findFirst().orElseThrow(()->ApiException.of("STORAGE_INTEGRITY","Thiếu immutable ChangeRevision."));
+        var projection=json.object();
+        for(String field:List.of("contractId","baseContractVersionId","expectedScheduleVersion","effectiveOn","target","reason","consolidatedTerms","representation")) projection.set(field,frozen.revision().path(field));
+        if(!json.hash(projection).equals(frozen.revision().path("factsHash").asString())
+                ||!json.hash(frozen.metadata().path("evidence")).equals(frozen.revision().path("evidenceHash").asString())
+                ||!json.hash(frozen.metadata().path("policyProjection")).equals(frozen.revision().path("evaluation").path("factsHash").asString())) {
+            throw ApiException.of("STORAGE_INTEGRITY","Immutable ChangeRevision/hash không khớp.");
+        }
+        return frozen;
     }
     public EntityStore.Entity submit(EntityStore.Entity change,EntityStore.Entity contract,JsonNode request,Actor actor) {
         if(!Set.of("DRAFT","RETURNED").contains(change.body().path("state").asString())) throw ApiException.of("STATE_CONFLICT","Change không ở trạng thái nộp được.");
