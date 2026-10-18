@@ -140,7 +140,7 @@ Owner phê duyệt ngày 18/10/2026 patch duy nhất: scenarios-v1 S060 expected
 
 ### 9.5. Compatibility patch 1.2.2 — S024 maker action hint
 
-Owner phê duyệt ngày 18/10/2026 patch duy nhất: scenarios-v1 S024 expected.body.allowedActions đổi từ ["VERIFY_ACK"] thành []. Actor MAKER là contributor/ACK recorder, RECORD_ACK request, status200, DISPATCHED state, immutable candidate, durable effects và blockedActions giữ nguyên; không chuyển CHECKER action sang blockedActions hoặc cấp quyền. commandNotice / Notice.allowedActions khớp independent noncontributor CHECKER tại A §8.1/B §6. Không đổi schema, field, enum hoặc authorization; A/B và block/seed version metadata đồng bộ 1.2.2. Shared review nội bộ đang chờ; external FE acknowledgement chưa có và không tuyên bố gate tích hợp hoàn tất. Patch S060 giữ nguyên allowedActions=[].
+Owner phê duyệt ngày 18/10/2026 patch duy nhất: scenarios-v1 S024 expected.body.allowedActions đổi từ ["VERIFY_ACK"] thành []. Actor MAKER là contributor/ACK recorder, RECORD_ACK request, status200, DISPATCHED state, immutable candidate, durable effects và blockedActions giữ nguyên; không chuyển CHECKER action sang blockedActions hoặc cấp quyền. commandNotice / Notice.allowedActions khớp independent noncontributor CHECKER tại A §8.1/B §6. Không đổi schema, field, enum hoặc authorization; A/B và block/seed version metadata đồng bộ 1.2.2. Shared review nội bộ GO tại 129642e (docs/plan/reviews/S024-canonical-compatibility-review.md); external FE acknowledgement chưa có và không tuyên bố gate tích hợp hoàn tất. Patch S060 giữ nguyên allowedActions=[].
 
 ## 10. Canonical blocks
 
