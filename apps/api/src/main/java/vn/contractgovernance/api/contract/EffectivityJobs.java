@@ -74,7 +74,7 @@ public class EffectivityJobs {
                 if (!queue.renew(job)) return;
                 var updated=lifecycle.advanceLocked(contract);
                 if(job.payload().path("boundaryKind").asString().equals("EXPIRED")
-                        && updated.body().path("state").asString().equals("ACTIVE")
+                        && java.util.Set.of("ACTIVE","EXPIRED").contains(updated.body().path("state").asString())
                         && !job.payload().path("boundaryAt").asString().equals(JsonSupport.timestamp(calendar.startOfDay(LocalDate.parse(updated.body().path("currentVersion").path("terms").path("endExclusive").asString()))))) {
                     if(!queue.cancel(job,"Old expiry boundary superseded by current version"))throw new IllegalStateException("Effectivity lease lost");
                     return;

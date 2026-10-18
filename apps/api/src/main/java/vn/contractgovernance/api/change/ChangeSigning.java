@@ -148,12 +148,34 @@ public class ChangeSigning {
     }
     public JsonNode get(UUID packetId,Actor actor) { var change=source(packetId,actor); lifecycle.maintain(id(change.body(),"contractId"),actor); return project(store.require("SigningPacket",packetId).body(),actor); }
     public JsonNode project(JsonNode raw,Actor actor) {
+        actor=users.actor(actor.id());
         var body=(ObjectNode)raw.deepCopy(); var allowed=json.array(); var blocked=json.array();
         if(body.path("verificationStatus").asString().equals("PENDING")&&actor.hasRole("CHECKER")) for(String action:List.of("VERIFY_SIGNING","RETURN_SIGNING")) {
-            try { checker(id(body,"id"),actor); var change=source(id(body,"id"),actor); approved(change); if(!change.body().path("signingPacketId").equals(body.path("id"))) throw ApiException.of("STATE_CONFLICT","Packet không còn candidate."); if(action.equals("VERIFY_SIGNING")) changes.beforeBoundary(change); allowed.add(action); }
+            try {
+                checker(id(body,"id"),actor); var change=source(id(body,"id"),actor); approved(change);
+                if(!change.body().path("signingPacketId").equals(body.path("id"))) throw ApiException.of("STATE_CONFLICT","Packet không còn candidate.");
+                if(action.equals("VERIFY_SIGNING")) verificationHint(change,body);
+                allowed.add(action);
+            }
             catch(ApiException exception) { blocked.add(json.object().put("action",action).put("code",exception.code()).put("reason",exception.getMessage())); }
         }
         if(actor.hasRole("AUDITOR")&&!actor.hasAnyRole("MAKER","CHECKER","MANAGER","DATA_OFFICER")&&!actor.hasPermission("SENSITIVE_READ")) { for(String side:List.of("bank","beneficiary")) for(String field:List.of("personName","title","scopeText","issuerReference")) ((ObjectNode)body.path("authority").path(side)).put(field,"[REDACTED]"); if(body.hasNonNull("verificationReason")) body.put("verificationReason","[REDACTED]"); }
         body.set("allowedActions",allowed); body.set("blockedActions",blocked); return body;
+    }
+    /** Current known guards only; the submitted assessment still needs exact bytes and full checks. */
+    private void verificationHint(EntityStore.Entity change,JsonNode packet) {
+        changes.beforeBoundary(change); var contract=store.require("Contract",id(change.body(),"contractId"));
+        changes.active(contract); changes.currentBase(contract,change.body()); changes.requireCurrentGuard(contract);
+        if(!evidence.materialUnchanged(contract,false)) throw ApiException.of("READINESS_BLOCKED","Material source đã thay đổi.");
+        evidence.authority(packet); var revision=approval.frozen(change).revision();
+        if(!change.body().path("artifactId").equals(packet.path("artifactId"))||!change.body().path("artifactHash").equals(packet.path("artifactHash"))) throw ApiException.of("STORAGE_INTEGRITY","Artifact không khớp nguồn đã duyệt.");
+        var inputs=store.jdbc().query("select input::text,input_hash,revision_id from cg_change_signing_input where packet_id=? and change_id=?",(rs,n)->List.of(rs.getString(1),rs.getString(2),rs.getString(3)),id(packet,"id"),change.id());
+        if(inputs.size()!=1||!json.hash(json.parse(inputs.getFirst().getFirst())).equals(inputs.getFirst().get(1))||!revision.path("id").asString().equals(inputs.getFirst().get(2))) throw ApiException.of("STORAGE_INTEGRITY","Signing source không khớp revision.");
+        for(UUID fileId:evidence.packetFiles(packet)) {
+            var file=store.require("File",fileId);
+            if(!file.body().path("targetKind").asString().equals("CHANGE")||!file.body().path("targetId").asString().equals(change.id().toString())||!Objects.equals(file.branchId(),change.branchId())) throw ApiException.of("NOT_FOUND","Packet evidence sai nguồn.");
+            if(!file.body().path("state").asString().equals("CLEAN")) throw ApiException.of("FILE_NOT_CLEAN","Packet evidence không còn CLEAN.");
+            if(fileId.equals(id(packet,"artifactId"))&&!file.body().path("sha256").equals(packet.path("artifactHash"))) throw ApiException.of("STORAGE_INTEGRITY","Artifact metadata khác hash packet.");
+        }
     }
 }
