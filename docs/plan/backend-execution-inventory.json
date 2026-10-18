@@ -1,7 +1,7 @@
 {
   "inventoryVersion": 1,
   "auditedAt": "2026-10-18",
-  "sourceCommit": "2310638",
+  "sourceCommit": "86035f9",
   "canonicalVersion": "1.2.2",
   "purpose": "Working semantic source inventory; source/build are not business or integrated acceptance",
   "counts": {
@@ -3351,9 +3351,9 @@
         "AC-056"
       ],
       "verification": {
-        "source": "Bounded independent G4 GO source7e2975c/review2310638; required later dependencies remain explicit",
-        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:53:59+07:00",
-        "runtime": "V009 not applied at source-review checkpoint; no G4 business/runtime acceptance",
+        "source": "Corrected bounded G4 GO2af915d/review86035f9 after reopened enum finding",
+        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:59:20+07:00",
+        "runtime": "V009 applied/startup observed on prior7e2975c JAR only; corrected2af915d package not started",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
@@ -3458,9 +3458,9 @@
         "AC-056"
       ],
       "verification": {
-        "source": "Bounded independent G4 GO source7e2975c/review2310638; required later dependencies remain explicit",
-        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:53:59+07:00",
-        "runtime": "V009 not applied at source-review checkpoint; no G4 business/runtime acceptance",
+        "source": "Corrected bounded G4 GO2af915d/review86035f9 after reopened enum finding",
+        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:59:20+07:00",
+        "runtime": "V009 applied/startup observed on prior7e2975c JAR only; corrected2af915d package not started",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
@@ -3577,9 +3577,9 @@
         "AC-056"
       ],
       "verification": {
-        "source": "Bounded independent G4 GO source7e2975c/review2310638; required later dependencies remain explicit",
-        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:53:59+07:00",
-        "runtime": "V009 not applied at source-review checkpoint; no G4 business/runtime acceptance",
+        "source": "Corrected bounded G4 GO2af915d/review86035f9 after reopened enum finding",
+        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:59:20+07:00",
+        "runtime": "V009 applied/startup observed on prior7e2975c JAR only; corrected2af915d package not started",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
@@ -4622,9 +4622,9 @@
         "AC-056"
       ],
       "verification": {
-        "source": "Bounded independent G4 GO source7e2975c/review2310638; required later dependencies remain explicit",
-        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:53:59+07:00",
-        "runtime": "V009 not applied at source-review checkpoint; no G4 business/runtime acceptance",
+        "source": "Corrected bounded G4 GO2af915d/review86035f9 after reopened enum finding",
+        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:59:20+07:00",
+        "runtime": "V009 applied/startup observed on prior7e2975c JAR only; corrected2af915d package not started",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
@@ -4739,9 +4739,9 @@
         "AC-056"
       ],
       "verification": {
-        "source": "Bounded independent G4 GO source7e2975c/review2310638; required later dependencies remain explicit",
-        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:53:59+07:00",
-        "runtime": "V009 not applied at source-review checkpoint; no G4 business/runtime acceptance",
+        "source": "Corrected bounded G4 GO2af915d/review86035f9 after reopened enum finding",
+        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:59:20+07:00",
+        "runtime": "V009 applied/startup observed on prior7e2975c JAR only; corrected2af915d package not started",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
@@ -4881,9 +4881,9 @@
         "AC-056"
       ],
       "verification": {
-        "source": "Bounded independent G4 GO source7e2975c/review2310638; required later dependencies remain explicit",
-        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:53:59+07:00",
-        "runtime": "V009 not applied at source-review checkpoint; no G4 business/runtime acceptance",
+        "source": "Corrected bounded G4 GO2af915d/review86035f9 after reopened enum finding",
+        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:59:20+07:00",
+        "runtime": "V009 applied/startup observed on prior7e2975c JAR only; corrected2af915d package not started",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
@@ -4983,9 +4983,9 @@
         "AC-056"
       ],
       "verification": {
-        "source": "Bounded independent G4 GO source7e2975c/review2310638; required later dependencies remain explicit",
-        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:53:59+07:00",
-        "runtime": "V009 not applied at source-review checkpoint; no G4 business/runtime acceptance",
+        "source": "Corrected bounded G4 GO2af915d/review86035f9 after reopened enum finding",
+        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:59:20+07:00",
+        "runtime": "V009 applied/startup observed on prior7e2975c JAR only; corrected2af915d package not started",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
@@ -5079,9 +5079,9 @@
         "AC-056"
       ],
       "verification": {
-        "source": "Bounded independent G4 GO source7e2975c/review2310638; required later dependencies remain explicit",
-        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:53:59+07:00",
-        "runtime": "V009 not applied at source-review checkpoint; no G4 business/runtime acceptance",
+        "source": "Corrected bounded G4 GO2af915d/review86035f9 after reopened enum finding",
+        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:59:20+07:00",
+        "runtime": "V009 applied/startup observed on prior7e2975c JAR only; corrected2af915d package not started",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
@@ -5187,9 +5187,9 @@
         "AC-056"
       ],
       "verification": {
-        "source": "Bounded independent G4 GO source7e2975c/review2310638; required later dependencies remain explicit",
-        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:53:59+07:00",
-        "runtime": "V009 not applied at source-review checkpoint; no G4 business/runtime acceptance",
+        "source": "Corrected bounded G4 GO2af915d/review86035f9 after reopened enum finding",
+        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:59:20+07:00",
+        "runtime": "V009 applied/startup observed on prior7e2975c JAR only; corrected2af915d package not started",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
@@ -5335,9 +5335,9 @@
         "AC-056"
       ],
       "verification": {
-        "source": "Bounded independent G4 GO source7e2975c/review2310638; required later dependencies remain explicit",
-        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:53:59+07:00",
-        "runtime": "V009 not applied at source-review checkpoint; no G4 business/runtime acceptance",
+        "source": "Corrected bounded G4 GO2af915d/review86035f9 after reopened enum finding",
+        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:59:20+07:00",
+        "runtime": "V009 applied/startup observed on prior7e2975c JAR only; corrected2af915d package not started",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
@@ -5442,9 +5442,9 @@
         "AC-056"
       ],
       "verification": {
-        "source": "Bounded independent G4 GO source7e2975c/review2310638; required later dependencies remain explicit",
-        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:53:59+07:00",
-        "runtime": "V009 not applied at source-review checkpoint; no G4 business/runtime acceptance",
+        "source": "Corrected bounded G4 GO2af915d/review86035f9 after reopened enum finding",
+        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:59:20+07:00",
+        "runtime": "V009 applied/startup observed on prior7e2975c JAR only; corrected2af915d package not started",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
@@ -5543,9 +5543,9 @@
         "AC-056"
       ],
       "verification": {
-        "source": "Bounded independent G4 GO source7e2975c/review2310638; required later dependencies remain explicit",
-        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:53:59+07:00",
-        "runtime": "V009 not applied at source-review checkpoint; no G4 business/runtime acceptance",
+        "source": "Corrected bounded G4 GO2af915d/review86035f9 after reopened enum finding",
+        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:59:20+07:00",
+        "runtime": "V009 applied/startup observed on prior7e2975c JAR only; corrected2af915d package not started",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
@@ -5653,9 +5653,9 @@
         "AC-056"
       ],
       "verification": {
-        "source": "Bounded independent G4 GO source7e2975c/review2310638; required later dependencies remain explicit",
-        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:53:59+07:00",
-        "runtime": "V009 not applied at source-review checkpoint; no G4 business/runtime acceptance",
+        "source": "Corrected bounded G4 GO2af915d/review86035f9 after reopened enum finding",
+        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:59:20+07:00",
+        "runtime": "V009 applied/startup observed on prior7e2975c JAR only; corrected2af915d package not started",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
@@ -5774,9 +5774,9 @@
         "AC-056"
       ],
       "verification": {
-        "source": "Bounded independent G4 GO source7e2975c/review2310638; required later dependencies remain explicit",
-        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:53:59+07:00",
-        "runtime": "V009 not applied at source-review checkpoint; no G4 business/runtime acceptance",
+        "source": "Corrected bounded G4 GO2af915d/review86035f9 after reopened enum finding",
+        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:59:20+07:00",
+        "runtime": "V009 applied/startup observed on prior7e2975c JAR only; corrected2af915d package not started",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
@@ -9079,9 +9079,9 @@
         "AC-056"
       ],
       "verification": {
-        "source": "Bounded independent G4 GO source7e2975c/review2310638; required later dependencies remain explicit",
-        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:53:59+07:00",
-        "runtime": "V009 not applied at source-review checkpoint; no G4 business/runtime acceptance",
+        "source": "Corrected bounded G4 GO2af915d/review86035f9 after reopened enum finding",
+        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:59:20+07:00",
+        "runtime": "V009 applied/startup observed on prior7e2975c JAR only; corrected2af915d package not started",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
@@ -9755,9 +9755,9 @@
         "AC-056"
       ],
       "verification": {
-        "source": "Bounded independent G4 GO source7e2975c/review2310638; required later dependencies remain explicit",
-        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:53:59+07:00",
-        "runtime": "V009 not applied at source-review checkpoint; no G4 business/runtime acceptance",
+        "source": "Corrected bounded G4 GO2af915d/review86035f9 after reopened enum finding",
+        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:59:20+07:00",
+        "runtime": "V009 applied/startup observed on prior7e2975c JAR only; corrected2af915d package not started",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },

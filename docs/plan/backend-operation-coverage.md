@@ -102,3 +102,5 @@ Original agreement artifact tranche: final dossier APPROVE now invokes a real ma
 Current source review and 73-source package passed at 6585c4f; primary V008/bean initialization also passed. These do not establish business acceptance. S060 and S024 maker hint corrections are owner-approved and internally reviewed at A/B1.2.2; actual external FE acknowledgement remains pending.
 
 Current G4: negotiated Change CRUD/approval/signing/commit/rebase/cancel/timeline source reviewed,84-source package PASS. V009 has not been applied at this checkpoint. Notice/tariff readiness remains partial; CONTROL_REQUEST Round and future Notice/Data jobs remain partial. See reviews/backend-change-source-review.md.
+
+Current corrected G4 source GO2af915d/review86035f9;84-source skipped-test package PASS18October18:59:20+07, JAR SHA2568bc3554e12edfe0c4bf180dec6b8c109c8135227ce6c994ce1aa2a18356b493d. The earlier review missed an enum violation in TERM_REVIEW supersession, now repaired and explicitly recorded. V009/startup was observed on prior7e2975c package only; this corrected package has not been started.
