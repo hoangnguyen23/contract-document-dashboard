@@ -1,7 +1,7 @@
 ---
 id: backend-obligation-incident-completion
 scope: public duties, operative deadlines, immutable breaches and incident resolution
-status: ready
+status: done
 depends-on: [backend-notice-completion]
 ---
 
@@ -35,3 +35,5 @@ Own obligation/** and incident/**, additive V011 exclusively, necessary files-ow
 
 No automated tests/test dependencies, HTTP scenarios/smoke, manual PDF, business-data mutations or isolated Docker. Static/source/schema and skipped-test compile/package only. Commit coherent source; independent review -> repair -> one final clean/package with all test phases skipped. Source/build/runtime/business/integration remain separate. Report real canonical ambiguity to root while continuing independent source; no silent API/product change.
 Notice integration constraints: acceptNoticeAck receives the pre-update Notice plus verified candidate within the same transaction; do not require its persisted state ACKNOWLEDGED before that owned hook. Preserve historical contributor snapshots and direct Notice ACK closure. Consolidate synchronizeNoticeBreach without duplicate ledgers. Generic duty closure cannot invent another ACK verifier or demand OBLIGATION-only files for Notice-owned evidence.
+
+Bounded G5 source task complete992946d/reviewb42e821;95-source skipped-test package PASS. Full CLOSEOUT command scope remains partial until the next actual Control producer; this is not full business/mission acceptance.

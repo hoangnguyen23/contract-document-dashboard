@@ -26,3 +26,6 @@ Implementation plans and module setup notes are derived operational documentatio
 
 - [Notice implementation](plan/notice-implementation.md): reviewed source dispatch, receipt/ACK and tariff integration.
 - [Notice source review](plan/reviews/backend-notice-source-review.md): bounded source and88-source skipped-test build evidence.
+
+- [Obligation/Incident implementation](plan/obligation-incident-implementation.md): operative deadlines, immutable breaches/source and explicit CLOSEOUT dependency.
+- [G5 source review](plan/reviews/backend-obligation-incident-source-review.md): bounded source GO and95-source skipped-test package.

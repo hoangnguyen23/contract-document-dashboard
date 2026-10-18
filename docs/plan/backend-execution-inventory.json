@@ -1,13 +1,13 @@
 {
   "inventoryVersion": 1,
   "auditedAt": "2026-10-19",
-  "sourceCommit": "3254e4c",
+  "sourceCommit": "b42e821",
   "canonicalVersion": "1.2.2",
   "purpose": "Working semantic source inventory; source/build are not business or integrated acceptance",
   "counts": {
-    "implemented": 65,
-    "partial": 5,
-    "not implemented": 15
+    "implemented": 71,
+    "partial": 6,
+    "not implemented": 8
   },
   "readBoundary": "All listed artifacts read as UTF-8/JSON for indexing; semantic focus includes canonical domain sections and source ports/guards. This is an inventory, not an independent full-code correctness verdict.",
   "provenance": [
@@ -6341,26 +6341,30 @@
       "path": "/api/v1/obligations",
       "module": "obligation",
       "implementationLocation": [
-        "apps/api/src/main/java/vn/contractgovernance/api/obligation/LifecycleObligations.java"
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/ObligationController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/ObligationService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/LifecycleObligations.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/DutyEvidence.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/ObligationDeadlines.java"
       ],
-      "coverage": "not implemented",
+      "coverage": "implemented",
       "supportedActions": [],
       "missingActions": [],
-      "supportedTargets": [],
-      "missingTargets": [
+      "supportedTargets": [
         "NOTICE_ACK",
         "REMEDIATION",
         "TERM_REVIEW",
-        "CLOSEOUT"
+        "CLOSEOUT:read/source only"
       ],
+      "missingTargets": [],
       "businessDependencies": [
-        "NOTICE_ACK/TERM_REVIEW/REMEDIATION/CLOSEOUT; immutable original due; late extension breach synchronization; contractual bilateral proof; closeout real stop/incidents/duties"
+        "Immutable source/receipt/candidate/exception/assessment history, strict operative due and immutable breach catch-up, current parent scope/contributors/private bytes; actual Notice ACK hook; CLOSEOUT proof producer remains pending Control"
       ],
       "databaseDependencies": [
-        "V008: creation-only consequence/breach records; missing public lifecycle/due revision/evidence/exception history"
+        "V011 immutable events/due revisions, existing V008 breach/consequence ledger and Notice-owned V010 history preserved"
       ],
       "jobDependencies": [
-        "Due/breach scheduler and catch-up; creation dedupe"
+        "Durable persisted due-state poller and deduped immutable breach ledger; no invented public Job kind"
       ],
       "securityRequirements": [
         "Assigned MAKER evidence/exception request; independent CHECKER closure; independent MANAGER exceptions; statutory external nonwaivable",
@@ -6487,20 +6491,20 @@
         "AC-056"
       ],
       "verification": {
-        "source": "Present bounded review evidence; completeness limitations retained",
-        "build": "Baseline 73-source skipped-test package reported at 6585c4f; not rerun by inventory agent",
-        "runtime": "Baseline V001-V008/startup reported only; not observed by inventory agent",
+        "source": "Bounded G5 GO992946d/reviewb42e821; CLOSEOUT approval dependency explicitly partial",
+        "build": "Independent95-source skipped-test clean/package PASS2026-10-19T00:18:26+07:00",
+        "runtime": "V011 unapplied; no G5 runtime/HTTP/workflow acceptance",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
       "limitations": [
-        "Later gate; schema availability alone does not register a handler. |"
+        "Source reviewed; runtime/business/FE acceptance not executed"
       ],
       "FEImpact": {
         "breakingChange": false,
         "canonicalChangeApproved": false,
-        "schemaChange": "None proposed",
-        "availability": "Incomplete: implement missing scope without wire changes",
+        "schemaChange": "None; A/B1.2.2 unchanged",
+        "availability": "Source available for listed scope; CLOSEOUT approval remains blocked pending Control",
         "fields": "Canonical request/response schemas and action hints; async states remain authoritative",
         "ownerDecision": null
       },
@@ -6514,26 +6518,30 @@
       "path": "/api/v1/obligations/{id}",
       "module": "obligation",
       "implementationLocation": [
-        "apps/api/src/main/java/vn/contractgovernance/api/obligation/LifecycleObligations.java"
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/ObligationController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/ObligationService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/LifecycleObligations.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/DutyEvidence.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/ObligationDeadlines.java"
       ],
-      "coverage": "not implemented",
+      "coverage": "implemented",
       "supportedActions": [],
       "missingActions": [],
-      "supportedTargets": [],
-      "missingTargets": [
+      "supportedTargets": [
         "NOTICE_ACK",
         "REMEDIATION",
         "TERM_REVIEW",
-        "CLOSEOUT"
+        "CLOSEOUT:read/source only"
       ],
+      "missingTargets": [],
       "businessDependencies": [
-        "NOTICE_ACK/TERM_REVIEW/REMEDIATION/CLOSEOUT; immutable original due; late extension breach synchronization; contractual bilateral proof; closeout real stop/incidents/duties"
+        "Immutable source/receipt/candidate/exception/assessment history, strict operative due and immutable breach catch-up, current parent scope/contributors/private bytes; actual Notice ACK hook; CLOSEOUT proof producer remains pending Control"
       ],
       "databaseDependencies": [
-        "V008: creation-only consequence/breach records; missing public lifecycle/due revision/evidence/exception history"
+        "V011 immutable events/due revisions, existing V008 breach/consequence ledger and Notice-owned V010 history preserved"
       ],
       "jobDependencies": [
-        "Due/breach scheduler and catch-up; creation dedupe"
+        "Durable persisted due-state poller and deduped immutable breach ledger; no invented public Job kind"
       ],
       "securityRequirements": [
         "Assigned MAKER evidence/exception request; independent CHECKER closure; independent MANAGER exceptions; statutory external nonwaivable",
@@ -6586,20 +6594,20 @@
         "AC-056"
       ],
       "verification": {
-        "source": "Present bounded review evidence; completeness limitations retained",
-        "build": "Baseline 73-source skipped-test package reported at 6585c4f; not rerun by inventory agent",
-        "runtime": "Baseline V001-V008/startup reported only; not observed by inventory agent",
+        "source": "Bounded G5 GO992946d/reviewb42e821; CLOSEOUT approval dependency explicitly partial",
+        "build": "Independent95-source skipped-test clean/package PASS2026-10-19T00:18:26+07:00",
+        "runtime": "V011 unapplied; no G5 runtime/HTTP/workflow acceptance",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
       "limitations": [
-        "Later gate; schema availability alone does not register a handler. |"
+        "Source reviewed; runtime/business/FE acceptance not executed"
       ],
       "FEImpact": {
         "breakingChange": false,
         "canonicalChangeApproved": false,
-        "schemaChange": "None proposed",
-        "availability": "Incomplete: implement missing scope without wire changes",
+        "schemaChange": "None; A/B1.2.2 unchanged",
+        "availability": "Source available for listed scope; CLOSEOUT approval remains blocked pending Control",
         "fields": "Canonical request/response schemas and action hints; async states remain authoritative",
         "ownerDecision": null
       }
@@ -6610,11 +6618,14 @@
       "path": "/api/v1/obligations/{id}/commands",
       "module": "obligation",
       "implementationLocation": [
-        "apps/api/src/main/java/vn/contractgovernance/api/obligation/LifecycleObligations.java"
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/ObligationController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/ObligationService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/LifecycleObligations.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/DutyEvidence.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/ObligationDeadlines.java"
       ],
-      "coverage": "not implemented",
-      "supportedActions": [],
-      "missingActions": [
+      "coverage": "partial",
+      "supportedActions": [
         "APPROVE",
         "CANCEL_INAPPLICABLE",
         "DECIDE_EXTENSION",
@@ -6625,21 +6636,24 @@
         "SUBMIT_EVIDENCE",
         "SUPERSEDE"
       ],
-      "supportedTargets": [],
-      "missingTargets": [
+      "missingActions": [],
+      "supportedTargets": [
         "NOTICE_ACK",
         "REMEDIATION",
         "TERM_REVIEW",
-        "CLOSEOUT"
+        "CLOSEOUT:read/source only"
+      ],
+      "missingTargets": [
+        "CLOSEOUT:APPROVE real Control ServiceEndProof producer"
       ],
       "businessDependencies": [
-        "NOTICE_ACK/TERM_REVIEW/REMEDIATION/CLOSEOUT; immutable original due; late extension breach synchronization; contractual bilateral proof; closeout real stop/incidents/duties"
+        "Immutable source/receipt/candidate/exception/assessment history, strict operative due and immutable breach catch-up, current parent scope/contributors/private bytes; actual Notice ACK hook; CLOSEOUT proof producer remains pending Control"
       ],
       "databaseDependencies": [
-        "V008: creation-only consequence/breach records; missing public lifecycle/due revision/evidence/exception history"
+        "V011 immutable events/due revisions, existing V008 breach/consequence ledger and Notice-owned V010 history preserved"
       ],
       "jobDependencies": [
-        "Due/breach scheduler and catch-up; creation dedupe"
+        "Durable persisted due-state poller and deduped immutable breach ledger; no invented public Job kind"
       ],
       "securityRequirements": [
         "Assigned MAKER evidence/exception request; independent CHECKER closure; independent MANAGER exceptions; statutory external nonwaivable",
@@ -6701,20 +6715,20 @@
         "AC-056"
       ],
       "verification": {
-        "source": "Present bounded review evidence; completeness limitations retained",
-        "build": "Baseline 73-source skipped-test package reported at 6585c4f; not rerun by inventory agent",
-        "runtime": "Baseline V001-V008/startup reported only; not observed by inventory agent",
+        "source": "Bounded G5 GO992946d/reviewb42e821; CLOSEOUT approval dependency explicitly partial",
+        "build": "Independent95-source skipped-test clean/package PASS2026-10-19T00:18:26+07:00",
+        "runtime": "V011 unapplied; no G5 runtime/HTTP/workflow acceptance",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
       "limitations": [
-        "Later gate; schema availability alone does not register a handler. |"
+        "CLOSEOUT APPROVE blocked until real Control ServiceEndProof producer; other source paths reviewed; no business acceptance"
       ],
       "FEImpact": {
         "breakingChange": false,
         "canonicalChangeApproved": false,
-        "schemaChange": "None proposed",
-        "availability": "Incomplete: implement missing scope without wire changes",
+        "schemaChange": "None; A/B1.2.2 unchanged",
+        "availability": "Source available for listed scope; CLOSEOUT approval remains blocked pending Control",
         "fields": "Canonical request/response schemas and action hints; async states remain authoritative",
         "ownerDecision": null
       }
@@ -6724,20 +6738,27 @@
       "method": "GET",
       "path": "/api/v1/incidents",
       "module": "incident",
-      "implementationLocation": [],
-      "coverage": "not implemented",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/incident/IncidentController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/incident/IncidentService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/DutyEvidence.java"
+      ],
+      "coverage": "implemented",
       "supportedActions": [],
       "missingActions": [],
-      "supportedTargets": [],
+      "supportedTargets": [
+        "CONTRACT_PERFORMANCE",
+        "PAYMENT_COMPLAINT_REFERENCE"
+      ],
       "missingTargets": [],
       "businessDependencies": [
-        "Contract/evidence; independent proven trigger; required obligations; external complaint confirmation; blocks RESUME/CLOSEOUT where required"
+        "Immutable source/receipt/candidate/exception/assessment history, strict operative due and immutable breach catch-up, current parent scope/contributors/private bytes; actual Notice ACK hook; CLOSEOUT proof producer remains pending Control"
       ],
       "databaseDependencies": [
-        "Missing: incident immutable receipt/source/verification/resolution assessments"
+        "V011 immutable events/due revisions, existing V008 breach/consequence ledger and Notice-owned V010 history preserved"
       ],
       "jobDependencies": [
-        "REMEDIATION due trigger recovery"
+        "Source-derived owned REMEDIATION consequence uniqueness"
       ],
       "securityRequirements": [
         "Assigned MAKER records/resolution candidate; independent CHECKER verify/resolve/close; allegation not guilt; receivedAt/external due never reset",
@@ -6826,20 +6847,20 @@
         "AC-056"
       ],
       "verification": {
-        "source": "No public handler; implementation required",
-        "build": "Baseline 73-source skipped-test package reported at 6585c4f; not rerun by inventory agent",
-        "runtime": "Baseline V001-V008/startup reported only; not observed by inventory agent",
+        "source": "Bounded G5 GO992946d/reviewb42e821; CLOSEOUT approval dependency explicitly partial",
+        "build": "Independent95-source skipped-test clean/package PASS2026-10-19T00:18:26+07:00",
+        "runtime": "V011 unapplied; no G5 runtime/HTTP/workflow acceptance",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
       "limitations": [
-        "Later gate; schema availability alone does not register a handler. |"
+        "Source reviewed; runtime/business/FE acceptance not executed"
       ],
       "FEImpact": {
         "breakingChange": false,
         "canonicalChangeApproved": false,
-        "schemaChange": "None proposed",
-        "availability": "Incomplete: implement missing scope without wire changes",
+        "schemaChange": "None; A/B1.2.2 unchanged",
+        "availability": "Source available for listed scope; CLOSEOUT approval remains blocked pending Control",
         "fields": "Canonical request/response schemas and action hints; async states remain authoritative",
         "ownerDecision": null
       },
@@ -6852,20 +6873,27 @@
       "method": "POST",
       "path": "/api/v1/incidents",
       "module": "incident",
-      "implementationLocation": [],
-      "coverage": "not implemented",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/incident/IncidentController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/incident/IncidentService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/DutyEvidence.java"
+      ],
+      "coverage": "implemented",
       "supportedActions": [],
       "missingActions": [],
-      "supportedTargets": [],
+      "supportedTargets": [
+        "CONTRACT_PERFORMANCE",
+        "PAYMENT_COMPLAINT_REFERENCE"
+      ],
       "missingTargets": [],
       "businessDependencies": [
-        "Contract/evidence; independent proven trigger; required obligations; external complaint confirmation; blocks RESUME/CLOSEOUT where required"
+        "Immutable source/receipt/candidate/exception/assessment history, strict operative due and immutable breach catch-up, current parent scope/contributors/private bytes; actual Notice ACK hook; CLOSEOUT proof producer remains pending Control"
       ],
       "databaseDependencies": [
-        "Missing: incident immutable receipt/source/verification/resolution assessments"
+        "V011 immutable events/due revisions, existing V008 breach/consequence ledger and Notice-owned V010 history preserved"
       ],
       "jobDependencies": [
-        "REMEDIATION due trigger recovery"
+        "Source-derived owned REMEDIATION consequence uniqueness"
       ],
       "securityRequirements": [
         "Assigned MAKER records/resolution candidate; independent CHECKER verify/resolve/close; allegation not guilt; receivedAt/external due never reset",
@@ -6913,20 +6941,20 @@
         "AC-056"
       ],
       "verification": {
-        "source": "No public handler; implementation required",
-        "build": "Baseline 73-source skipped-test package reported at 6585c4f; not rerun by inventory agent",
-        "runtime": "Baseline V001-V008/startup reported only; not observed by inventory agent",
+        "source": "Bounded G5 GO992946d/reviewb42e821; CLOSEOUT approval dependency explicitly partial",
+        "build": "Independent95-source skipped-test clean/package PASS2026-10-19T00:18:26+07:00",
+        "runtime": "V011 unapplied; no G5 runtime/HTTP/workflow acceptance",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
       "limitations": [
-        "Later gate; schema availability alone does not register a handler. |"
+        "Source reviewed; runtime/business/FE acceptance not executed"
       ],
       "FEImpact": {
         "breakingChange": false,
         "canonicalChangeApproved": false,
-        "schemaChange": "None proposed",
-        "availability": "Incomplete: implement missing scope without wire changes",
+        "schemaChange": "None; A/B1.2.2 unchanged",
+        "availability": "Source available for listed scope; CLOSEOUT approval remains blocked pending Control",
         "fields": "Canonical request/response schemas and action hints; async states remain authoritative",
         "ownerDecision": null
       }
@@ -6936,20 +6964,27 @@
       "method": "GET",
       "path": "/api/v1/incidents/{id}",
       "module": "incident",
-      "implementationLocation": [],
-      "coverage": "not implemented",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/incident/IncidentController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/incident/IncidentService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/DutyEvidence.java"
+      ],
+      "coverage": "implemented",
       "supportedActions": [],
       "missingActions": [],
-      "supportedTargets": [],
+      "supportedTargets": [
+        "CONTRACT_PERFORMANCE",
+        "PAYMENT_COMPLAINT_REFERENCE"
+      ],
       "missingTargets": [],
       "businessDependencies": [
-        "Contract/evidence; independent proven trigger; required obligations; external complaint confirmation; blocks RESUME/CLOSEOUT where required"
+        "Immutable source/receipt/candidate/exception/assessment history, strict operative due and immutable breach catch-up, current parent scope/contributors/private bytes; actual Notice ACK hook; CLOSEOUT proof producer remains pending Control"
       ],
       "databaseDependencies": [
-        "Missing: incident immutable receipt/source/verification/resolution assessments"
+        "V011 immutable events/due revisions, existing V008 breach/consequence ledger and Notice-owned V010 history preserved"
       ],
       "jobDependencies": [
-        "REMEDIATION due trigger recovery"
+        "Source-derived owned REMEDIATION consequence uniqueness"
       ],
       "securityRequirements": [
         "Assigned MAKER records/resolution candidate; independent CHECKER verify/resolve/close; allegation not guilt; receivedAt/external due never reset",
@@ -6994,20 +7029,20 @@
         "AC-056"
       ],
       "verification": {
-        "source": "No public handler; implementation required",
-        "build": "Baseline 73-source skipped-test package reported at 6585c4f; not rerun by inventory agent",
-        "runtime": "Baseline V001-V008/startup reported only; not observed by inventory agent",
+        "source": "Bounded G5 GO992946d/reviewb42e821; CLOSEOUT approval dependency explicitly partial",
+        "build": "Independent95-source skipped-test clean/package PASS2026-10-19T00:18:26+07:00",
+        "runtime": "V011 unapplied; no G5 runtime/HTTP/workflow acceptance",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
       "limitations": [
-        "Later gate; schema availability alone does not register a handler. |"
+        "Source reviewed; runtime/business/FE acceptance not executed"
       ],
       "FEImpact": {
         "breakingChange": false,
         "canonicalChangeApproved": false,
-        "schemaChange": "None proposed",
-        "availability": "Incomplete: implement missing scope without wire changes",
+        "schemaChange": "None; A/B1.2.2 unchanged",
+        "availability": "Source available for listed scope; CLOSEOUT approval remains blocked pending Control",
         "fields": "Canonical request/response schemas and action hints; async states remain authoritative",
         "ownerDecision": null
       }
@@ -7017,25 +7052,32 @@
       "method": "POST",
       "path": "/api/v1/incidents/{id}/commands",
       "module": "incident",
-      "implementationLocation": [],
-      "coverage": "not implemented",
-      "supportedActions": [],
-      "missingActions": [
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/incident/IncidentController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/incident/IncidentService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/DutyEvidence.java"
+      ],
+      "coverage": "implemented",
+      "supportedActions": [
         "CLOSE",
         "RESOLVE",
         "SUBMIT_RESOLUTION",
         "VERIFY"
       ],
-      "supportedTargets": [],
+      "missingActions": [],
+      "supportedTargets": [
+        "CONTRACT_PERFORMANCE",
+        "PAYMENT_COMPLAINT_REFERENCE"
+      ],
       "missingTargets": [],
       "businessDependencies": [
-        "Contract/evidence; independent proven trigger; required obligations; external complaint confirmation; blocks RESUME/CLOSEOUT where required"
+        "Immutable source/receipt/candidate/exception/assessment history, strict operative due and immutable breach catch-up, current parent scope/contributors/private bytes; actual Notice ACK hook; CLOSEOUT proof producer remains pending Control"
       ],
       "databaseDependencies": [
-        "Missing: incident immutable receipt/source/verification/resolution assessments"
+        "V011 immutable events/due revisions, existing V008 breach/consequence ledger and Notice-owned V010 history preserved"
       ],
       "jobDependencies": [
-        "REMEDIATION due trigger recovery"
+        "Source-derived owned REMEDIATION consequence uniqueness"
       ],
       "securityRequirements": [
         "Assigned MAKER records/resolution candidate; independent CHECKER verify/resolve/close; allegation not guilt; receivedAt/external due never reset",
@@ -7089,20 +7131,20 @@
         "AC-056"
       ],
       "verification": {
-        "source": "No public handler; implementation required",
-        "build": "Baseline 73-source skipped-test package reported at 6585c4f; not rerun by inventory agent",
-        "runtime": "Baseline V001-V008/startup reported only; not observed by inventory agent",
+        "source": "Bounded G5 GO992946d/reviewb42e821; CLOSEOUT approval dependency explicitly partial",
+        "build": "Independent95-source skipped-test clean/package PASS2026-10-19T00:18:26+07:00",
+        "runtime": "V011 unapplied; no G5 runtime/HTTP/workflow acceptance",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
       "limitations": [
-        "Later gate; schema availability alone does not register a handler. |"
+        "Source reviewed; runtime/business/FE acceptance not executed"
       ],
       "FEImpact": {
         "breakingChange": false,
         "canonicalChangeApproved": false,
-        "schemaChange": "None proposed",
-        "availability": "Incomplete: implement missing scope without wire changes",
+        "schemaChange": "None; A/B1.2.2 unchanged",
+        "availability": "Source available for listed scope; CLOSEOUT approval remains blocked pending Control",
         "fields": "Canonical request/response schemas and action hints; async states remain authoritative",
         "ownerDecision": null
       }
