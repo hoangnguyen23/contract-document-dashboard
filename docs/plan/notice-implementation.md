@@ -1,6 +1,6 @@
 # Notice implementation — source checkpoint
 
-Status: implementation candidate under independent review; not runtime or business acceptance. Branch `feature/backend-notices-renewals`; source candidate `231b524` (18 October 2026). Canonical A/B 1.2.2 unchanged.
+Status: bounded independent source GO5142b83/review3254e4c; not runtime or business acceptance. Branch `feature/backend-notices-renewals`; source candidate `231b524` (18 October 2026). Canonical A/B 1.2.2 unchanged.
 
 ## API and ownership
 
@@ -35,3 +35,5 @@ Change cleanup cancels unissued Notice jobs/sources, preserves dispatched/ACK hi
 All six Notice operation IDs and existing Notice/NoticeCapture/AckCandidate schemas retain canonical shape. Frontend gains actual responses, jobs/private-artifact progression, transport-specific action hints and independent ACK behavior; canonical owner-approved S024 MAKER hints remain []. No breaking schema change, no FE edit, no new product decision. External FE acknowledgement/integration has not been performed here.
 
 Developer compile of 88 Java sources passed with `-Dmaven.test.skip=true` before the final small source repairs; it is historical compile evidence only. Independent exact-HEAD source review and final skipped-test clean/package remain pending at this checkpoint. No automated tests, HTTP scenarios, manual PDF rendering, business-data mutation, Docker start or migration execution occurred in this worktree. Runtime migration, dispatch/retry/races, PDF/scan/download, tariff/ACK workflow and FE–BE acceptance are unverified and require the separately authorized acceptance scope.
+
+Final independent clean/package PASS19October2026 00:02:19+07,88Java sources, all test phases skipped. Final JAR SHA256 ac9012ce8908bbeb743c31552c6728f540106d2180ac85d2f35e920d7c481a42. Earlier candidate/pending statements are historical; see reviews/backend-notice-source-review.md for final evidence. V010 has not been applied.

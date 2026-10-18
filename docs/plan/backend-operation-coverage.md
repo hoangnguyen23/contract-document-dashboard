@@ -1,6 +1,6 @@
 # Backend operation coverage
 
-Canonical A/B1.2.2 defines85 operations:58 implemented,6 partial and21 not implemented at reviewed G4 source7e2975c/review2310638. These are semantic source classifications, not runtime/business or FE acceptance. Independent84-source package passed with every test phase skipped.
+Canonical A/B1.2.2 defines85 operations:65 implemented,5 partial and15 not implemented at reviewed Notice/tariff source5142b83/review3254e4c. These are semantic source classifications, not runtime/business or FE acceptance. Independent88-source clean/package passed19October00:02:19+07 with every test phase skipped. V010 remains unapplied.
 
 | Method | Path | Canonical operationId | Source coverage | Limitation |
 |---|---|---|---|---|
@@ -13,7 +13,7 @@ Canonical A/B1.2.2 defines85 operations:58 implemented,6 partial and21 not imple
 | POST | `/api/v1/changes` | `createChange` | implemented | Source implemented; HTTP/business/FE acceptance pending. |
 | GET | `/api/v1/changes/{id}` | `getChange` | implemented | Source implemented; HTTP/business/FE acceptance pending. |
 | PUT | `/api/v1/changes/{id}` | `updateChange` | implemented | Source implemented; HTTP/business/FE acceptance pending. |
-| POST | `/api/v1/changes/{id}/commands` | `commandChange` | partial | TARIFF_NOTICE readiness and existing Notice cleanup await real Notice module; no business acceptance. |
+| POST | `/api/v1/changes/{id}/commands` | `commandChange` | implemented | Negotiated and tariff source paths reviewed; runtime/business acceptance not executed. |
 | GET | `/api/v1/contact-requests` | `listContactRequests` | implemented | Runtime verification pending. |
 | POST | `/api/v1/contact-requests` | `createContactRequest` | implemented | Runtime verification pending. |
 | GET | `/api/v1/contact-requests/{id}` | `getContactRequest` | implemented | Runtime verification pending. |
@@ -49,13 +49,13 @@ Canonical A/B1.2.2 defines85 operations:58 implemented,6 partial and21 not imple
 | POST | `/api/v1/incidents/{id}/commands` | `commandIncident` | not implemented | Later gate; schema availability alone does not register a handler. |
 | GET | `/api/v1/jobs` | `listJobs` | implemented | Runtime verification pending. |
 | GET | `/api/v1/jobs/{id}` | `getJob` | implemented | Runtime verification pending. |
-| POST | `/api/v1/jobs/{id}/commands` | `commandJob` | partial | Notice artifact/dispatch and data disposition retry dependencies remain missing. |
-| GET | `/api/v1/notices` | `listNotices` | not implemented | Later gate; schema availability alone does not register a handler. |
-| POST | `/api/v1/notices` | `createNotice` | not implemented | Later gate; schema availability alone does not register a handler. |
-| GET | `/api/v1/notices/{id}` | `getNotice` | not implemented | Later gate; schema availability alone does not register a handler. |
-| PUT | `/api/v1/notices/{id}` | `updateNotice` | not implemented | Later gate; schema availability alone does not register a handler. |
-| GET | `/api/v1/notices/{id}/capture` | `getNoticeCapture` | not implemented | Later gate; schema availability alone does not register a handler. |
-| POST | `/api/v1/notices/{id}/commands` | `commandNotice` | not implemented | Later gate; schema availability alone does not register a handler. |
+| POST | `/api/v1/jobs/{id}/commands` | `commandJob` | partial | DATA_DISPOSITION source/worker/retry still missing. |
+| GET | `/api/v1/notices` | `listNotices` | implemented | Source reviewed; runtime/HTTP/PDF/business/FE acceptance not executed; V010 unapplied. |
+| POST | `/api/v1/notices` | `createNotice` | implemented | Source reviewed; runtime/HTTP/PDF/business/FE acceptance not executed; V010 unapplied. |
+| GET | `/api/v1/notices/{id}` | `getNotice` | implemented | Source reviewed; runtime/HTTP/PDF/business/FE acceptance not executed; V010 unapplied. |
+| PUT | `/api/v1/notices/{id}` | `updateNotice` | implemented | Source reviewed; runtime/HTTP/PDF/business/FE acceptance not executed; V010 unapplied. |
+| GET | `/api/v1/notices/{id}/capture` | `getNoticeCapture` | implemented | Source reviewed; runtime/HTTP/PDF/business/FE acceptance not executed; V010 unapplied. |
+| POST | `/api/v1/notices/{id}/commands` | `commandNotice` | implemented | Source reviewed; runtime/HTTP/PDF/business/FE acceptance not executed; V010 unapplied. |
 | GET | `/api/v1/obligations` | `listObligations` | not implemented | Later gate; schema availability alone does not register a handler. |
 | GET | `/api/v1/obligations/{id}` | `getObligation` | not implemented | Later gate; schema availability alone does not register a handler. |
 | POST | `/api/v1/obligations/{id}/commands` | `commandObligation` | not implemented | Later gate; schema availability alone does not register a handler. |
@@ -104,3 +104,5 @@ Current source review and 73-source package passed at 6585c4f; primary V008/bean
 Current G4: negotiated Change CRUD/approval/signing/commit/rebase/cancel/timeline source reviewed,84-source package PASS. V009 has not been applied at this checkpoint. Notice/tariff readiness remains partial; CONTROL_REQUEST Round and future Notice/Data jobs remain partial. See reviews/backend-change-source-review.md.
 
 Current corrected G4 source GO2af915d/review86035f9;84-source skipped-test package PASS18October18:59:20+07, JAR SHA2568bc3554e12edfe0c4bf180dec6b8c109c8135227ce6c994ce1aa2a18356b493d. The earlier review missed an enum violation in TERM_REVIEW supersession, now repaired and explicitly recorded. V009/startup was observed on prior7e2975c package only; this corrected package has not been started.
+
+Current Notice/tariff source GO5142b83/review3254e4c supersedes earlier temporary Notice blockers below/above. Six Notice operations and full tariff Change source path are implemented; remaining partial scope is CONTROL_REQUEST Round (four operations) and DATA_DISPOSITION Job retry. Public Obligation/Incident, Control and Privacy remain next. JAR SHA256 ac9012ce8908bbeb743c31552c6728f540106d2180ac85d2f35e920d7c481a42. No HTTP/business/PDF/FE acceptance.
