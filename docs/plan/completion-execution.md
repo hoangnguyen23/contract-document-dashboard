@@ -39,3 +39,7 @@ FE public wire baseline stays A/B1.2.0. No field/enum/action/permission/date mea
 ## Resume checkpoint
 
 Status: PRE-IMPLEMENTATION INVENTORY READY. Next: root integrates this documentation, delegates scoped-lag repair then G4 feature implementation. Update inventory sourceCommit and verification per reviewed tranche; retain historical provenance rather than retroactively treating new source as old build evidence. Closure verdict must separately state Source Complete / Build Verified / Runtime Started / Business Verified / Integrated Acceptance / Production Ready. Pending tests or canonical conflict must remain explicit even if 85 handlers exist.
+
+## Current checkpoint18October
+
+Reporting source GO app1e721ae/review9ae5826, independent78-source packagePASS. Scoped-lag P2 closed cb87868 plus same-asOf port44040f9. Reporting branch includes owner-approved/internal-shared-reviewed S060 patch A/B1.2.1; actual external FE acknowledgement remains pending. Current branch inventory50implemented/9partial/26absent; G4 in separate feature/backend-contract-changes is still being implemented and must integrate/review before counting it here. No tests/HTTP/runtime reporting acceptance. Continue G4 then Notice/G5/privacy and source closure automatically.

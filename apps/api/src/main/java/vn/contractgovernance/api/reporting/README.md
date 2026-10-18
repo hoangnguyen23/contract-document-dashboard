@@ -1,6 +1,6 @@
 # Reporting and scoped audit
 
-Canonical A/B1.2.0 operations: `getDashboard`, `listAuditEvents`, `exportAuditCsv`. No schema, request, enum, permission or Frontend file changes. These operations become source-available under the existing approved contract; runtime/business acceptance remains separate.
+Canonical A/B1.2.1 operations: `getDashboard`, `listAuditEvents`, `exportAuditCsv`. No schema, request, enum, permission or Frontend file changes. These operations become source-available under the existing approved contract; runtime/business acceptance remains separate.
 
 Dashboard accepts only canonical `branchId`. A read-only PostgreSQL REPEATABLE_READ transaction uses one `asOf`, seven dossier-state counts and the nine predicates in A§12.2. Recorded ACTIVE is distinct from observed service. Review overdue requires the current OPEN round bound by its target's `roundId`; historical breaches count distinct scoped obligations with actual immutable breach records recorded by asOf, including closed/cancelled duties. Expiring30 uses current immutable terms and Vietnam calendar dates. Lag uses the shared current-parent-scoped EFFECTIVITY read port at the same asOf. No timeline writes or fabricated future-domain data are performed.
 

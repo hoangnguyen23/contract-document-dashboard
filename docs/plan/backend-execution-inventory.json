@@ -1,13 +1,13 @@
 {
   "inventoryVersion": 1,
   "auditedAt": "2026-10-18",
-  "sourceCommit": "b8a026e2382f6b98e02da408c848319a87d3e257",
-  "canonicalVersion": "1.2.0",
-  "purpose": "Pre-implementation working inventory; source coverage is not accepted business completeness",
+  "sourceCommit": "9ae5826",
+  "canonicalVersion": "1.2.1",
+  "purpose": "Working semantic source inventory; source/build are not business or integrated acceptance",
   "counts": {
-    "implemented": 47,
+    "implemented": 50,
     "partial": 9,
-    "not implemented": 29
+    "not implemented": 26
   },
   "readBoundary": "All listed artifacts read as UTF-8/JSON for indexing; semantic focus includes canonical domain sections and source ports/guards. This is an inventory, not an independent full-code correctness verdict.",
   "provenance": [
@@ -571,7 +571,7 @@
         "Current authorization/scope before count/page; canonical redaction and no-store"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-003"
         ],
@@ -647,7 +647,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-003"
         ],
@@ -727,7 +727,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-003"
         ],
@@ -804,7 +804,7 @@
         "Repair global timelineLag calculation to use exactly this actor/query scope before business completion."
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-005"
         ],
@@ -916,7 +916,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-005"
         ],
@@ -999,7 +999,7 @@
         "Current authorization/scope before count/page; canonical redaction and no-store"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-005"
         ],
@@ -1079,7 +1079,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-005"
         ],
@@ -1169,7 +1169,7 @@
         "Repair global timelineLag calculation to use exactly this actor/query scope before business completion."
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-005"
         ],
@@ -1263,7 +1263,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-005"
         ],
@@ -1346,7 +1346,7 @@
         "Current authorization/scope before count/page; canonical redaction and no-store"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-005"
         ],
@@ -1426,7 +1426,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-005"
         ],
@@ -1517,7 +1517,7 @@
         "Repair global timelineLag calculation to use exactly this actor/query scope before business completion."
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-008"
         ],
@@ -1625,7 +1625,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-008"
         ],
@@ -1711,7 +1711,7 @@
         "Current authorization/scope before count/page; canonical redaction and no-store"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-008"
         ],
@@ -1794,7 +1794,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-008"
         ],
@@ -1887,7 +1887,7 @@
         "Repair global timelineLag calculation to use exactly this actor/query scope before business completion."
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-009"
         ],
@@ -2007,7 +2007,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-009"
         ],
@@ -2093,7 +2093,7 @@
         "Current authorization/scope before count/page; canonical redaction and no-store"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-009"
         ],
@@ -2176,7 +2176,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-009"
         ],
@@ -2269,7 +2269,7 @@
         "Repair global timelineLag calculation to use exactly this actor/query scope before business completion."
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-010"
         ],
@@ -2384,7 +2384,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-010"
         ],
@@ -2470,7 +2470,7 @@
         "Current authorization/scope before count/page; canonical redaction and no-store"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-010"
         ],
@@ -2556,7 +2556,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-010"
         ],
@@ -2656,7 +2656,7 @@
         "Repair global timelineLag calculation to use exactly this actor/query scope before business completion."
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-016"
         ],
@@ -2802,7 +2802,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-016"
         ],
@@ -2905,7 +2905,7 @@
         "Current authorization/scope before count/page; canonical redaction and no-store"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-016"
         ],
@@ -3005,7 +3005,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-016"
         ],
@@ -3119,7 +3119,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-016"
         ],
@@ -3237,7 +3237,7 @@
         "Repair global timelineLag calculation to use exactly this actor/query scope before business completion."
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-018"
         ],
@@ -3408,7 +3408,7 @@
         "Current authorization/scope before count/page; canonical redaction and no-store"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-018"
         ],
@@ -3518,7 +3518,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-018"
         ],
@@ -3629,7 +3629,7 @@
         "Repair global timelineLag calculation to use exactly this actor/query scope before business completion."
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-011"
         ],
@@ -3746,7 +3746,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-011"
         ],
@@ -3844,7 +3844,7 @@
         "Current authorization/scope before count/page; canonical redaction and no-store"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-011"
         ],
@@ -3939,7 +3939,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-011"
         ],
@@ -4049,7 +4049,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-011"
         ],
@@ -4162,7 +4162,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-013"
         ],
@@ -4261,7 +4261,7 @@
         "Repair global timelineLag calculation to use exactly this actor/query scope before business completion."
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-024"
         ],
@@ -4441,7 +4441,7 @@
         "Current authorization/scope before count/page; canonical redaction and no-store"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-024"
         ],
@@ -4555,7 +4555,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-024"
         ],
@@ -4675,7 +4675,7 @@
         "Repair global timelineLag calculation to use exactly this actor/query scope before business completion."
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-021"
         ],
@@ -4797,7 +4797,7 @@
         "Repair global timelineLag calculation to use exactly this actor/query scope before business completion."
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-022"
         ],
@@ -4938,7 +4938,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-022"
         ],
@@ -5038,7 +5038,7 @@
         "Current authorization/scope before count/page; canonical redaction and no-store"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-022"
         ],
@@ -5138,7 +5138,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-022"
         ],
@@ -5240,7 +5240,7 @@
         "Repair global timelineLag calculation to use exactly this actor/query scope before business completion."
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-026"
         ],
@@ -5383,7 +5383,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-026"
         ],
@@ -5480,7 +5480,7 @@
         "Current authorization/scope before count/page; canonical redaction and no-store"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-026"
         ],
@@ -5574,7 +5574,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-026"
         ],
@@ -5686,7 +5686,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-026"
         ],
@@ -5786,7 +5786,7 @@
         "Repair global timelineLag calculation to use exactly this actor/query scope before business completion."
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-031"
         ],
@@ -5933,7 +5933,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-031"
         ],
@@ -6022,7 +6022,7 @@
         "Current authorization/scope before count/page; canonical redaction and no-store"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-031"
         ],
@@ -6108,7 +6108,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-031"
         ],
@@ -6215,7 +6215,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-031"
         ],
@@ -6317,7 +6317,7 @@
         "Repair global timelineLag calculation to use exactly this actor/query scope before business completion."
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-035"
         ],
@@ -6489,7 +6489,7 @@
         "Current authorization/scope before count/page; canonical redaction and no-store"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-035"
         ],
@@ -6595,7 +6595,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-035"
         ],
@@ -6694,7 +6694,7 @@
         "Repair global timelineLag calculation to use exactly this actor/query scope before business completion."
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-041"
         ],
@@ -6821,7 +6821,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-041"
         ],
@@ -6905,7 +6905,7 @@
         "Current authorization/scope before count/page; canonical redaction and no-store"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-041"
         ],
@@ -6991,7 +6991,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-041"
         ],
@@ -7090,7 +7090,7 @@
         "Repair global timelineLag calculation to use exactly this actor/query scope before business completion."
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-043"
         ],
@@ -7234,7 +7234,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-043"
         ],
@@ -7330,7 +7330,7 @@
         "Current authorization/scope before count/page; canonical redaction and no-store"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-043"
         ],
@@ -7427,7 +7427,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-043"
         ],
@@ -7523,7 +7523,7 @@
         "Repair global timelineLag calculation to use exactly this actor/query scope before business completion."
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-046"
         ],
@@ -7652,7 +7652,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-046"
         ],
@@ -7747,7 +7747,7 @@
         "Current authorization/scope before count/page; canonical redaction and no-store"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-046"
         ],
@@ -7846,7 +7846,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-046"
         ],
@@ -7965,7 +7965,7 @@
         "Repair global timelineLag calculation to use exactly this actor/query scope before business completion."
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-051"
         ],
@@ -8152,7 +8152,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-051"
         ],
@@ -8268,7 +8268,7 @@
         "Current authorization/scope before count/page; canonical redaction and no-store"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-051"
         ],
@@ -8381,7 +8381,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-052"
         ],
@@ -8503,7 +8503,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-051"
         ],
@@ -8627,7 +8627,7 @@
         "Current authorization/scope before count/page; canonical redaction and no-store"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-052"
         ],
@@ -8753,7 +8753,7 @@
         "Repair global timelineLag calculation to use exactly this actor/query scope before business completion."
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-053"
         ],
@@ -8901,7 +8901,7 @@
         "Current authorization/scope before count/page; canonical redaction and no-store"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-053"
         ],
@@ -9002,7 +9002,7 @@
         "CSRF and Idempotency-Key; If-Match except canonical exclusions; transactional audit and response validation"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-053"
         ],
@@ -9071,9 +9071,10 @@
       "path": "/api/v1/audit-events",
       "module": "audit",
       "implementationLocation": [
-        "apps/api/src/main/java/vn/contractgovernance/api/shared/AuditService.java"
+        "apps/api/src/main/java/vn/contractgovernance/api/reporting/ReportingController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/reporting/AuditReportingService.java"
       ],
-      "coverage": "not implemented",
+      "coverage": "implemented",
       "supportedActions": [],
       "missingActions": [],
       "supportedTargets": [],
@@ -9091,7 +9092,7 @@
         "Repair global timelineLag calculation to use exactly this actor/query scope before business completion."
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-054"
         ],
@@ -9200,20 +9201,20 @@
         "AC-056"
       ],
       "verification": {
-        "source": "Present bounded review evidence; completeness limitations retained",
-        "build": "Baseline 73-source skipped-test package reported at 6585c4f; not rerun by inventory agent",
-        "runtime": "Baseline V001-V008/startup reported only; not observed by inventory agent",
+        "source": "Independent bounded GO at app1e721ae/canonicalc5d53a7, report9ae5826",
+        "build": "Independent78-source clean/package PASS18Oct13:21:04+07, tests fully skipped",
+        "runtime": "Not started for reporting package",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
       "limitations": [
-        "Later gate; schema availability alone does not register a handler. |"
+        "Source review/build only; actual HTTP/SQL/FE acceptance not executed; future G4/G5 writer composition must preserve canonical predicates."
       ],
       "FEImpact": {
         "breakingChange": false,
-        "canonicalChangeApproved": false,
+        "canonicalChangeApproved": true,
         "schemaChange": "None proposed",
-        "availability": "Incomplete: implement missing scope without wire changes",
+        "availability": "Source available under unchanged canonical API; contract patch1.2.1 only corrects S060 hint",
         "fields": "Canonical request/response schemas and action hints; async states remain authoritative",
         "ownerDecision": null
       },
@@ -9226,8 +9227,11 @@
       "method": "GET",
       "path": "/api/v1/dashboard",
       "module": "reporting",
-      "implementationLocation": [],
-      "coverage": "not implemented",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/reporting/ReportingController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/reporting/DashboardService.java"
+      ],
+      "coverage": "implemented",
       "supportedActions": [],
       "missingActions": [],
       "supportedTargets": [],
@@ -9244,7 +9248,7 @@
         "Current authorization/scope before count/page; canonical redaction and no-store"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-055"
         ],
@@ -9282,20 +9286,20 @@
         "AC-056"
       ],
       "verification": {
-        "source": "No public handler; implementation required",
-        "build": "Baseline 73-source skipped-test package reported at 6585c4f; not rerun by inventory agent",
-        "runtime": "Baseline V001-V008/startup reported only; not observed by inventory agent",
+        "source": "Independent bounded GO at app1e721ae/canonicalc5d53a7, report9ae5826",
+        "build": "Independent78-source clean/package PASS18Oct13:21:04+07, tests fully skipped",
+        "runtime": "Not started for reporting package",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
       "limitations": [
-        "Later gate; schema availability alone does not register a handler. |"
+        "Source review/build only; actual HTTP/SQL/FE acceptance not executed; future G4/G5 writer composition must preserve canonical predicates."
       ],
       "FEImpact": {
         "breakingChange": false,
-        "canonicalChangeApproved": false,
+        "canonicalChangeApproved": true,
         "schemaChange": "None proposed",
-        "availability": "Incomplete: implement missing scope without wire changes",
+        "availability": "Source available under unchanged canonical API; contract patch1.2.1 only corrects S060 hint",
         "fields": "Canonical request/response schemas and action hints; async states remain authoritative",
         "ownerDecision": null
       }
@@ -9306,9 +9310,10 @@
       "path": "/api/v1/exports/audit",
       "module": "audit",
       "implementationLocation": [
-        "apps/api/src/main/java/vn/contractgovernance/api/shared/AuditService.java"
+        "apps/api/src/main/java/vn/contractgovernance/api/reporting/ReportingController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/reporting/AuditReportingService.java"
       ],
-      "coverage": "not implemented",
+      "coverage": "implemented",
       "supportedActions": [],
       "missingActions": [],
       "supportedTargets": [],
@@ -9325,7 +9330,7 @@
         "Current authorization/scope before count/page; canonical redaction and no-store"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-056"
         ],
@@ -9426,20 +9431,20 @@
         "AC-056"
       ],
       "verification": {
-        "source": "Present bounded review evidence; completeness limitations retained",
-        "build": "Baseline 73-source skipped-test package reported at 6585c4f; not rerun by inventory agent",
-        "runtime": "Baseline V001-V008/startup reported only; not observed by inventory agent",
+        "source": "Independent bounded GO at app1e721ae/canonicalc5d53a7, report9ae5826",
+        "build": "Independent78-source clean/package PASS18Oct13:21:04+07, tests fully skipped",
+        "runtime": "Not started for reporting package",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
       "limitations": [
-        "Later gate; schema availability alone does not register a handler. |"
+        "Source review/build only; actual HTTP/SQL/FE acceptance not executed; future G4/G5 writer composition must preserve canonical predicates."
       ],
       "FEImpact": {
         "breakingChange": false,
-        "canonicalChangeApproved": false,
+        "canonicalChangeApproved": true,
         "schemaChange": "None proposed",
-        "availability": "Incomplete: implement missing scope without wire changes",
+        "availability": "Source available under unchanged canonical API; contract patch1.2.1 only corrects S060 hint",
         "fields": "Canonical request/response schemas and action hints; async states remain authoritative",
         "ownerDecision": null
       }
@@ -9470,7 +9475,7 @@
         "Current authorization/scope before count/page; canonical redaction and no-store"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-009"
         ],
@@ -9572,7 +9577,7 @@
         "Current authorization/scope before count/page; canonical redaction and no-store"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-032"
         ],
@@ -9668,7 +9673,7 @@
         "Current authorization/scope before count/page; canonical redaction and no-store"
       ],
       "canonical": {
-        "version": "A1.2.0/B1.2.0",
+        "version": "A1.2.1/B1.2.1",
         "operationRuleIds": [
           "BR-019"
         ],
@@ -9744,7 +9749,13 @@
       "priority": "P2",
       "location": "apps/api/src/main/java/vn/contractgovernance/api/shared/ListQueries.java#timelineLag",
       "finding": "Timeline lag currently aggregates EFFECTIVITY jobs globally and can reveal other branch/customer activity through page responses. Fix scoped denominator/oldest due filtering before closure.",
-      "verification": "Independent baseline source finding communicated by root; no runtime exploit executed."
+      "verification": "Independent bounded GO at cb87868; same-asOf overload44040f9 checked with reporting. No runtime exploit/test executed.",
+      "status": "closed-source-review"
     }
-  ]
+  ],
+  "provenanceSourceCommit": "b8a026e2382f6b98e02da408c848319a87d3e257",
+  "currentCanonical": {
+    "docs/Final_Project_Specification.md": "9b1e8984f9cbb1e4bba6367d126dbad1516f68a8b03e4de6dabf835c2edd0843",
+    "docs/FE_BE_Shared_Development_Contract.md": "6d4216f2b72d3ceb5a2904a728766ff88ca39b005a54de29b5aa2eef626a262c"
+  }
 }
