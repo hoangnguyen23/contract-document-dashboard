@@ -1,6 +1,6 @@
 # Backend operation coverage
 
-Canonical A/B1.2.2 defines85 operations:71 implemented,6 partial and8 not implemented at reviewed G5 source992946d/reviewb42e821. These are semantic source classifications, not business/runtime/FE acceptance. Independent95-source clean/package passed19October00:18:26+07 with every test phase skipped. V010/V011 remain unapplied.
+Canonical A/B1.3.0 defines85 operations:80 implemented,1 partial and4 not implemented at reviewed Control source8f40974/reviewc96b8ec. These are semantic source classifications, not business/runtime/FE acceptance. Independent100-source clean/package passed19October10:26:49+07 with every test phase skipped. V010-V012 remain unapplied.
 
 | Method | Path | Canonical operationId | Source coverage | Limitation |
 |---|---|---|---|---|
@@ -22,10 +22,10 @@ Canonical A/B1.2.2 defines85 operations:71 implemented,6 partial and8 not implem
 | GET | `/api/v1/contracts/{id}` | `getContract` | implemented | Original signing/readiness/timeline source implemented; actual business/runtime acceptance pending. |
 | POST | `/api/v1/contracts/{id}/commands` | `commandContract` | implemented | Original HOLD/RELEASE/CANCEL; current guards/history; business acceptance pending. |
 | GET | `/api/v1/contracts/{id}/versions` | `listContractVersions` | implemented | Immutable original history, number DESC/id DESC with bound cursor; G4 supplies future lineage. |
-| GET | `/api/v1/control-requests` | `listControlRequests` | not implemented | Later gate; schema availability alone does not register a handler. |
-| POST | `/api/v1/control-requests` | `createControlRequest` | not implemented | Later gate; schema availability alone does not register a handler. |
-| GET | `/api/v1/control-requests/{id}` | `getControlRequest` | not implemented | Later gate; schema availability alone does not register a handler. |
-| POST | `/api/v1/control-requests/{id}/commands` | `commandControlRequest` | not implemented | Later gate; schema availability alone does not register a handler. |
+| GET | `/api/v1/control-requests` | `listControlRequests` | implemented | Source reviewed; runtime/business/FE acceptance not executed. |
+| POST | `/api/v1/control-requests` | `createControlRequest` | implemented | Source reviewed; runtime/business/FE acceptance not executed. |
+| GET | `/api/v1/control-requests/{id}` | `getControlRequest` | implemented | Source reviewed; runtime/business/FE acceptance not executed. |
+| POST | `/api/v1/control-requests/{id}/commands` | `commandControlRequest` | implemented | Source reviewed; runtime/business/FE acceptance not executed. |
 | GET | `/api/v1/dashboard` | `getDashboard` | implemented | Scoped reporting source reviewed;78-source package passed; HTTP/business/FE acceptance pending. |
 | GET | `/api/v1/data-requests` | `listDataRequests` | not implemented | Later gate; schema availability alone does not register a handler. |
 | POST | `/api/v1/data-requests` | `createDataRequest` | not implemented | Later gate; schema availability alone does not register a handler. |
@@ -58,7 +58,7 @@ Canonical A/B1.2.2 defines85 operations:71 implemented,6 partial and8 not implem
 | POST | `/api/v1/notices/{id}/commands` | `commandNotice` | implemented | Source reviewed; runtime/HTTP/PDF/business/FE acceptance not executed; V010 unapplied. |
 | GET | `/api/v1/obligations` | `listObligations` | implemented | Source reviewed; runtime/business/FE acceptance not executed. |
 | GET | `/api/v1/obligations/{id}` | `getObligation` | implemented | Source reviewed; runtime/business/FE acceptance not executed. |
-| POST | `/api/v1/obligations/{id}/commands` | `commandObligation` | partial | CLOSEOUT APPROVE blocked until real Control ServiceEndProof producer; other source paths reviewed; no business acceptance. |
+| POST | `/api/v1/obligations/{id}/commands` | `commandObligation` | implemented | Source reviewed; runtime/business/FE acceptance not executed. |
 | GET | `/api/v1/parties` | `listPartys` | implemented | Runtime verification pending. |
 | POST | `/api/v1/parties` | `createParty` | implemented | Runtime verification pending. |
 | GET | `/api/v1/parties/{id}` | `getParty` | implemented | Runtime verification pending. |
@@ -74,10 +74,10 @@ Canonical A/B1.2.2 defines85 operations:71 implemented,6 partial and8 not implem
 | GET | `/api/v1/relationships/{id}` | `getRelationship` | implemented | Runtime verification pending. |
 | PUT | `/api/v1/relationships/{id}` | `updateRelationship` | implemented | Runtime verification pending. |
 | GET | `/api/v1/reviewer-options` | `getReviewerOptions` | implemented | Current scoped eligible reviewers for an existing target; later aggregate types depend on later modules. |
-| GET | `/api/v1/rounds` | `listRounds` | partial | DOSSIER/CHANGE implemented; CONTROL_REQUEST adapter remains absent; business acceptance pending. |
-| GET | `/api/v1/rounds/{id}` | `getRound` | partial | DOSSIER/CHANGE implemented; CONTROL_REQUEST adapter remains absent; business acceptance pending. |
-| POST | `/api/v1/rounds/{id}/commands` | `commandRound` | partial | DOSSIER/CHANGE implemented; CONTROL_REQUEST adapter remains absent; business acceptance pending. |
-| GET | `/api/v1/rounds/{id}/snapshot` | `getRoundSnapshot` | partial | DOSSIER/CHANGE implemented; CONTROL_REQUEST adapter remains absent; business acceptance pending. |
+| GET | `/api/v1/rounds` | `listRounds` | implemented | Source reviewed; runtime/business/FE acceptance not executed. |
+| GET | `/api/v1/rounds/{id}` | `getRound` | implemented | Source reviewed; runtime/business/FE acceptance not executed. |
+| POST | `/api/v1/rounds/{id}/commands` | `commandRound` | implemented | Source reviewed; runtime/business/FE acceptance not executed. |
+| GET | `/api/v1/rounds/{id}/snapshot` | `getRoundSnapshot` | implemented | Source reviewed; runtime/business/FE acceptance not executed. |
 | GET | `/api/v1/session` | `getSession` | implemented | Runtime verification pending. |
 | POST | `/api/v1/session/login` | `login` | implemented | Runtime verification pending. |
 | POST | `/api/v1/session/logout` | `logout` | implemented | Runtime verification pending. |
@@ -108,3 +108,5 @@ Current corrected G4 source GO2af915d/review86035f9;84-source skipped-test packa
 Current Notice/tariff source GO5142b83/review3254e4c supersedes earlier temporary Notice blockers below/above. Six Notice operations and full tariff Change source path are implemented; remaining partial scope is CONTROL_REQUEST Round (four operations) and DATA_DISPOSITION Job retry. Public Obligation/Incident, Control and Privacy remain next. JAR SHA256 ac9012ce8908bbeb743c31552c6728f540106d2180ac85d2f35e920d7c481a42. No HTTP/business/PDF/FE acceptance.
 
 Latest G5 source GO992946d/reviewb42e821: six new operations implemented, commandObligation remains partial for CLOSEOUT Control proof. Four CONTROL_REQUEST Round operations and DATA_DISPOSITION Job retry also remain partial. Missing operations are Control4 and Privacy4. Earlier checkpoint counts below/above are historical. JAR SHA25687c6db685098ac1acd4c7522ccf7d76907520968a06560358f9232b5675fab5a. No G5 runtime/business/HTTP acceptance.
+
+Latest Control source GO8f40974/reviewc96b8ec closes4newControl operations,4CONTROL_REQUEST Round variants and actual CLOSEOUT ServiceEndProof. Current80/1/4 supersedes earlier historical checkpoints. Remaining source: DataRequest4 and DATA_DISPOSITION Job retry/worker. JAR SHA2561d027fb1a0123ea2e1731766c8c4a1a67f108b0018ad1cd4f9ab854c7e8eea89. Owner-approved termination date guard changes behavior at A/B1.3.0 without schema/route changes; external FE acknowledgement remains pending.

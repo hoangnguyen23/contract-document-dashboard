@@ -29,3 +29,7 @@ Implementation plans and module setup notes are derived operational documentatio
 
 - [Obligation/Incident implementation](plan/obligation-incident-implementation.md): operative deadlines, immutable breaches/source and explicit CLOSEOUT dependency.
 - [G5 source review](plan/reviews/backend-obligation-incident-source-review.md): bounded source GO and95-source skipped-test package.
+
+- [Control implementation](plan/control-implementation.md): source acknowledgement/Round/termination/closeout evidence.
+- [Control source review](plan/reviews/backend-control-source-review.md): bounded source and100-source skipped-test package.
+- [Approved termination boundary](plan/contract-change-proposals/termination-retroactive-boundary.md): A/B1.3.0 owner decision and internal shared review.
