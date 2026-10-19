@@ -73,7 +73,18 @@ public class EvidenceAccess {
         }
         return parent;
     }
-    public EntityStore.Entity lockParent(JsonNode file,Actor actor){var parent=parent(file.path("targetKind").asString(),UUID.fromString(file.path("targetId").asString()),actor);return store.lock(parent.type(),parent.id());}
+    public EntityStore.Entity lockParent(JsonNode file,Actor actor){parent(file.path("targetKind").asString(),UUID.fromString(file.path("targetId").asString()),actor);return lockOwner(file.path("targetKind").asString(),UUID.fromString(file.path("targetId").asString()));}
+    /** Lock existing financial ancestry before the leaf; also used by scanner callbacks. */
+    public EntityStore.Entity lockOwner(String kind,UUID id) {
+        var type=TYPES.get(kind); if(type==null)throw ApiException.of("STORAGE_INTEGRITY","Unknown evidence parent");
+        var parent=store.require(type,id);
+        if(kind.equals("CONTROL_REQUEST"))lockOwner("CONTRACT",UUID.fromString(parent.body().path("contractId").asString()));
+        if(kind.equals("NOTICE")){lockOwner("CONTRACT",UUID.fromString(parent.body().path("contractId").asString()));if(parent.body().hasNonNull("changeId"))store.lock("Change",UUID.fromString(parent.body().path("changeId").asString()));}
+        if(java.util.Set.of("INCIDENT","OBLIGATION").contains(kind))lockOwner("CONTRACT",UUID.fromString(parent.body().path("contractId").asString()));
+        if(kind.equals("CHANGE")) lockOwner("CONTRACT",UUID.fromString(parent.body().path("contractId").asString()));
+        else if(kind.equals("CONTRACT")) store.lock("Dossier",UUID.fromString(parent.body().path("dossierId").asString()));
+        return store.lock(type,id);
+    }
     public EntityStore.Entity requireClean(UUID fileId,String kind,UUID parentId,UUID branchId,Actor actor) {
         var file=requireFile(fileId,actor);
         if(!kind.equals(file.body().path("targetKind").asString()) || !parentId.toString().equals(file.body().path("targetId").asString()) || !java.util.Objects.equals(branchId,file.branchId()))

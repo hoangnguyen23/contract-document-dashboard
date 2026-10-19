@@ -4,11 +4,11 @@
 
 | Thuộc tính | Giá trị |
 |---|---|
-| Mã tài liệu / phiên bản | A / 1.1.0 |
+| Mã tài liệu / phiên bản | A / 1.3.0 |
 | Ngày chốt thiết kế | 11/10/2026 |
 | Trạng thái | FINAL DESIGN BASELINE — owner đã chấp thuận hướng sản phẩm; chưa triển khai ứng dụng |
 | Thẩm quyền | Nguồn sự thật về phạm vi, ý nghĩa dữ liệu, quy tắc, trạng thái, quyền và kết quả nghiệm thu |
-| Tài liệu đi cùng | [FE/BE Shared Development Contract](FE_BE_Shared_Development_Contract.md), B / 1.1.0 |
+| Tài liệu đi cùng | [FE/BE Shared Development Contract](FE_BE_Shared_Development_Contract.md), B / 1.3.0 |
 | Đầu ra chính thức | Chính xác hai tài liệu A và B; các schema/client/fixture được trích xuất khi triển khai là sản phẩm phát sinh trong repository |
 
 ## 1. Sản phẩm và quyết định đã chốt
@@ -100,7 +100,9 @@ Mỗi evaluation ghi `sourceKind = INTERNAL_POLICY | HARD_INVARIANT | REVIEWED_E
 | requiredDocumentPurposes | Unique subset SERVICE_APPLICATION, CORPORATE_ID, REPRESENTATION_BASIS, SERVICE_TERMS, IDENTITY_IMAGE | Base trio đầu luôn bắt buộc; thêm hai purpose sau tùy phiên bản |
 | pricing route | Không cho custom graph/operator; fixed formula dưới đây | Fee dưới reference → L1_L2; từ reference → L1 |
 
-Fee dưới min hoặc trên max bị BLOCK, không override bằng L2. Ở min được nộp với L1_L2. Ở reference được L1. Ví dụ P1: `499` BLOCK, `500` L1_L2, `999` L1_L2, `1000` L1, `5000` L1, `5001` BLOCK. P2 fee `1000` thành L1_L2. Fee payer UNAGREED chỉ được lưu draft, không submit. Simulation cũng trả các hard failures và thiếu bằng chứng, không chỉ route.
+Fee dưới min hoặc trên max bị BLOCK, không override bằng L2. Ở min được nộp với L1_L2 khi min < reference; nếu min = reference thì L1. Ở reference được L1. Ví dụ P1: `499` BLOCK, `500` L1_L2, `999` L1_L2, `1000` L1, `5000` L1, `5001` BLOCK. P2 fee `1000` thành L1_L2. Fee payer UNAGREED chỉ được lưu draft, không submit. Simulation cũng trả các hard failures và thiếu bằng chứng, không chỉ route.
+
+Corpus hữu hạn dùng oracle độc lập theo từng cấu hình: mọi vector FIXED_* buộc termKind=FIXED và endExclusive=startOn+số ngày thay thế, bất kể base; fee<reference cấp L2 MANAGER active đúng scope độc lập L1/contributors, route L1 dùng L2=null (trừ SAME_L1_L2 cố ý ghi đè cả hai ID); base chọn FIXED nếu được phép, nếu không chọn OPEN_ENDED với endExclusive=null; fee=reference. Expected route của FEE_AT_MIN là L1 khi min=reference, ngược lại L1_L2; FEE_BELOW_REF bị BLOCKED khi reference-1<min, ngược lại L1_L2. Các vector FIXED_AT_MIN/FIXED_AT_MAX chỉ L1 nếu FIXED được phép; OPEN_NULL_END chỉ L1 nếu OPEN_ENDED được phép, nếu không BLOCKED. Các vector ngoài miền input (fee=-1 hoặc 10000000000, fixedDays=0 hoặc 3651) vẫn BLOCKED; không bỏ vector và không clamp giá trị. SoD L1=L2 luôn BLOCKED khi cả hai ID có mặt, kể cả route chỉ cần L1. Expected được tính từ các điều kiện hữu hạn đã viết này, độc lập với kết quả evaluator; không copy actual thành expected.
 
 Các quy tắc này là chính sách giả lập, không phải biểu phí/thẩm quyền của ngân hàng Việt Nam. Người triển khai không được thêm expression evaluator, script execution hoặc approval step thứ ba.
 
@@ -116,7 +118,7 @@ Các quy tắc này là chính sách giả lập, không phải biểu phí/th�
 | ACTIVE → RETIRED | Chỉ khi policy kế tiếp thành ACTIVE, không tạo gap; historic policy vẫn truy cập được |
 | REJECTED/RETIRED → DRAFT mới | Clone tạo ID/version mới, không khôi phục state bản cũ |
 
-Không sửa/cancel SCHEDULED hoặc ACTIVE trong baseline; thay đổi bằng version kế tiếp, chờ slot future trống. Nếu submit/review cần sửa config, reject rồi clone; không auto-publish khi report cũ còn xanh. Simulation read-only với explicit facts/file flags và version đã chọn; không tạo dossier, approval hay effect. Policy publication không đổi điều khoản khách đã chấp nhận.
+Schedule mới chưa có policy có counter=0; publication đầu tiên dùng expectedScheduleVersion=0 và effectiveFrom từ ngày mai trở đi. Trước lần ACTIVE đầu, không có applicable policy thì submit nghiệp vụ fail closed, không nạp fixture ACTIVE làm kết quả live. Không sửa/cancel SCHEDULED hoặc ACTIVE trong baseline; thay đổi bằng version kế tiếp, chờ slot future trống. Nếu submit/review cần sửa config, reject rồi clone; không auto-publish khi report cũ còn xanh. Simulation read-only với explicit facts/file flags và version đã chọn; không tạo dossier, approval hay effect. Policy publication không đổi điều khoản khách đã chấp nhận.
 
 Round đang OPEN giữ policy lúc submit. RETURNED rồi resubmit là round mới dùng policy đang áp dụng tại lần nộp mới. Điều kiện bắt buộc bên ngoài hoặc thẩm quyền hiện tại thay đổi có thể chặn decision/effect dù old policy PASS; ghi evaluation mới và preserve old snapshot, không âm thầm sửa P1.
 
@@ -334,12 +336,12 @@ Source facts gồm kind, contract/version, requester, reason/ground, effectOn n�
 | ACTIVATE | MAKER DRAFT→IN_REVIEW; independent CHECKER L1→APPROVED rồi CONFIRMED bằng event riêng | Contract ACTIVE, readiness READY, Service NOT_STARTED, ackAt≥agreement start; →RUNNING |
 | SUSPEND | MAKER hoặc CHECKER urgent DRAFT→REQUESTED; CHECKER khác requester CONFIRM, không đợi formal round | Contract ACTIVE + Service RUNNING; reason/evidence; →SUSPENDED, không tự kết luận gian lận |
 | RESUME | MAKER DRAFT→IN_REVIEW; independent CHECKER L1→APPROVED→CONFIRMED | ACTIVE, READY, SUSPENDED, blocking incidents đều RESOLVED/CLOSED; ackAt≥last suspend ack; →RUNNING |
-| TERMINATE | MAKER DRAFT→IN_REVIEW; independent L1 CHECKER và L2 MANAGER→APPROVED→CONFIRMED | ACTIVE; reviewed ground/notice evidence; effectOn≤today; external stop ack hoặc verified never-started. Atomically Contract TERMINATED, Service STOPPED; cancel other pending controls/unapplied inapplicable changes; create CLOSEOUT |
+| TERMINATE | MAKER DRAFT→IN_REVIEW; independent L1 CHECKER và L2 MANAGER→APPROVED→CONFIRMED | ACTIVE; reviewed ground/notice evidence; current ContractVersion.effectiveFrom≤effectOn≤today; external stop ack hoặc verified never-started. Atomically Contract TERMINATED, Service STOPPED; cancel other pending controls/unapplied inapplicable changes; create CLOSEOUT |
 | STOP | SYSTEM REQUESTED khi expiry với RUNNING/SUSPENDED; hoặc manual DRAFT→REQUESTED cho EXPIRED/TERMINATED observed nonstopped service; independent CHECKER CONFIRM | →STOPPED; Contract vẫn EXPIRED/TERMINATED, không reclassify thành termination |
 
 L1 có thể approve rồi confirm ACTIVATE/RESUME nếu không requester/contributor; hai assessments/events khác nhau. Recording verification/approval assessment không phải sửa source facts. Người đã sửa source facts/evidence bị loại và cần reviewer khác.
 
-DRAFT/REQUESTED maker cancel có reason trước confirmation; IN_REVIEW withdraw cancels round/request; APPROVED cancellation cần independent CHECKER reason/evidence. Reject round/request → REJECTED; cancel → CANCELLED, service không đổi. SYSTEM STOP chỉ được cancel bởi CHECKER với verified not-applicable basis, không “bỏ việc” vì maker bấm cancel. Termination được confirm sau boundary mà contract đã EXPIRED bị chặn; advanceTimeline chạy trước guard. Việc ghi termination effectiveOn và observedAt khác nhau không có nghĩa app kết luận chắc chắn hiệu lực hồi tố.
+DRAFT/REQUESTED maker cancel có reason trước confirmation; IN_REVIEW withdraw cancels round/request; APPROVED cancellation cần independent CHECKER reason/evidence. Reject round/request → REJECTED; cancel → CANCELLED, service không đổi. SYSTEM STOP chỉ được cancel bởi CHECKER với verified not-applicable basis, không “bỏ việc” vì maker bấm cancel. Termination được confirm sau boundary mà contract đã EXPIRED bị chặn; advanceTimeline chạy trước guard. Việc ghi termination effectiveOn và observedAt khác nhau không có nghĩa app kết luận chắc chắn hiệu lực hồi tố. TERMINATE CONFIRM với effectOn trước current ContractVersion.effectiveFrom trả 409 STATE_CONFLICT trước business effects; giữ request/source/effectOn và mọi version interval/APPLIED Change. Không clamp ngày, không rewrite history, không ghi confirmed termination hoặc cache như success; đây là ordinary prevalidation, không phải ngoại lệ Change COMMIT. Nguồn ngày hiệu lực sửa lại phải cancel và tạo ControlRequest mới qua review hiện có. Current action hints phản ánh blocker STATE_CONFLICT.
 
 **Closeout guard:** không còn linked unresolved Incident; không còn applicable nonterminal Obligation **khác chính CLOSEOUT đang xét**; có settlement/fee/external complaint confirmations hoặc explicit not-applicable basis; Service STOPPED hoặc verified never-started. CANCELLED inapplicable task không chặn; historical breaches không biến mất. Closeout CLOSED không xóa contract/file/history.
 
@@ -523,7 +525,7 @@ IDs dưới đây là ổn định để B trace operation/scenario; phần chi 
 | BR-042 | Verifiedtrigger→remediation→acceptedresolution→close; suspicionnotguilt |
 | BR-043 | ACTIVATE/RESUME L1 andexactsourceguards; requestnotserviceexecution |
 | BR-044 | UrgentSUSPEND/SYSTEMSTOP independentack; expirydoesnotinventSTOPPED |
-| BR-045 | TerminationalwaysL1L2/groundnotice/stopack; atomickeepopenhistory/cancelinapplicablefuture |
+| BR-045 | TerminationalwaysL1L2/groundnotice/stopack; currentVersion.effectiveFrom<=effectOn<=today; earlier409STATE_CONFLICT/noeffects; atomickeepopenhistory/cancelinapplicablefuture |
 | BR-046 | Datarequestscope/purpose/recordclass/basis; independentofficerdecision |
 | BR-047 | ALLOW/PARTIAL exactdispositionmanifest only; DEFER/REFUSE noexecute |
 | BR-048 | Hold/releaseindependent events; serializedhold/dispositionreservation/currentrechecks |
@@ -605,7 +607,7 @@ Các AC dưới đây là kết quả nghiệp vụ được tác giả đặc t
 | AC-042 / BR-042 | incident OPEN có evidence verified và đúng trigger | VERIFY, duty evidence accept, RESOLVE, CLOSE | deadline source rõ, chỉ RESOLVE sau linked duty CLOSED, CLOSE bởi checker; không kết luận gian lận |
 | AC-043 / BR-043 | ACTIVATE/RESUME approved L1 nhưng actual interval hết hạn khi worker trễ | CONFIRM | advanceTimeline trước guard, chặn409 STATE_CONFLICT hoặc412 nếu aggregate vừa đổi; không giả RUNNING |
 | AC-044 / BR-044 | SUSPEND REQUESTED hoặc SYSTEM STOP sau expiry | independent CHECKER CONFIRM ack | SUSPENDED hoặc STOPPED đúng nguồn; expiry không tự STOPPED; STOP giữ Contract EXPIRED |
-| AC-045 / BR-045 | TERMINATE approved L1_L2 trên ACTIVE có stop/neverstarted proof | CONFIRM effectOn<=today | TERMINATED/STOPPED, cancel pending controls/inapplicable changes; giữ complaints/remediation, tạo CLOSEOUT |
+| AC-045 / BR-045 | TERMINATE approved L1_L2 trên ACTIVE có stop/neverstarted proof | CONFIRM effectOn<=today | Nếu effectOn>=current ContractVersion.effectiveFrom: TERMINATED/STOPPED, cancel pending controls/inapplicable changes; giữ complaints/remediation, tạo CLOSEOUT. Nếu effectOn sớm hơn:409 STATE_CONFLICT ordinary prevalidation, không business effects/cache-success; giữ source/version intervals/APPLIED history |
 | AC-046 / BR-046 | DataRequest do officer tự tạo | cùng officer DECIDE | 403 SOD_VIOLATION; purpose/record scope bắt buộc; không có generic historical delete |
 | AC-047 / BR-047 | decision ALLOW/PARTIAL exact manifest hash/version | EXECUTE với hash khác | 409 BASE_CONFLICT; chỉ manifest approved được enqueue; DEFER/REFUSE không execute |
 | AC-048 / BR-048 | hold và disposition worker cạnh tranh cùng record locks | hold trước reservation hoặc hold sau committed reservation | trước:409 HOLD_ACTIVE/no delete; sau:409 DISPOSITION_COMMITTED; cleanupfail JobFAILED chưa EXECUTED |
@@ -629,7 +631,7 @@ Catalogue dưới đây chỉ số hóa A; tên field wire chính thức nằm t
 <!-- contract:block business-catalog-v1 -->
 ```json
 {
-  "version": "1.1.0",
+  "version": "1.3.0",
   "roles": [
     "BANK_ADMIN",
     "MAKER",
@@ -1321,7 +1323,7 @@ Catalogue dưới đây chỉ số hóa A; tên field wire chính thức nằm t
       ],
       "given": "TERMINATE approved L1_L2 trên ACTIVE có stop/neverstarted proof",
       "when": "CONFIRM effectOn<=today",
-      "then": "TERMINATED/STOPPED, cancel pending controls/inapplicable changes; giữ complaints/remediation, tạo CLOSEOUT"
+      "then": "Nếu effectOn>=current ContractVersion.effectiveFrom: TERMINATED/STOPPED, cancel pending controls/inapplicable changes; giữ complaints/remediation, tạo CLOSEOUT. Nếu effectOn sớm hơn:409 STATE_CONFLICT ordinary prevalidation, không business effects/cache-success; giữ source/version intervals/APPLIED history"
     },
     {
       "id": "AC-046",
