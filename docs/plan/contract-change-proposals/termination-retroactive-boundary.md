@@ -1,6 +1,6 @@
 # Owner decision proposal: termination before current materialized version
 
-Status: owner approved19October2026; canonical A/B1.3.0 candidate implemented, internal shared review pending. External FE acknowledgement not received or claimed. Two read-only Control analyses found no rule for reported TERMINATE effectOn earlier than current ContractVersion.effectiveFrom after a later Change was already APPLIED. A10 only states effectOn<=today and preserves observedAt/recordedAt; A7/11 retain immutable applied version history. No fixture specifies this collision.
+Status: owner approved19October2026; canonical A/B1.3.0 candidate implemented, internal shared review GO at c5120f5. External FE acknowledgement not received or claimed. Two read-only Control analyses found no rule for reported TERMINATE effectOn earlier than current ContractVersion.effectiveFrom after a later Change was already APPLIED. A10 only states effectOn<=today and preserves observedAt/recordedAt; A7/11 retain immutable applied version history. No fixture specifies this collision.
 
 Example: original version ends01/02, Change version effectiveFrom01/02 is already APPLIED; on03/02 request claims termination effectOn31/01. Confirming by closing current version at31/01 produces an interval ending before its start; rewriting the older closed interval or reverting APPLIED Change would corrupt required history.
 
