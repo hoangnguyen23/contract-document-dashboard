@@ -122,7 +122,14 @@ public class DossierService {
         var body=(ObjectNode)dossier.body().deepCopy();var allowed=json.array();var blocked=json.array();
         var relationship=store.require("Relationship",UUID.fromString(body.path("relationshipId").asString()));
         boolean maker=actor.hasRole("MAKER") && actor.id().toString().equals(relationship.body().path("assignedMakerId").asString()) && relationship.body().path("active").asBoolean();
-        var state=body.path("state").asString();if(maker && Set.of("DRAFT","RETURNED").contains(state)){allowed.add("UPDATE").add("CANCEL");blocked.add(json.object().put("action","SUBMIT").put("code","SERVICE_UNAVAILABLE").put("reason","Module xét duyệt chưa triển khai."));}
+        var state=body.path("state").asString();if(maker && Set.of("DRAFT","RETURNED").contains(state)){
+            allowed.add("UPDATE").add("CANCEL");
+            try {
+                var bridge=approval.getIfAvailable();
+                if(bridge==null)throw ApiException.of("SERVICE_UNAVAILABLE","Module xét duyệt chưa triển khai.");
+                bridge.requireSubmissionReady(dossier,actor);allowed.add("SUBMIT");
+            } catch(ApiException blocker){blocked.add(json.object().put("action","SUBMIT").put("code",blocker.code()).put("reason",blocker.getMessage()));}
+        }
         if(maker && Set.of("REJECTED","CANCELLED").contains(state))allowed.add("CLONE");
         if(maker && state.equals("IN_REVIEW")){if(approval.getIfAvailable()!=null)allowed.add("WITHDRAW");else blocked.add(json.object().put("action","WITHDRAW").put("code","SERVICE_UNAVAILABLE").put("reason","Module xét duyệt chưa triển khai."));}
         body.set("allowedActions",allowed);body.set("blockedActions",blocked);
@@ -130,6 +137,11 @@ public class DossierService {
         if(actor.hasRole("AUDITOR") && !actor.hasPermission("SENSITIVE_READ") && !fullBusinessRole) {
             var r=(ObjectNode)body.path("representation");for(var field:java.util.List.of("personName","title","scopeText"))r.put(field,"[REDACTED]");
             var c=(ObjectNode)body.path("contactSnapshot");c.put("personName","[REDACTED]");c.put("roleLabel","[REDACTED]");c.put("email","redacted@example.invalid");c.put("phone","0000000000");
+            if(body.hasNonNull("revision")) {
+                var revision=(ObjectNode)body.path("revision");var rr=(ObjectNode)revision.path("representation");
+                for(var field:java.util.List.of("personName","title","scopeText"))rr.put(field,"[REDACTED]");
+                var rc=(ObjectNode)revision.path("contact");rc.put("personName","[REDACTED]");rc.put("roleLabel","[REDACTED]");rc.put("email","redacted@example.invalid");rc.put("phone","0000000000");
+            }
         }
         return body;
     }

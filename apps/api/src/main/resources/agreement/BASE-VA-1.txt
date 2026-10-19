@@ -1,0 +1,4 @@
+HỢP ĐỒNG DỊCH VỤ THU HỘ VA — MẪU GIẢ LẬP BASE-VA-1
+Dịch vụ VA_COLLECTION ghi nhận tham chiếu thu hộ; không là lệnh mở tài khoản hay thực hiện giao dịch ngân hàng.
+Điều khoản riêng theo đúng bản hồ sơ đã phê duyệt được trình bày bên dưới. Phí là số nguyên VND; bên chịu phí BENEFICIARY.
+Bản sinh chưa ký không chứng minh hiệu lực hợp đồng. Hai bên ký và người kiểm tra độc lập phải đối chiếu đúng bản sinh cùng bằng chứng thẩm quyền.
