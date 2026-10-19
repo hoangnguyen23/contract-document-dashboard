@@ -1,6 +1,6 @@
 # B — FE/BE Shared Development Contract
 
-**Version 1.2.2 · Business authority: A1.2.2 · Chốt ngày 11/10/2026.**
+**Version 1.3.0 · Business authority: A1.3.0 · Chốt ngày 11/10/2026.**
 
 Tài liệu này là hợp đồng kỹ thuật duy nhất giữa developer Frontend và Backend. A quyết định nghiệp vụ; B quyết định bytes trên wire, quyền theo operation, fixture, integration và thay đổi schema. Các JSON blocks ở cuối là canonical, không phải minh họa rút gọn. Chúng nằm trong hai tài liệu chính thức; file trích xuất và test harness sau này là sản phẩm dẫn xuất của repository triển khai.
 
@@ -77,7 +77,7 @@ Commands là POST /{collection}/{id}/commands, oneOf discriminator action; unkno
 | Notice | MAKER create/PUT DRAFT; SUBMIT expectedContactVersion freezes confirmed recipient/text/clause, SHA and server artifact PDF job. CHECKER independent APPROVE only artifact ready; RETURN→DRAFT old snapshot retained; REJECT→CANCELLED. Maker DISPATCH LOCAL_CAPTURE approved→QUEUED; stablemessageId job accepted→DISPATCHED. MANUAL_EXTERNAL uses RECORD_EXTERNAL_DISPATCH bymaker with actual dispatchAt≤now/evidence then independentchecker RECORD_RECEIPT verification; no app-send claim. Receipt fields separately verified by checker noncontributor. Maker RECORD_ACK exact artifactHash/recipientSnapshotHash candidate, remains DISPATCHED; noncontributor CHECKER VERIFY_ACK ACCEPT→ACKNOWLEDGED or RETURN stillDISPATCHED. Source revision new candidate after returned, not overwrite. CANCEL before dispatch; dispatched/superseded retains history |
 | Obligation | Assigned MAKER SUBMIT_EVIDENCE; CHECKER independent APPROVE/RETURN; request extension/waiver maker, independent MANAGER DECIDE. INTERNAL possible, CONTRACTUAL bilateral proof mandatory, STATUTORY_EXTERNAL422 NONWAIVABLE_DUTY. Late decision synchronizes missed due before extension. CHECKER SUPERSEDE/CANCEL_INAPPLICABLE only TERM_REVIEW or sole cancelled NOTICE_ACK with ending basis/evidence; no cancelling complaint/remediation/closeout to bypass closure. replacementId points same contract new task or null for ended applicability |
 | Incident | MAKER create OPEN with receivedAt/source evidence, externalDueAt+ruleBasis paired for payment complaint reference. CHECKER independent VERIFY exact trigger/source→VERIFIED/REMEDIATION and one duty; MAKER SUBMIT_RESOLUTION ghi candidate source evidence, state VERIFIED/REMEDIATION giữ nguyên; CHECKER noncontributor RESOLVE chỉ khi linked duty closed hoặc approved waiver đúng basis và externalComplaintConfirmation cho payment complaint đạt; CHECKER CLOSE resolved. No payment/refund computation |
-| ControlRequest | MAKER draft ACTIVATE/RESUME/TERMINATE/STOP; CHECKER may urgent SUSPEND. SUBMIT reviewers null for SUSPEND/STOP→REQUESTED, ACTIVATE/RESUME L1→IN_REVIEW, TERMINATE L1_L2. CHECKER independent CONFIRM externalAcknowledgement/observedAt/neverStarted per A source guards; stop proof or verified neverStarted for termination, ackAt≤now. SYSTEM STOP requesterId=null/contributors=[] after expiry. CANCEL before confirm, independentchecker evidence for APPROVED or SYSTEM. Confirmation rechecks contract interval/service/incidents lock; no direct bank execution |
+| ControlRequest | MAKER draft ACTIVATE/RESUME/TERMINATE/STOP; CHECKER may urgent SUSPEND. SUBMIT reviewers null for SUSPEND/STOP→REQUESTED, ACTIVATE/RESUME L1→IN_REVIEW, TERMINATE L1_L2. CHECKER independent CONFIRM externalAcknowledgement/observedAt/neverStarted per A source guards; stop proof or verified neverStarted for termination, ackAt≤now. TERMINATE CONFIRM additionally requires current ContractVersion.effectiveFrom≤effectOn≤today; earlier effectOn returns409 STATE_CONFLICT ordinary prevalidation, no business effect or cached success, no date clamp/history rewrite; preserve source and cancel/create a newly reviewed request for corrected date. Current hints expose STATE_CONFLICT. SYSTEM STOP requesterId=null/contributors=[] after expiry. CANCEL before confirm, independentchecker evidence for APPROVED or SYSTEM. Confirmation rechecks contract interval/service/incidents lock; no direct bank execution |
 | DataRequest | MAKER/DO create OPEN purpose/recordIds; independent DO START_REVIEW→IN_REVIEW, REJECT invalid→REJECTED, DECIDE ALLOW/PARTIAL/DEFER/REFUSE exact manifest or null for defer/refuse→DECIDED. DO EXECUTE approved hash/version→durable job, stays DECIDED until SUCCEEDED→EXECUTED. PLACE_HOLD/RELEASE_HOLD independent rules A; exact records locked against committed disposal. Approved actions finite, current metadata correction whitelist personName/roleLabel/email/phone, giữ purpose on current Relationship only, no approved terms/audit correction. No generic DELETE history |
 | File/Job | Own/source-authorized RETRY only FAILED/SCAN_FAILED with current parent scope/version; unchanged semantic intent and server scan. File DELETE only own unattached staging, never approved history |
 
@@ -113,7 +113,7 @@ Worker/race cases là oracle bổ sung ngoài HTTP đơn bước: double approva
 
 ## 9. Contract change control và DoD
 
-A1.2.2 và B1.2.2 hash-linked bằng manifest, canonical JSON UTF-8 sorted keys/separators(',',':') cho block digest; RFC8785 dùng riêng HTTP fingerprint như §4. Manifest không tự hash chính nó. Trích đúng fenced block có marker, reject duplicate block/key hoặc external $ref; không copy một phần schema từ chat. OpenAPI block JSON là JSON hợp lệ cũng là YAML, file dẫn xuất openapi.json. Codegen kiểm tra operationIds/required/nullable/enum, provider validates all requests/responses, FE consumer tests validate MSW fixture. Không có custom TS DTO/Jackson DTO song song khác nghĩa.
+A1.3.0 và B1.3.0 hash-linked bằng manifest, canonical JSON UTF-8 sorted keys/separators(',',':') cho block digest; RFC8785 dùng riêng HTTP fingerprint như §4. Manifest không tự hash chính nó. Trích đúng fenced block có marker, reject duplicate block/key hoặc external $ref; không copy một phần schema từ chat. OpenAPI block JSON là JSON hợp lệ cũng là YAML, file dẫn xuất openapi.json. Codegen kiểm tra operationIds/required/nullable/enum, provider validates all requests/responses, FE consumer tests validate MSW fixture. Không có custom TS DTO/Jackson DTO song song khác nghĩa.
 
 Schema patch compatible chỉ thêm optional response field hoặc operation không đổi behavior; request mới optional có server default rõ và oracle. Enum/action/required/nullability/status/permission/date/money meaning change là breaking, nâng minor/major thích hợp và cập nhật A/B/fixtures/tests cùng PR. FE/BE đọc diff cụ thể, ghi acceptance impact, generateclient/lint/provider+consumer và real E2E target before merge. Scope/domain module addition phải owner-approved concrete patch; không hỏi lại phạm vi đã duyệt.
 
@@ -142,6 +142,12 @@ Owner phê duyệt ngày 18/10/2026 patch duy nhất: scenarios-v1 S060 expected
 
 Owner phê duyệt ngày 18/10/2026 patch duy nhất: scenarios-v1 S024 expected.body.allowedActions đổi từ ["VERIFY_ACK"] thành []. Actor MAKER là contributor/ACK recorder, RECORD_ACK request, status200, DISPATCHED state, immutable candidate, durable effects và blockedActions giữ nguyên; không chuyển CHECKER action sang blockedActions hoặc cấp quyền. commandNotice / Notice.allowedActions khớp independent noncontributor CHECKER tại A §8.1/B §6. Không đổi schema, field, enum hoặc authorization; A/B và block/seed version metadata đồng bộ 1.2.2. Shared review nội bộ GO tại 129642e (docs/plan/reviews/S024-canonical-compatibility-review.md); external FE acknowledgement chưa có và không tuyên bố gate tích hợp hoàn tất. Patch S060 giữ nguyên allowedActions=[].
 
+### 9.6. Minor version 1.3.0 — termination interval boundary
+
+Owner phê duyệt ngày 19/10/2026 exact guard A §10/B §6: TERMINATE CONFIRM chỉ hợp lệ khi current ContractVersion.effectiveFrom≤effectOn≤today. effectOn sớm hơn current version trả409 STATE_CONFLICT ordinary prevalidation trước business effects, không mutate/cache-success/clamp ngày/rewrite prior intervals hoặc APPLIED Change; source giữ nguyên, correction cần cancel/new reviewed ControlRequest. Theo B §9, đây là thay đổi date semantics nên nâng minor A/B1.3.0 và đồng bộ block/seed metadata, không đổi route/schema/field/enum/role/permission hoặc behavioral fixtures. Shared review nội bộ GO tại c5120f5; external FE acknowledgement chưa có và không được tuyên bố đã nghiệm thu tích hợp.
+
+FE impact: commandControlRequest (ControlRequestCommand_CONFIRM; effectOn đã có trên immutable request) nhận existing409 STATE_CONFLICT trong trường hợp này; getControlRequest/listControlRequests và current ControlRequest.allowedActions/blockedActions phản ánh guard. Không breaking wire/schema change; thay đổi điều kiện nghiệp vụ đã được owner phê duyệt. FE giữ source/ngày nhập, hiển thị reason/blocker và workflow cancel/new review; không tự clamp/resubmit hoặc rewrite history. S024/S060 allowedActions=[] giữ nguyên. AC-045 prose và business-catalog acceptanceOracle chỉ truyền cùng guard có điều kiện; không đổi concrete scenario requests/expected outputs.
+
 ## 10. Canonical blocks
 
 
@@ -154,8 +160,8 @@ Owner phê duyệt ngày 18/10/2026 patch duy nhất: scenarios-v1 S024 expected
   "jsonSchemaDialect": "https://json-schema.org/draft/2020-12/schema",
   "info": {
     "title": "Contract Governance — FE/BE Shared Contract",
-    "version": "1.2.2",
-    "description": "Canonical B1.2.2; business authority A1.2.2; synthetic documentary VA profile only."
+    "version": "1.3.0",
+    "description": "Canonical B1.3.0; business authority A1.3.0; synthetic documentary VA profile only."
   },
   "servers": [
     {
@@ -19477,7 +19483,7 @@ Owner phê duyệt ngày 18/10/2026 patch duy nhất: scenarios-v1 S024 expected
 <!-- contract:block seed-v1 -->
 ```json
 {
-  "version": "1.2.2",
+  "version": "1.3.0",
   "syntheticOnly": true,
   "clock": "2027-01-05T02:00:00.000Z",
   "timezone": "Asia/Ho_Chi_Minh",
@@ -31327,8 +31333,8 @@ Owner phê duyệt ngày 18/10/2026 patch duy nhất: scenarios-v1 S024 expected
 <!-- contract:block scenarios-v1 -->
 ```json
 {
-  "version": "1.2.2",
-  "seedVersion": "1.2.2",
+  "version": "1.3.0",
+  "seedVersion": "1.3.0",
   "requestMode": "real wire; headers below are fixture tokens, provider uses tokens from real session",
   "scenarios": [
     {
@@ -40119,7 +40125,7 @@ Owner phê duyệt ngày 18/10/2026 patch duy nhất: scenarios-v1 S024 expected
 <!-- contract:block protocol-rules-v1 -->
 ```json
 {
-  "version": "1.2.2",
+  "version": "1.3.0",
   "errorStatus": {
     "BAD_JSON": 400,
     "UNAUTHENTICATED": 401,
@@ -40881,17 +40887,17 @@ Owner phê duyệt ngày 18/10/2026 patch duy nhất: scenarios-v1 S024 expected
 ```json
 {
   "documentVersions": {
-    "A": "1.2.2",
-    "B": "1.2.2"
+    "A": "1.3.0",
+    "B": "1.3.0"
   },
-  "specificationFileSha256": "1a991f479b707a8e097b6afc16a3d1082626234b9f237b6ff50276d17e06035d",
+  "specificationFileSha256": "0dc6885d1b7faf65c6d5adf49389baa37474a2036735ed73e5710c47057e43a1",
   "hashAlgorithm": "SHA-256 over JSON UTF-8 ensure_ascii=false sorted keys separators comma/colon; no BOM",
   "blocks": {
-    "business-catalog-v1": "c2c9445ea04ab0bd764891eb919bb714ee4269cdfecc8b0df5fd86e3244adb59",
-    "openapi-v1": "24ca06ad5669ec99493ab1fa57dc632c9faf47722249dfd48705506768153d72",
-    "seed-v1": "46dcd079e8e3bb3aea5671eaf4b7dbd8d4c7a16c0eae4d43a15dfa98d4bfefdd",
-    "scenarios-v1": "b5dab930dbaab4b35ec9b57d2a2b3d36084d3db7aa53393a760e8d2ae3853dca",
-    "protocol-rules-v1": "e5076466084cd9d81874b8a69801f7f5e73ac6568abf1f206278c4d811f6eae7"
+    "business-catalog-v1": "aba7d2b036e6d34bc83e8a1a9d6e974b36b46395fa3732ff756aa20693123565",
+    "openapi-v1": "819576854ca56d9a9dd7e62fd887e7b3b7bd1fe3b78dfa5bdcf7bfdf4d751787",
+    "seed-v1": "15dd87e716a49e1f1ccceea694605361da46bf65b6e33197297294cdac878331",
+    "scenarios-v1": "7e4d3708ba48c13d71fc8f2fe821b8daddea5983db1315e101bc90cc8c2b246a",
+    "protocol-rules-v1": "afafbbef73fd8fd63182f9e305e52d20447991a8cc5f0aa8eb1bea6714496d59"
   },
   "officialFiles": [
     "Final_Project_Specification.md",
