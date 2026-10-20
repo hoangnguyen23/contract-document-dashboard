@@ -1,10 +1,10 @@
 # Backend implementation
 
-Sources: `docs/Final_Project_Specification.md` (A1.1.0), `docs/FE_BE_Shared_Development_Contract.md` (B1.1.0). These remain the only canonical product and wire specifications. Compatibility patch 1.1.0 closes the documented POLICY file/job branch scope contradiction; business scope is unchanged.
+Sources: `docs/Final_Project_Specification.md` (A1.2.0), `docs/FE_BE_Shared_Development_Contract.md` (B1.2.0). These remain the only canonical product and wire specifications. Compatibility patch 1.1.0 closes the documented POLICY file/job branch scope contradiction; business scope is unchanged.
 
 The user requested Backend implementation and explicitly waived writing/running tests on 11 October 2026. Compilation, dependency resolution and independent static code review remain required. No automated test suites or manual HTTP acceptance scenarios will be run in this delivery. Build success does not establish G1–G6 integrated acceptance.
 
-The current tranche implements the Backend part of G1/G2: platform, identity/customer, dossier drafts and private evidence/scanning. G3–G5 are the subsequent roadmap below; they are not declared implemented or accepted in this tranche. Future operations must remain explicit in the coverage report, with no simulated success. This preserves the project's foundation-first development sequence.
+The foundation tranche implements the Backend part of G1/G2: platform, identity/customer, dossier drafts and private evidence/scanning. On 17 October 2026 the user confirmed sequential Backend G3 development while deferring FE/integrated acceptance. Complete the observed Windows startup fixes, then implement policy before approval/agreement using the latest accepted `dev`; keep the shared gate acceptance pending. G3–G5 operations are not implemented merely by this authorization and must remain explicit in the coverage report, with no simulated success.
 
 ## Delivery sequence
 
@@ -15,7 +15,7 @@ The current tranche implements the Backend part of G1/G2: platform, identity/cus
 5. Lifecycle/data: obligations, incidents, control/closeout, holds/disposition, scoped dashboards and exports.
 6. Static integration review, build with tests skipped, setup instructions and an explicit operation coverage report.
 
-Independent develop worktrees own distinct module paths. Shared interfaces are established by the platform task before dependent module implementation; no duplicate shared DTO/error/schema meanings. Integration occurs on `feature/backend-foundation`, based on current `dev`. Neither `main` nor `dev` is merged automatically. Publication is reviewable; FE integration and runtime acceptance remain pending.
+Independent develop worktrees own distinct module paths. Shared interfaces are established by the platform task before dependent module implementation; no duplicate shared DTO/error/schema meanings. Foundation was delivered on `feature/backend-foundation`; sequential Policy and approval/agreement work uses `feature/backend-approval-policies` and `feature/backend-approval-agreement` with reviewed prerequisites based on accepted `dev`. Neither `main` nor `dev` is merged automatically. Publication is reviewable; FE integration and runtime acceptance remain pending.
 
 ## Required connections
 
@@ -24,3 +24,5 @@ HTTP contract → session/current actor → object scope → request validation 
 Customer scope supplies dossier/file access. Submission freezes policy/facts/evidence; final approval creates one contract and artifact job. Signing/readiness precede timeline activation. Change/notice jobs recheck immutable source plus current guards. Lifecycle transitions create/control duties and closeout. Record holds serialize against disposition. Reports/files/jobs reuse object scope and redact per permission.
 
 No success placeholders, fixture-as-live-business-output, in-memory persistence, silent fallback for invalid states, or blanket admin bypass. Operations not yet implemented must be listed honestly rather than returning synthetic success.
+
+Policy compatibility patch 1.2.0 clarifies finite corpus boundaries, empty schedule version zero, generated-file uploader metadata and full simulation facts hashing. Six Policy operations passed independent source review at 29d1993; operational migration/startup and business acceptance remain separate gates.

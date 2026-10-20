@@ -1,6 +1,9 @@
 spring:
   application:
     name: contract-governance-api
+  autoconfigure:
+    # Authentication is owned by the database SessionFilter; do not create unused generated credentials.
+    exclude: org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration
   datasource:
     url: ${CG_DATABASE_URL:jdbc:postgresql://localhost:5432/contract_governance}
     username: ${CG_DATABASE_USER:contract_governance}
@@ -17,6 +20,7 @@ spring:
       max-file-size: 10MB
       max-request-size: 11MB
 server:
+  address: ${CG_SERVER_ADDRESS:127.0.0.1}
   port: ${PORT:8080}
   forward-headers-strategy: none
   servlet:

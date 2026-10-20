@@ -15,14 +15,15 @@ import java.util.UUID;
 @Component
 public class EvidenceAccess {
     private static final Map<String,String> TYPES = Map.of("DOSSIER","Dossier","CONTRACT","Contract","CHANGE","Change","RELATIONSHIP","Relationship","INCIDENT","Incident","OBLIGATION","Obligation","CONTROL_REQUEST","ControlRequest","DATA_REQUEST","DataRequest","NOTICE","Notice","POLICY","Policy");
-    private final EntityStore store;
+    private final org.springframework.beans.factory.ObjectProvider<vn.contractgovernance.api.privacy.PrivacyRecords> privacy;private final EntityStore store;
     private final DossierAccess dossiers;
     private final CustomerAccess customers;
-    public EvidenceAccess(EntityStore store, DossierAccess dossiers, CustomerAccess customers) { this.store=store; this.dossiers=dossiers; this.customers=customers; }
+    public EvidenceAccess(org.springframework.beans.factory.ObjectProvider<vn.contractgovernance.api.privacy.PrivacyRecords> privacy,EntityStore store, DossierAccess dossiers, CustomerAccess customers) { this.privacy=privacy;this.store=store; this.dossiers=dossiers; this.customers=customers; }
     public EntityStore.Entity parent(String targetKind, UUID targetId, Actor actor) {
         var type=TYPES.get(targetKind);
         if(type==null) throw ApiException.validation("/targetKind","Loại parent không hợp lệ.");
         var parent=store.require(type,targetId);
+        if(targetKind.equals("DATA_REQUEST"))return privacy.getObject().request(targetId,actor);
         if(targetKind.equals("POLICY")) { actor.requireRole("POLICY_AUTHOR","POLICY_REVIEWER"); return parent; }
         actor.requireBranch(parent.branchId());
         actor.requireRole("MAKER","CHECKER","MANAGER","DATA_OFFICER","AUDITOR");
@@ -73,7 +74,19 @@ public class EvidenceAccess {
         }
         return parent;
     }
-    public EntityStore.Entity lockParent(JsonNode file,Actor actor){var parent=parent(file.path("targetKind").asString(),UUID.fromString(file.path("targetId").asString()),actor);return store.lock(parent.type(),parent.id());}
+    public EntityStore.Entity lockParent(JsonNode file,Actor actor){parent(file.path("targetKind").asString(),UUID.fromString(file.path("targetId").asString()),actor);return lockOwner(file.path("targetKind").asString(),UUID.fromString(file.path("targetId").asString()));}
+    /** Lock existing financial ancestry before the leaf; also used by scanner callbacks. */
+    public EntityStore.Entity lockOwner(String kind,UUID id) {
+        var type=TYPES.get(kind); if(type==null)throw ApiException.of("STORAGE_INTEGRITY","Unknown evidence parent");
+        var parent=store.require(type,id);
+        if(kind.equals("DATA_REQUEST"))privacy.getObject().lockRecords(parent.body().path("recordIds"));
+        if(kind.equals("CONTROL_REQUEST"))lockOwner("CONTRACT",UUID.fromString(parent.body().path("contractId").asString()));
+        if(kind.equals("NOTICE")){lockOwner("CONTRACT",UUID.fromString(parent.body().path("contractId").asString()));if(parent.body().hasNonNull("changeId"))store.lock("Change",UUID.fromString(parent.body().path("changeId").asString()));}
+        if(java.util.Set.of("INCIDENT","OBLIGATION").contains(kind))lockOwner("CONTRACT",UUID.fromString(parent.body().path("contractId").asString()));
+        if(kind.equals("CHANGE")) lockOwner("CONTRACT",UUID.fromString(parent.body().path("contractId").asString()));
+        else if(kind.equals("CONTRACT")) store.lock("Dossier",UUID.fromString(parent.body().path("dossierId").asString()));
+        return store.lock(type,id);
+    }
     public EntityStore.Entity requireClean(UUID fileId,String kind,UUID parentId,UUID branchId,Actor actor) {
         var file=requireFile(fileId,actor);
         if(!kind.equals(file.body().path("targetKind").asString()) || !parentId.toString().equals(file.body().path("targetId").asString()) || !java.util.Objects.equals(branchId,file.branchId()))
@@ -105,7 +118,10 @@ public class EvidenceAccess {
         args.add(actor.hasAnyRole("CHECKER","MANAGER","DATA_OFFICER","AUDITOR"));
         args.add(actor.hasRole("MAKER"));args.add(actor.id().toString());
         String typeCase="case "+kind+" when 'FILE' then 'File' when 'DOSSIER' then 'Dossier' when 'CONTRACT' then 'Contract' when 'CHANGE' then 'Change' when 'RELATIONSHIP' then 'Relationship' when 'INCIDENT' then 'Incident' when 'OBLIGATION' then 'Obligation' when 'CONTROL_REQUEST' then 'ControlRequest' when 'DATA_REQUEST' then 'DataRequest' when 'NOTICE' then 'Notice' when 'POLICY' then 'Policy' end";
-        return "exists(with recursive ancestors as (select p.entity_type,p.id,p.branch_id,p.body,1 as depth from cg_entity p where p.entity_type="+typeCase+" and p.id=("+id+")::uuid union all select p.entity_type,p.id,p.branch_id,p.body,a.depth+1 from ancestors a join cg_entity p on p.id=case when a.entity_type='File' then (a.body->>'targetId')::uuid when a.body ? 'relationshipId' then (a.body->>'relationshipId')::uuid when a.body ? 'contractId' then (a.body->>'contractId')::uuid end and p.entity_type=case when a.entity_type='File' then case a.body->>'targetKind' when 'DOSSIER' then 'Dossier' when 'CONTRACT' then 'Contract' when 'CHANGE' then 'Change' when 'RELATIONSHIP' then 'Relationship' when 'INCIDENT' then 'Incident' when 'OBLIGATION' then 'Obligation' when 'CONTROL_REQUEST' then 'ControlRequest' when 'DATA_REQUEST' then 'DataRequest' when 'NOTICE' then 'Notice' when 'POLICY' then 'Policy' end when a.body ? 'relationshipId' then 'Relationship' when a.body ? 'contractId' then 'Contract' end where a.depth<5) select 1 from ancestors p where p.entity_type<>'File' and p.branch_id is not distinct from e.branch_id and ((p.entity_type='Policy' and p.branch_id is null and ?::boolean) or (p.branch_id=any(?::uuid[]) and (?::boolean or (p.entity_type='Relationship' and ?::boolean and p.body->>'assignedMakerId'=?)))))";
+        String existing="exists(with recursive ancestors as (select p.entity_type,p.id,p.branch_id,p.body,1 as depth from cg_entity p where p.entity_type="+typeCase+" and p.id=("+id+")::uuid union all select p.entity_type,p.id,p.branch_id,p.body,a.depth+1 from ancestors a join cg_entity p on p.id=case when a.entity_type='File' then (a.body->>'targetId')::uuid when a.body ? 'relationshipId' then (a.body->>'relationshipId')::uuid when a.body ? 'contractId' then (a.body->>'contractId')::uuid end and p.entity_type=case when a.entity_type='File' then case a.body->>'targetKind' when 'DOSSIER' then 'Dossier' when 'CONTRACT' then 'Contract' when 'CHANGE' then 'Change' when 'RELATIONSHIP' then 'Relationship' when 'INCIDENT' then 'Incident' when 'OBLIGATION' then 'Obligation' when 'CONTROL_REQUEST' then 'ControlRequest' when 'DATA_REQUEST' then 'DataRequest' when 'NOTICE' then 'Notice' when 'POLICY' then 'Policy' end when a.body ? 'relationshipId' then 'Relationship' when a.body ? 'contractId' then 'Contract' end where a.depth<5) select 1 from ancestors p where p.entity_type<>'File' and p.branch_id is not distinct from e.branch_id and ((p.entity_type='Policy' and p.branch_id is null and ?::boolean) or (p.branch_id=any(?::uuid[]) and (?::boolean or (p.entity_type='Relationship' and ?::boolean and p.body->>'assignedMakerId'=?)))))";
+        args.add(actor.id());args.add("{"+String.join(",",actor.branchIds().stream().map(UUID::toString).sorted().toList())+"}");args.add(actor.hasAnyRole("CHECKER","MANAGER","DATA_OFFICER","AUDITOR"));
+        existing=existing.replace("select 1 from ancestors p where", "select 1 from ancestors p where not exists(select 1 from ancestors restricted where restricted.entity_type='DataRequest') and");
+        return "("+existing+") or ("+actor.hasAnyRole("MAKER","DATA_OFFICER","AUDITOR")+" and cg_privacy_record_scoped("+(job?"(e.body->>'parentId')::uuid":"e.id")+",?,?::uuid[],?))";
     }
 }
 

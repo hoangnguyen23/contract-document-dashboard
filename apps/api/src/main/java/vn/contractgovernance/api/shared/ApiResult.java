@@ -10,6 +10,7 @@ public record ApiResult(int status, JsonNode body, String etag, String location,
     public static ApiResult empty() { return new ApiResult(204, null, null, null); }
     public ResponseEntity<JsonNode> response() {
         var builder = ResponseEntity.status(status);
+        if(status>=400) builder.header("Content-Type","application/problem+json");
         if (etag != null) builder.header("ETag", etag);
         if (location != null) builder.header("Location", location);
         if (replayed) builder.header("Idempotent-Replayed", "true");
