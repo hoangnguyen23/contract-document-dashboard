@@ -33,3 +33,7 @@ Implementation plans and module setup notes are derived operational documentatio
 - [Control implementation](plan/control-implementation.md): source acknowledgement/Round/termination/closeout evidence.
 - [Control source review](plan/reviews/backend-control-source-review.md): bounded source and100-source skipped-test package.
 - [Approved termination boundary](plan/contract-change-proposals/termination-retroactive-boundary.md): A/B1.3.0 owner decision and internal shared review.
+
+- [Privacy completion task](plan/tasks/backend-privacy-completion.md): implementation and independent review in progress; coverage not yet promoted.
+- [Proposed backend verification](plan/backend-verification-plan.md): owner-gated scope, not authorized or executed.
+- [D-drive runtime ownership](plan/reviews/backend-d-relocation-runtime.md): retained Docker volumes and ownership verification, separate from current application startup.

@@ -1,13 +1,13 @@
 ---
 id: backend-privacy-completion
 scope: finite DataRequest, safe file disposition and final Job source closure
-status: ready
+status: in-progress
 depends-on: [backend-control-completion]
 ---
 
 # Privacy implementation task
 
-Read-only refinement against Control worktree1ecf6c3/canonical A/B1.3.0 and actual integrated G5. Full earlier backend-privacy-analysis.md remains supporting analysis. No app edits/tests/build/HTTP/runtime/data actions. Root must create feature/backend-records-privacy from final reviewed Control and allocate V013; preserve V001–V012.
+Execution resumed20October in D:/contract-document-dashboard-worktrees/be-records-privacy on feature/backend-records-privacy, based on reviewed Control and relocation checkpoint8d131af. Canonical A/B1.3.0 and actual integrated G5 remain authoritative; earlier backend-privacy-analysis.md is supporting analysis. V013 is allocated exclusively to Privacy; preserve V001–V012. Developer implementation and separate independent source review are in progress. No tests/HTTP/PDF/byte-disposal/business-data execution is authorized; skipped-test build is permitted.
 
 ## Deliverable
 
