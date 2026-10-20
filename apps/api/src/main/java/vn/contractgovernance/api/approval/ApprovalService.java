@@ -201,7 +201,7 @@ public class ApprovalService implements DossierApprovalBridge {
                 if(!pass)throw ApiException.of("POLICY_BLOCKED","Mỗi bằng chứng bắt buộc phải có đánh giá PASS của L1.");
             }
         }
-        var evaluation=policies.evaluateFrozen(uuid(round.body(),"policyVersionId"),inputs.facts(frozen.revision(),round.body().path("steps"),round.body().path("mandatoryChecks"),round.body().path("evidenceChecks"),true),dossier.branchId(),frozen.revision().path("factsHash").asString(),true);
+        var evaluation=policies.evaluateApprovalRound(round.id(),inputs.facts(frozen.revision(),round.body().path("steps"),round.body().path("mandatoryChecks"),round.body().path("evidenceChecks"),true),dossier.branchId(),frozen.revision().path("factsHash").asString(),null);
         inputs.requireEvaluation(evaluation);
         store.jdbc().update("insert into cg_round_evaluation(id,round_id,actor_id,evaluation,recorded_at) values(?,?,?,?::jsonb,?)",UUID.randomUUID(),round.id(),actor.id(),json.stringify(evaluation),Timestamp.from(clock.instant()));
     }
@@ -242,7 +242,7 @@ public class ApprovalService implements DossierApprovalBridge {
     }
     private RevisionStore.Frozen frozen(EntityStore.Entity round){return revisions.require(uuid(round.body(),"targetId"),uuid(round.body(),"revisionId"));}
     private void validateReviewers(EntityStore.Entity dossier,JsonNode revision,UUID requester,JsonNode steps) {
-        var seen=new HashSet<UUID>();for(var step:steps){var id=uuid(step,"reviewerId");if(!seen.add(id))throw ApiException.of("SOD_VIOLATION","L1 và L2 phải khác nhau.");inputs.eligible(id,step.path("level").asString(),dossier,revision,requester);}
+        var seen=new HashSet<UUID>();for(var step:steps){var id=uuid(step,"reviewerId");if(!seen.add(id))throw ApiException.of("SOD_VIOLATION","L1 và L2 phải khác nhau.");if(!step.path("state").asString().equals("APPROVED"))inputs.eligible(id,step.path("level").asString(),dossier,revision,requester);}
     }
     private void requireDigest(RevisionStore.Frozen frozen,JsonNode digest) {
         if(!json.hash(digest).equals(frozen.revision().path("evidenceHash").asString())||!digest.equals(frozen.metadata().path("evidence")))throw ApiException.of("STORAGE_INTEGRITY","Bằng chứng không khớp nguồn đã chốt.");
@@ -281,7 +281,7 @@ public class ApprovalService implements DossierApprovalBridge {
                         if(!body.path("authorityChecked").asBoolean())throw ApiException.of("AUTHORITY_INVALID","Chưa xác minh thẩm quyền.");
                         var dossier=store.require("Dossier",uuid(body,"targetId"));var frozen=frozen(round);
                         validateReviewers(dossier,frozen.revision(),frozen.submittedBy(),body.path("steps"));
-                        inputs.requireEvaluation(policies.evaluateFrozen(uuid(body,"policyVersionId"),inputs.facts(frozen.revision(),body.path("steps"),body.path("mandatoryChecks"),body.path("evidenceChecks"),true),round.branchId(),frozen.revision().path("factsHash").asString(),true));
+                        inputs.requireEvaluation(policies.evaluateApprovalRound(round.id(),inputs.facts(frozen.revision(),body.path("steps"),body.path("mandatoryChecks"),body.path("evidenceChecks"),true),round.branchId(),frozen.revision().path("factsHash").asString(),null));
                     }
                     allowed.add(action);
                 } catch(ApiException blockedAction) {

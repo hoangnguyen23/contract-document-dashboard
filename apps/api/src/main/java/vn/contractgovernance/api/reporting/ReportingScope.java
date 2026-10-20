@@ -34,9 +34,14 @@ final class ReportingScope {
     static Predicate business(Actor actor,List<UUID> branches,String alias) {
         var args=new ArrayList<Object>(); args.add(array(branches));
         String sql=alias+".branch_id=any(?::uuid[])";
+        String ancestry="with recursive ancestry as (select "+alias+".entity_type,"+alias+".id,"+alias+".branch_id,"+alias+".body,0 as depth union all select p.entity_type,p.id,p.branch_id,p.body,n.depth+1 from ancestry n join cg_entity p on p.entity_type="+PARENT_TYPE+" and p.id="+PARENT_ID+" and p.branch_id=n.branch_id where n.depth<8) ";
+        // Privacy ancestors require every selected record's current scope, also for attached File/Job audits.
+        args.add(actor.hasAnyRole("MAKER","DATA_OFFICER","AUDITOR"));args.add(actor.id());args.add(array(branches));args.add(actor.hasAnyRole("DATA_OFFICER","AUDITOR"));
+        sql+=" and not exists ("+ancestry+"select 1 from ancestry where entity_type='DataRequest' and (not ?::boolean or not cg_privacy_record_scoped(id,?,?::uuid[],?)))";
         if (!broad(actor)) {
             args.add(actor.hasRole("MAKER")); args.add(actor.id().toString());
-            sql+=" and ?::boolean and exists (with recursive ancestry as (select "+alias+".entity_type,"+alias+".id,"+alias+".branch_id,"+alias+".body,0 as depth union all select p.entity_type,p.id,p.branch_id,p.body,n.depth+1 from ancestry n join cg_entity p on p.entity_type="+PARENT_TYPE+" and p.id="+PARENT_ID+" and p.branch_id=n.branch_id where n.depth<8) select 1 from ancestry where entity_type='Relationship' and body->>'assignedMakerId'=?)";
+            args.add(actor.id());args.add(array(branches));
+            sql+=" and ?::boolean and exists ("+ancestry+"select 1 from ancestry where (entity_type='Relationship' and body->>'assignedMakerId'=?) or (entity_type='DataRequest' and cg_privacy_record_scoped(id,?,?::uuid[],false)))";
         }
         return new Predicate(sql,List.copyOf(args));
     }

@@ -23,9 +23,14 @@ public class PolicyEvaluator {
     }
     /** A renewal keeps original startOn in consolidated terms but validates its extension interval. */
     public JsonNode evaluateBusinessDurationAt(EntityStore.Entity policy,JsonNode facts,UUID branchId,String sourceFactsHash,boolean humanRequired,Instant authorityAt,LocalDate durationFrom) {
+        return evaluateRoundBusiness(policy,facts,branchId,sourceFactsHash,humanRequired,authorityAt,durationFrom,Set.of());
+    }
+    // Only PolicyAccess supplies historical IDs after checking persisted Round decision evidence.
+    JsonNode evaluateRoundBusiness(EntityStore.Entity policy,JsonNode facts,UUID branchId,String sourceFactsHash,boolean humanRequired,Instant authorityAt,LocalDate durationFrom,Set<UUID> historicalReviewers) {
         Objects.requireNonNull(authorityAt,"Real business evaluation requires an action instant");
         Objects.requireNonNull(branchId,"Real business evaluation requires a target branch");
         return evaluateAt(policy,facts,sourceFactsHash,(id,role)->{
+            if(historicalReviewers.contains(id))return true;
             try {var actor=users.actor(id);return actor.hasRole(role)&&actor.inBranch(branchId);}catch(ApiException invalid){return false;}
         },humanRequired,authorityAt,durationFrom);
     }
