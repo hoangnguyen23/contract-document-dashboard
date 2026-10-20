@@ -2,7 +2,7 @@
 
 Canonical sources are [A](../Final_Project_Specification.md) and [B](../FE_BE_Shared_Development_Contract.md), currently1.3.0. Implementation plans describe delivery and do not override these specifications.
 
-Current reviewed source checkpoint: Control8f40974/reviewc96b8ec;80 implemented,1 partial and4 missing canonical operations. Privacy/DataRequest and DATA_DISPOSITION are in progress on feature/backend-records-privacy. Dirty source is not counted as completed. See [coverage](backend-operation-coverage.md), [execution checkpoints](completion-execution.md) and the [Privacy task](tasks/backend-privacy-completion.md).
+Current source checkpoint:85 implemented /0 partial /0 missing at appe718ccc5f7f6ba4d3881d924174440bedfbf7db1, Privacy review1595418 and separate final crossmodule repair review. All five Job kinds and three approval/reviewer-option targets are implemented. See [coverage](backend-operation-coverage.md), [execution checkpoints](completion-execution.md) and [Privacy review](reviews/backend-privacy-source-review.md). Business and FE acceptance remain pending.
 
 The work continues through whole-backend source reconciliation, independent review, skipped-test build, exact runtime-source matching and FE handoff. Completed feature branches remain reviewable Draft PRs with explicit dependencies; no merge or main/dev push is authorized.
 

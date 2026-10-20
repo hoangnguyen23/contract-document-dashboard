@@ -34,6 +34,14 @@ Implementation plans and module setup notes are derived operational documentatio
 - [Control source review](plan/reviews/backend-control-source-review.md): bounded source and100-source skipped-test package.
 - [Approved termination boundary](plan/contract-change-proposals/termination-retroactive-boundary.md): A/B1.3.0 owner decision and internal shared review.
 
-- [Privacy completion task](plan/tasks/backend-privacy-completion.md): implementation and independent review in progress; coverage not yet promoted.
+- [Privacy completion task](plan/tasks/backend-privacy-completion.md): source complete after separate independent review; acceptance pending.
 - [Proposed backend verification](plan/backend-verification-plan.md): owner-gated scope, not authorized or executed.
 - [D-drive runtime ownership](plan/reviews/backend-d-relocation-runtime.md): retained Docker volumes and ownership verification, separate from current application startup.
+
+- [Privacy implementation](plan/privacy-implementation.md): real finite dispositions, safe copies, holds and recovery.
+- [Privacy source review](plan/reviews/backend-privacy-source-review.md): exact final107-source package and bounded semantic GO.
+- [Final crossmodule review](plan/reviews/backend-final-crossmodule-source-review.md): repaired invariants and preserved finding history.
+- [Final runtime evidence](plan/reviews/backend-final-runtime-startup.md): exact source/JAR operational startup, separate from workflow acceptance.
+
+- [Final Backend handoff](plan/backend-final-handoff.md):85/0/0 source, exact build/startup, precise FE impact and acceptance gaps.
+- [18-domain acceptance matrix](plan/backend-acceptance-matrix.md): source implementation versus unexecuted business/FE/NFR acceptance.
