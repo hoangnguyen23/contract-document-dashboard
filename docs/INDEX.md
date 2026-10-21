@@ -35,7 +35,7 @@ Implementation plans and module setup notes are derived operational documentatio
 - [Approved termination boundary](plan/contract-change-proposals/termination-retroactive-boundary.md): A/B1.3.0 owner decision and internal shared review.
 
 - [Privacy completion task](plan/tasks/backend-privacy-completion.md): source complete after separate independent review; acceptance pending.
-- [Proposed backend verification](plan/backend-verification-plan.md): owner-gated scope, not authorized or executed.
+- [Proposed backend verification](plan/backend-verification-plan.md): item1 manual smoke authorized21October under isolation conditions; other scopes unapproved.
 - [D-drive runtime ownership](plan/reviews/backend-d-relocation-runtime.md): retained Docker volumes and ownership verification, separate from current application startup.
 
 - [Privacy implementation](plan/privacy-implementation.md): real finite dispositions, safe copies, holds and recovery.
@@ -45,3 +45,5 @@ Implementation plans and module setup notes are derived operational documentatio
 
 - [Final Backend handoff](plan/backend-final-handoff.md):85/0/0 source, exact build/startup, precise FE impact and acceptance gaps.
 - [18-domain acceptance matrix](plan/backend-acceptance-matrix.md): source implementation versus unexecuted business/FE/NFR acceptance.
+
+- [Manual original-contract smoke](plan/manual-smoke-execution.md): limited owner authorization, isolation gates, real HTTP evidence and pending Clock configuration decision.

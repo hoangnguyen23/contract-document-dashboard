@@ -1,6 +1,6 @@
-# Proposed final backend verification — NOT AUTHORIZED / NOT EXECUTED
+# Backend verification plan — item1 conditionally authorized21October2026
 
-Owner master mission18October preserves the no-automated-tests decision. This plan requests future explicit permission only after source closure. It authorizes nothing by itself. Source Complete, Build Verified, Runtime Started, Business Verified, Integrated Acceptance and Production Ready remain separate verdicts.
+Owner21October authorized ONLY item1 manual synthetic HTTP smoke under explicit isolated-environment conditions. See manual-smoke-execution.md for the approval scope, time/configuration gate and actual results. Items2–8 remain NOT AUTHORIZED / NOT EXECUTED. No blanket acceptance is implied. Owner master mission18October preserves the no-automated-tests decision. This plan requests future explicit permission only after source closure. It authorizes nothing by itself. Source Complete, Build Verified, Runtime Started, Business Verified, Integrated Acceptance and Production Ready remain separate verdicts.
 
 ## Isolation and safeguards
 
