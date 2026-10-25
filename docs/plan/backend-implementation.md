@@ -4,7 +4,7 @@ Sources: `docs/Final_Project_Specification.md` (A1.1.0), `docs/FE_BE_Shared_Deve
 
 The user requested Backend implementation and explicitly waived writing/running tests on 11 October 2026. Compilation, dependency resolution and independent static code review remain required. No automated test suites or manual HTTP acceptance scenarios will be run in this delivery. Build success does not establish G1–G6 integrated acceptance.
 
-The current tranche implements the Backend part of G1/G2: platform, identity/customer, dossier drafts and private evidence/scanning. G3–G5 are the subsequent roadmap below; they are not declared implemented or accepted in this tranche. Future operations must remain explicit in the coverage report, with no simulated success. This preserves the project's foundation-first development sequence.
+The foundation tranche implements the Backend part of G1/G2: platform, identity/customer, dossier drafts and private evidence/scanning. On 17 October 2026 the user confirmed sequential Backend G3 development while deferring FE/integrated acceptance. Complete the observed Windows startup fixes, then implement policy before approval/agreement using the latest accepted `dev`; keep the shared gate acceptance pending. G3–G5 operations are not implemented merely by this authorization and must remain explicit in the coverage report, with no simulated success.
 
 ## Delivery sequence
 
