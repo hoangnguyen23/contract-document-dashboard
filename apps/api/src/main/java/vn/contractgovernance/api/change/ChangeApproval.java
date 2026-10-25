@@ -117,9 +117,13 @@ public class ChangeApproval {
         var adapted=(ObjectNode)revision.deepCopy(); adapted.set("terms",revision.path("consolidatedTerms")); return inputs.facts(adapted,steps,mandatory,checks,checked);
     }
     private void eligible(EntityStore.Entity change,JsonNode revision,UUID submitter,JsonNode steps) {
+        eligible(change,revision,submitter,steps,false);
+    }
+    private void eligible(EntityStore.Entity change,JsonNode revision,UUID submitter,JsonNode steps,boolean historical) {
         var excluded=changes.contributors(change); excluded.add(submitter); var seen=new HashSet<UUID>();
         for(var step:steps) {
             UUID reviewer=id(step,"reviewerId"); if(!seen.add(reviewer)) throw ApiException.of("SOD_VIOLATION","L1/L2 phải khác nhau.");
+            if(historical&&step.path("state").asString().equals("APPROVED")) continue;
             users.requireEligible(reviewer,change.branchId(),step.path("level").asString().equals("L1")?"CHECKER":"MANAGER",excluded);
             var actor=users.actor(reviewer); for(var fileId:changes.references(revision)) if(store.require("File",fileId).body().path("sensitive").asBoolean()&&!actor.hasPermission("SENSITIVE_READ")) throw ApiException.of("SENSITIVE_FORBIDDEN","Reviewer thiếu quyền evidence nhạy cảm.");
         }
@@ -163,7 +167,7 @@ public class ChangeApproval {
                 store.jdbc().update("insert into cg_round_assessment(id,round_id,actor_id,assessment,recorded_at) values(?,?,?,?::jsonb,?)",UUID.randomUUID(),id,actor.id(),json.stringify(request),Timestamp.from(clock.instant()));
             } else if(action.equals("REASSIGN")) {
                 var step=findStep(body,request.path("level").asString()); if(!Set.of("PENDING","WAITING").contains(step.path("state").asString())) throw ApiException.of("STATE_CONFLICT","Bước đã quyết định.");
-                UUID previous=id(step,"reviewerId"); step.set("reviewerId",request.path("reviewerId")); eligible(change,frozen.revision(),frozen.submittedBy(),body.path("steps"));
+                UUID previous=id(step,"reviewerId"); step.set("reviewerId",request.path("reviewerId")); eligible(change,frozen.revision(),frozen.submittedBy(),body.path("steps"),true);
                 if(previous.equals(id(step,"reviewerId"))) throw ApiException.validation("/reviewerId","Reviewer mới phải khác.");
                 store.jdbc().update("insert into cg_round_reassignment(id,round_id,level,old_reviewer_id,new_reviewer_id,actor_id,reason,recorded_at) values(?,?,?,?,?,?,?,?)",UUID.randomUUID(),id,request.path("level").asString(),previous,id(step,"reviewerId"),actor.id(),request.path("reason").asString(),Timestamp.from(clock.instant()));
                 if(request.path("level").asString().equals("L1")) { body.set("evidenceChecks",json.array()); body.put("authorityChecked",false); }
@@ -188,13 +192,13 @@ public class ChangeApproval {
     }
     private void current(EntityStore.Entity change,EntityStore.Entity round,Frozen frozen,Actor actor) {
         var contract=store.require("Contract",id(change.body(),"contractId")); changes.active(contract); changes.currentBase(contract,change.body()); changes.requireCurrentGuard(contract); signingEvidence.requireMaterial(contract);
-        changes.validateTerms(contract,change.body(),store.require("Policy",id(round.body(),"policyVersionId"))); digest(change,frozen,actor); eligible(change,frozen.revision(),frozen.submittedBy(),round.body().path("steps"));
+        changes.validateTerms(contract,change.body(),store.require("Policy",id(round.body(),"policyVersionId"))); digest(change,frozen,actor); eligible(change,frozen.revision(),frozen.submittedBy(),round.body().path("steps"),true);
         mandatory(round.body().path("mandatoryChecks"),change,changes.references(frozen.revision()),actor);
         if(!round.body().path("authorityChecked").asBoolean()) throw ApiException.of("AUTHORITY_INVALID","Chưa kiểm tra thẩm quyền.");
         var assessors=store.jdbc().query("select actor_id from cg_round_assessment where round_id=? order by recorded_at desc,id desc limit 1",(rs,n)->rs.getObject(1,UUID.class),round.id());
         if(assessors.isEmpty()||!assessors.getFirst().toString().equals(round.body().path("steps").get(0).path("reviewerId").asString())) throw ApiException.of("POLICY_BLOCKED","Cần assessment của L1 hiện hành.");
         requiredDocumentPasses(frozen.revision(),round.body());
-        var evaluation=policies.evaluateChangeFrozen(id(round.body(),"policyVersionId"),facts(frozen.revision(),round.body().path("steps"),round.body().path("mandatoryChecks"),round.body().path("evidenceChecks"),true),change.branchId(),json.hash(frozen.metadata().path("policyProjection")),true,renewalFrom(frozen.revision(),contract)); inputs.requireEvaluation(evaluation);
+        var evaluation=policies.evaluateApprovalRound(round.id(),facts(frozen.revision(),round.body().path("steps"),round.body().path("mandatoryChecks"),round.body().path("evidenceChecks"),true),change.branchId(),json.hash(frozen.metadata().path("policyProjection")),renewalFrom(frozen.revision(),contract)); inputs.requireEvaluation(evaluation);
         store.jdbc().update("insert into cg_round_evaluation(id,round_id,actor_id,evaluation,recorded_at) values(?,?,?,?::jsonb,?)",UUID.randomUUID(),round.id(),actor.id(),json.stringify(evaluation),Timestamp.from(clock.instant()));
     }
     public void noticeCurrent(EntityStore.Entity change,Actor actor) {
@@ -203,7 +207,7 @@ public class ChangeApproval {
         for(var check:round.body().path("mandatoryChecks")){inputs.nonfuture(check.path("checkedAt"),"/mandatoryChecks/checkedAt");var ids=SigningEvidence.uniqueIds(check.path("evidenceFileIds"),"/mandatoryChecks/evidenceFileIds");if(!changes.references(frozen.revision()).containsAll(ids))throw ApiException.of("STORAGE_INTEGRITY","Mandatory source differs.");changes.manifest(change,ids,actor,false);}
         requiredDocumentPasses(frozen.revision(),round.body());if(!changes.manifest(change,changes.references(frozen.revision()),actor,false).equals(frozen.metadata().path("evidence")))throw ApiException.of("STORAGE_INTEGRITY","Tariff evidence source differs.");
         if(!round.body().path("authorityChecked").asBoolean())throw ApiException.of("AUTHORITY_INVALID","Thiếu authority assessment.");
-        var contract=store.require("Contract",id(change.body(),"contractId"));var evaluation=policies.evaluateChangeFrozen(id(round.body(),"policyVersionId"),facts(frozen.revision(),round.body().path("steps"),round.body().path("mandatoryChecks"),round.body().path("evidenceChecks"),true),change.branchId(),json.hash(frozen.metadata().path("policyProjection")),true,renewalFrom(frozen.revision(),contract));inputs.requireEvaluation(evaluation);
+        var contract=store.require("Contract",id(change.body(),"contractId"));var evaluation=policies.evaluateApprovalRound(round.id(),facts(frozen.revision(),round.body().path("steps"),round.body().path("mandatoryChecks"),round.body().path("evidenceChecks"),true),change.branchId(),json.hash(frozen.metadata().path("policyProjection")),renewalFrom(frozen.revision(),contract));inputs.requireEvaluation(evaluation);
     }
     private void requiredDocumentPasses(JsonNode revision,JsonNode round) {
         var required=new HashSet<String>(); store.require("Policy",id(round,"policyVersionId")).body().path("config").path("requiredDocumentPurposes").forEach(purpose->required.add(purpose.asString()));
@@ -257,7 +261,7 @@ public class ChangeApproval {
         changes.active(contract); changes.currentBase(contract,change.body()); changes.requireCurrentGuard(contract);
         if(!signingEvidence.materialUnchanged(contract,false)) throw ApiException.of("READINESS_BLOCKED","Material source đã thay đổi.");
         changes.validateTerms(contract,change.body(),store.require("Policy",id(round.body(),"policyVersionId")));
-        eligible(change,frozen.revision(),frozen.submittedBy(),round.body().path("steps"));
+        eligible(change,frozen.revision(),frozen.submittedBy(),round.body().path("steps"),true);
         if(!round.body().path("authorityChecked").asBoolean()) throw ApiException.of("AUTHORITY_INVALID","Chưa kiểm tra thẩm quyền.");
         var assessors=store.jdbc().query("select actor_id from cg_round_assessment where round_id=? order by recorded_at desc,id desc limit 1",(rs,n)->rs.getObject(1,UUID.class),round.id());
         if(assessors.isEmpty()||!assessors.getFirst().toString().equals(round.body().path("steps").get(0).path("reviewerId").asString())) throw ApiException.of("POLICY_BLOCKED","Cần assessment của L1 hiện hành.");
@@ -267,7 +271,7 @@ public class ChangeApproval {
             if(!file.body().path("sha256").equals(digest.path("sha256"))) throw ApiException.of("STORAGE_INTEGRITY","Evidence metadata khác nguồn chốt.");
         }
         requiredDocumentPasses(frozen.revision(),round.body());
-        inputs.requireEvaluation(policies.evaluateChangeFrozen(id(round.body(),"policyVersionId"),facts(frozen.revision(),round.body().path("steps"),round.body().path("mandatoryChecks"),round.body().path("evidenceChecks"),true),change.branchId(),json.hash(frozen.metadata().path("policyProjection")),true,renewalFrom(frozen.revision(),contract)));
+        inputs.requireEvaluation(policies.evaluateApprovalRound(round.id(),facts(frozen.revision(),round.body().path("steps"),round.body().path("mandatoryChecks"),round.body().path("evidenceChecks"),true),change.branchId(),json.hash(frozen.metadata().path("policyProjection")),renewalFrom(frozen.revision(),contract)));
     }
     private ObjectNode findStep(JsonNode round,String level) { for(var step:round.path("steps")) if(step.path("level").asString().equals(level)) return (ObjectNode)step; throw ApiException.of("STATE_CONFLICT","Không có bước duyệt này."); }
     private ObjectNode pending(JsonNode round,String level,Actor actor) { var step=findStep(round,level); if(!step.path("state").asString().equals("PENDING")) throw ApiException.of("STATE_CONFLICT","Bước chưa đến lượt."); if(!step.path("reviewerId").asString().equals(actor.id().toString())) throw ApiException.of("ROLE_FORBIDDEN","Không đúng reviewer."); return step; }

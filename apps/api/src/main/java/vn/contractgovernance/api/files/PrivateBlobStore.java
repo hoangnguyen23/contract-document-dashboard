@@ -174,11 +174,25 @@ public class PrivateBlobStore {
     private void deleteUnreferenced(String key) {
         cleanup.executeWithoutResult(status -> {
             lockReferences(jdbc);
+            if(jdbc.queryForObject("select count(*) from cg_disposition_key where storage_key=?",Long.class,key)>0)return;
             Long references = jdbc.queryForObject("select count(*) from cg_file_blob where storage_key=? or redacted_storage_key=?", Long.class, key, key);
             if (references == null || references != 0L) return;
             try { Files.deleteIfExists(resolve(key)); }
             catch (IOException exception) { throw ApiException.of("SERVICE_UNAVAILABLE", "Không xóa được bytes mồ côi."); }
         });
+    }
+    /** Only a durable LOGICAL disposition may treat already-missing bytes as recovered cleanup. */
+    public void disposeCommitted(String key,String expectedHash,UUID request,UUID record) {
+        try (var guard=tryGuard(key).orElseThrow(()->ApiException.of("SERVICE_UNAVAILABLE","Disposition bytes are busy."))) {
+            cleanup.executeWithoutResult(status->{
+                lockReferences(jdbc);
+                if(jdbc.queryForObject("select count(*) from cg_disposition_key k join cg_disposition_record r on r.request_id=k.request_id and r.record_id=k.record_id where k.storage_key=? and k.expected_hash=? and k.request_id=? and k.record_id=? and r.phase in ('LOGICAL','DONE')",Long.class,key,expectedHash,request,record)!=1L)throw ApiException.of("DISPOSITION_COMMITTED","Missing durable cleanup authorization.");
+                if(jdbc.queryForObject("select count(*) from cg_file_blob where storage_key=? or redacted_storage_key=?",Long.class,key,key)!=0L)throw ApiException.of("READINESS_BLOCKED","Retained byte owner still references cleanup key.");
+                var path=resolve(key);
+                if(Files.exists(path,LinkOption.NOFOLLOW_LINKS)){read(key,expectedHash);try{Files.delete(path);}catch(IOException failure){throw ApiException.of("SERVICE_UNAVAILABLE","Disposition byte cleanup failed.");}}
+                if(Files.exists(path,LinkOption.NOFOLLOW_LINKS))throw ApiException.of("SERVICE_UNAVAILABLE","Disposition cleanup incomplete.");
+            });
+        }catch(IOException failure){throw ApiException.of("SERVICE_UNAVAILABLE","Disposition guard unavailable.");}
     }
     static void lockReferences(JdbcTemplate jdbc) {
         jdbc.execute("set local lock_timeout='250ms'");

@@ -66,6 +66,7 @@ public class BlobMaintenance {
                             // This conflicts with reference INSERT/UPDATE/DELETE from every application process.
                             PrivateBlobStore.lockReferences(jdbc);
                             String reference = blobs.referenceKey(name);
+                            if(jdbc.queryForObject("select count(*) from cg_disposition_key where storage_key in (?,?)",Long.class,name,reference)>0)return false;
                             Long references = jdbc.queryForObject("select count(*) from cg_file_blob where storage_key in (?,?) or redacted_storage_key in (?,?)", Long.class, name, reference, name, reference);
                             if (references == null || references != 0L) return false;
                             try { return blobs.removeCandidate(candidate.get(), cutoff); }

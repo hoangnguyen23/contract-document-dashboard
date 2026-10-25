@@ -1,112 +1,103 @@
 # Backend operation coverage
 
-Canonical A/B1.3.0 defines85 operations:80 implemented,1 partial and4 not implemented at reviewed Control source8f40974/reviewc96b8ec. These are semantic source classifications, not business/runtime/FE acceptance. Independent100-source clean/package passed19October10:26:49+07 with every test phase skipped. V010-V012 remain unapplied.
+Canonical A/B1.3.0: **85 implemented / 0 partial / 0 missing** after bounded independent Privacy review1595418 and final crossmodule repair review. Exact application source e718ccc5f7f6ba4d3881d924174440bedfbf7db1. This is semantic source coverage, not executed business or FE acceptance.
 
-| Method | Path | Canonical operationId | Source coverage | Limitation |
+Cumulative 107-source clean/package PASS2026-10-20T10:07:55+07:00; all test phases skipped; Java25.0.1/Maven3.10.0; exact app e718ccc5f7f6ba4d3881d924174440bedfbf7db1. JAR SHA256 `fa4c214eac62813bfeb62cc377f65fdd7e64708e9ffab4ff30f246b01f016602`. Final operational startup/migration is recorded separately in [runtime evidence](reviews/backend-final-runtime-startup.md). No automated tests, HTTP scenarios, manual PDF or actual disposition was executed.
+
+| Method | Path | Canonical operationId | Source coverage | Acceptance limitation |
 |---|---|---|---|---|
-| GET | `/api/v1/audit-events` | `listAuditEvents` | implemented | Scoped reporting source reviewed;78-source package passed; HTTP/business/FE acceptance pending. |
-| GET | `/api/v1/branches` | `listBranchs` | implemented | Runtime verification pending. |
-| POST | `/api/v1/branches` | `createBranch` | implemented | Runtime verification pending. |
-| GET | `/api/v1/branches/{id}` | `getBranch` | implemented | Runtime verification pending. |
-| PUT | `/api/v1/branches/{id}` | `updateBranch` | implemented | Runtime verification pending. |
-| GET | `/api/v1/changes` | `listChanges` | implemented | Source implemented; HTTP/business/FE acceptance pending. |
-| POST | `/api/v1/changes` | `createChange` | implemented | Source implemented; HTTP/business/FE acceptance pending. |
-| GET | `/api/v1/changes/{id}` | `getChange` | implemented | Source implemented; HTTP/business/FE acceptance pending. |
-| PUT | `/api/v1/changes/{id}` | `updateChange` | implemented | Source implemented; HTTP/business/FE acceptance pending. |
-| POST | `/api/v1/changes/{id}/commands` | `commandChange` | implemented | Negotiated and tariff source paths reviewed; runtime/business acceptance not executed. |
-| GET | `/api/v1/contact-requests` | `listContactRequests` | implemented | Runtime verification pending. |
-| POST | `/api/v1/contact-requests` | `createContactRequest` | implemented | Runtime verification pending. |
-| GET | `/api/v1/contact-requests/{id}` | `getContactRequest` | implemented | Runtime verification pending. |
-| POST | `/api/v1/contact-requests/{id}/commands` | `commandContactRequest` | implemented | Runtime verification pending. |
-| GET | `/api/v1/contracts` | `listContracts` | implemented | Original signing/readiness/timeline source implemented; actual business/runtime acceptance pending. |
-| GET | `/api/v1/contracts/{id}` | `getContract` | implemented | Original signing/readiness/timeline source implemented; actual business/runtime acceptance pending. |
-| POST | `/api/v1/contracts/{id}/commands` | `commandContract` | implemented | Original HOLD/RELEASE/CANCEL; current guards/history; business acceptance pending. |
-| GET | `/api/v1/contracts/{id}/versions` | `listContractVersions` | implemented | Immutable original history, number DESC/id DESC with bound cursor; G4 supplies future lineage. |
-| GET | `/api/v1/control-requests` | `listControlRequests` | implemented | Source reviewed; runtime/business/FE acceptance not executed. |
-| POST | `/api/v1/control-requests` | `createControlRequest` | implemented | Source reviewed; runtime/business/FE acceptance not executed. |
-| GET | `/api/v1/control-requests/{id}` | `getControlRequest` | implemented | Source reviewed; runtime/business/FE acceptance not executed. |
-| POST | `/api/v1/control-requests/{id}/commands` | `commandControlRequest` | implemented | Source reviewed; runtime/business/FE acceptance not executed. |
-| GET | `/api/v1/dashboard` | `getDashboard` | implemented | Scoped reporting source reviewed;78-source package passed; HTTP/business/FE acceptance pending. |
-| GET | `/api/v1/data-requests` | `listDataRequests` | not implemented | Later gate; schema availability alone does not register a handler. |
-| POST | `/api/v1/data-requests` | `createDataRequest` | not implemented | Later gate; schema availability alone does not register a handler. |
-| GET | `/api/v1/data-requests/{id}` | `getDataRequest` | not implemented | Later gate; schema availability alone does not register a handler. |
-| POST | `/api/v1/data-requests/{id}/commands` | `commandDataRequest` | not implemented | Later gate; schema availability alone does not register a handler. |
-| GET | `/api/v1/dossiers` | `listDossiers` | implemented | Runtime verification pending. |
-| POST | `/api/v1/dossiers` | `createDossier` | implemented | Runtime verification pending. |
-| GET | `/api/v1/dossiers/{id}` | `getDossier` | implemented | Runtime verification pending. |
-| PUT | `/api/v1/dossiers/{id}` | `updateDossier` | implemented | Runtime verification pending. |
-| POST | `/api/v1/dossiers/{id}/commands` | `commandDossier` | implemented | Real dossier submit/frozen Revision and withdrawal; final DOSSIER approval creates real PREPARED original and durable PDF intent. |
-| GET | `/api/v1/exports/audit` | `exportAuditCsv` | implemented | Scoped reporting source reviewed;78-source package passed; HTTP/business/FE acceptance pending. |
-| GET | `/api/v1/files` | `listFiles` | implemented | Runtime verification pending. |
-| POST | `/api/v1/files` | `uploadFile` | implemented | Runtime verification pending. |
-| DELETE | `/api/v1/files/{id}` | `deleteUnattachedFile` | implemented | Runtime verification pending. |
-| GET | `/api/v1/files/{id}` | `getFile` | implemented | Runtime verification pending. |
-| POST | `/api/v1/files/{id}/commands` | `commandFile` | implemented | Runtime verification pending. |
-| GET | `/api/v1/files/{id}/content` | `downloadFile` | implemented | FULL checks parent/current grants; REDACTED fails with 409 until a verified safe representation exists. No original fallback. |
-| GET | `/api/v1/incidents` | `listIncidents` | implemented | Source reviewed; runtime/business/FE acceptance not executed. |
-| POST | `/api/v1/incidents` | `createIncident` | implemented | Source reviewed; runtime/business/FE acceptance not executed. |
-| GET | `/api/v1/incidents/{id}` | `getIncident` | implemented | Source reviewed; runtime/business/FE acceptance not executed. |
-| POST | `/api/v1/incidents/{id}/commands` | `commandIncident` | implemented | Source reviewed; runtime/business/FE acceptance not executed. |
-| GET | `/api/v1/jobs` | `listJobs` | implemented | Runtime verification pending. |
-| GET | `/api/v1/jobs/{id}` | `getJob` | implemented | Runtime verification pending. |
-| POST | `/api/v1/jobs/{id}/commands` | `commandJob` | partial | DATA_DISPOSITION source/worker/retry still missing. |
-| GET | `/api/v1/notices` | `listNotices` | implemented | Source reviewed; runtime/HTTP/PDF/business/FE acceptance not executed; V010 unapplied. |
-| POST | `/api/v1/notices` | `createNotice` | implemented | Source reviewed; runtime/HTTP/PDF/business/FE acceptance not executed; V010 unapplied. |
-| GET | `/api/v1/notices/{id}` | `getNotice` | implemented | Source reviewed; runtime/HTTP/PDF/business/FE acceptance not executed; V010 unapplied. |
-| PUT | `/api/v1/notices/{id}` | `updateNotice` | implemented | Source reviewed; runtime/HTTP/PDF/business/FE acceptance not executed; V010 unapplied. |
-| GET | `/api/v1/notices/{id}/capture` | `getNoticeCapture` | implemented | Source reviewed; runtime/HTTP/PDF/business/FE acceptance not executed; V010 unapplied. |
-| POST | `/api/v1/notices/{id}/commands` | `commandNotice` | implemented | Source reviewed; runtime/HTTP/PDF/business/FE acceptance not executed; V010 unapplied. |
-| GET | `/api/v1/obligations` | `listObligations` | implemented | Source reviewed; runtime/business/FE acceptance not executed. |
-| GET | `/api/v1/obligations/{id}` | `getObligation` | implemented | Source reviewed; runtime/business/FE acceptance not executed. |
-| POST | `/api/v1/obligations/{id}/commands` | `commandObligation` | implemented | Source reviewed; runtime/business/FE acceptance not executed. |
-| GET | `/api/v1/parties` | `listPartys` | implemented | Runtime verification pending. |
-| POST | `/api/v1/parties` | `createParty` | implemented | Runtime verification pending. |
-| GET | `/api/v1/parties/{id}` | `getParty` | implemented | Runtime verification pending. |
-| PUT | `/api/v1/parties/{id}` | `updateParty` | implemented | Runtime verification pending. |
-| GET | `/api/v1/policies` | `listPolicys` | implemented | Policy source reviewed; compilation passed; runtime and business acceptance pending. |
-| POST | `/api/v1/policies` | `createPolicy` | implemented | Policy source reviewed; compilation passed; runtime and business acceptance pending. |
-| GET | `/api/v1/policies/{id}` | `getPolicy` | implemented | Policy source reviewed; compilation passed; runtime and business acceptance pending. |
-| PUT | `/api/v1/policies/{id}` | `updatePolicy` | implemented | Policy source reviewed; compilation passed; runtime and business acceptance pending. |
-| POST | `/api/v1/policies/{id}/commands` | `commandPolicy` | implemented | Policy source reviewed; compilation passed; runtime and business acceptance pending. |
-| POST | `/api/v1/policies/{id}/simulation` | `simulatePolicy` | implemented | Policy source reviewed; compilation passed; runtime and business acceptance pending. |
-| GET | `/api/v1/relationships` | `listRelationships` | implemented | Runtime verification pending. |
-| POST | `/api/v1/relationships` | `createRelationship` | implemented | Runtime verification pending. |
-| GET | `/api/v1/relationships/{id}` | `getRelationship` | implemented | Runtime verification pending. |
-| PUT | `/api/v1/relationships/{id}` | `updateRelationship` | implemented | Runtime verification pending. |
-| GET | `/api/v1/reviewer-options` | `getReviewerOptions` | implemented | Current scoped eligible reviewers for an existing target; later aggregate types depend on later modules. |
-| GET | `/api/v1/rounds` | `listRounds` | implemented | Source reviewed; runtime/business/FE acceptance not executed. |
-| GET | `/api/v1/rounds/{id}` | `getRound` | implemented | Source reviewed; runtime/business/FE acceptance not executed. |
-| POST | `/api/v1/rounds/{id}/commands` | `commandRound` | implemented | Source reviewed; runtime/business/FE acceptance not executed. |
-| GET | `/api/v1/rounds/{id}/snapshot` | `getRoundSnapshot` | implemented | Source reviewed; runtime/business/FE acceptance not executed. |
-| GET | `/api/v1/session` | `getSession` | implemented | Runtime verification pending. |
-| POST | `/api/v1/session/login` | `login` | implemented | Runtime verification pending. |
-| POST | `/api/v1/session/logout` | `logout` | implemented | Runtime verification pending. |
-| GET | `/api/v1/signing-packets` | `listSigningPackets` | implemented | CONTRACT and negotiated CHANGE implemented; HTTP/business acceptance pending. |
-| POST | `/api/v1/signing-packets` | `createSigningPacket` | implemented | CONTRACT and negotiated CHANGE implemented; HTTP/business acceptance pending. |
-| GET | `/api/v1/signing-packets/{id}` | `getSigningPacket` | implemented | CONTRACT and negotiated CHANGE implemented; HTTP/business acceptance pending. |
-| POST | `/api/v1/signing-packets/{id}/commands` | `commandSigningPacket` | implemented | CONTRACT and negotiated CHANGE implemented; HTTP/business acceptance pending. |
-| GET | `/api/v1/users` | `listUsers` | implemented | Runtime verification pending. |
-| POST | `/api/v1/users` | `createUser` | implemented | Runtime verification pending. |
-| GET | `/api/v1/users/{id}` | `getUser` | implemented | Runtime verification pending. |
-| PUT | `/api/v1/users/{id}` | `updateUser` | implemented | Runtime verification pending. |
+| GET | `/api/v1/session` | `getSession` | implemented | Business/HTTP/FE acceptance pending. |
+| POST | `/api/v1/session/login` | `login` | implemented | Business/HTTP/FE acceptance pending. |
+| POST | `/api/v1/session/logout` | `logout` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/users` | `listUsers` | implemented | Business/HTTP/FE acceptance pending. |
+| POST | `/api/v1/users` | `createUser` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/users/{id}` | `getUser` | implemented | Business/HTTP/FE acceptance pending. |
+| PUT | `/api/v1/users/{id}` | `updateUser` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/branches` | `listBranchs` | implemented | Business/HTTP/FE acceptance pending. |
+| POST | `/api/v1/branches` | `createBranch` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/branches/{id}` | `getBranch` | implemented | Business/HTTP/FE acceptance pending. |
+| PUT | `/api/v1/branches/{id}` | `updateBranch` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/parties` | `listPartys` | implemented | Business/HTTP/FE acceptance pending. |
+| POST | `/api/v1/parties` | `createParty` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/parties/{id}` | `getParty` | implemented | Business/HTTP/FE acceptance pending. |
+| PUT | `/api/v1/parties/{id}` | `updateParty` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/relationships` | `listRelationships` | implemented | Business/HTTP/FE acceptance pending. |
+| POST | `/api/v1/relationships` | `createRelationship` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/relationships/{id}` | `getRelationship` | implemented | Business/HTTP/FE acceptance pending. |
+| PUT | `/api/v1/relationships/{id}` | `updateRelationship` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/contact-requests` | `listContactRequests` | implemented | Business/HTTP/FE acceptance pending. |
+| POST | `/api/v1/contact-requests` | `createContactRequest` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/contact-requests/{id}` | `getContactRequest` | implemented | Business/HTTP/FE acceptance pending. |
+| POST | `/api/v1/contact-requests/{id}/commands` | `commandContactRequest` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/dossiers` | `listDossiers` | implemented | Business/HTTP/FE acceptance pending. |
+| POST | `/api/v1/dossiers` | `createDossier` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/dossiers/{id}` | `getDossier` | implemented | Business/HTTP/FE acceptance pending. |
+| PUT | `/api/v1/dossiers/{id}` | `updateDossier` | implemented | Business/HTTP/FE acceptance pending. |
+| POST | `/api/v1/dossiers/{id}/commands` | `commandDossier` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/rounds` | `listRounds` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/rounds/{id}` | `getRound` | implemented | Business/HTTP/FE acceptance pending. |
+| POST | `/api/v1/rounds/{id}/commands` | `commandRound` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/policies` | `listPolicys` | implemented | Business/HTTP/FE acceptance pending. |
+| POST | `/api/v1/policies` | `createPolicy` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/policies/{id}` | `getPolicy` | implemented | Business/HTTP/FE acceptance pending. |
+| PUT | `/api/v1/policies/{id}` | `updatePolicy` | implemented | Business/HTTP/FE acceptance pending. |
+| POST | `/api/v1/policies/{id}/commands` | `commandPolicy` | implemented | Business/HTTP/FE acceptance pending. |
+| POST | `/api/v1/policies/{id}/simulation` | `simulatePolicy` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/contracts` | `listContracts` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/contracts/{id}` | `getContract` | implemented | Business/HTTP/FE acceptance pending. |
+| POST | `/api/v1/contracts/{id}/commands` | `commandContract` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/contracts/{id}/versions` | `listContractVersions` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/signing-packets` | `listSigningPackets` | implemented | Business/HTTP/FE acceptance pending. |
+| POST | `/api/v1/signing-packets` | `createSigningPacket` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/signing-packets/{id}` | `getSigningPacket` | implemented | Business/HTTP/FE acceptance pending. |
+| POST | `/api/v1/signing-packets/{id}/commands` | `commandSigningPacket` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/changes` | `listChanges` | implemented | Business/HTTP/FE acceptance pending. |
+| POST | `/api/v1/changes` | `createChange` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/changes/{id}` | `getChange` | implemented | Business/HTTP/FE acceptance pending. |
+| PUT | `/api/v1/changes/{id}` | `updateChange` | implemented | Business/HTTP/FE acceptance pending. |
+| POST | `/api/v1/changes/{id}/commands` | `commandChange` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/notices` | `listNotices` | implemented | Business/HTTP/FE acceptance pending. |
+| POST | `/api/v1/notices` | `createNotice` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/notices/{id}` | `getNotice` | implemented | Business/HTTP/FE acceptance pending. |
+| PUT | `/api/v1/notices/{id}` | `updateNotice` | implemented | Business/HTTP/FE acceptance pending. |
+| POST | `/api/v1/notices/{id}/commands` | `commandNotice` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/obligations` | `listObligations` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/obligations/{id}` | `getObligation` | implemented | Business/HTTP/FE acceptance pending. |
+| POST | `/api/v1/obligations/{id}/commands` | `commandObligation` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/incidents` | `listIncidents` | implemented | Business/HTTP/FE acceptance pending. |
+| POST | `/api/v1/incidents` | `createIncident` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/incidents/{id}` | `getIncident` | implemented | Business/HTTP/FE acceptance pending. |
+| POST | `/api/v1/incidents/{id}/commands` | `commandIncident` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/control-requests` | `listControlRequests` | implemented | Business/HTTP/FE acceptance pending. |
+| POST | `/api/v1/control-requests` | `createControlRequest` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/control-requests/{id}` | `getControlRequest` | implemented | Business/HTTP/FE acceptance pending. |
+| POST | `/api/v1/control-requests/{id}/commands` | `commandControlRequest` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/data-requests` | `listDataRequests` | implemented | Finite workflows and recovery source reviewed; actual disposition/hold races unexecuted. |
+| POST | `/api/v1/data-requests` | `createDataRequest` | implemented | Finite workflows and recovery source reviewed; actual disposition/hold races unexecuted. |
+| GET | `/api/v1/data-requests/{id}` | `getDataRequest` | implemented | Finite workflows and recovery source reviewed; actual disposition/hold races unexecuted. |
+| POST | `/api/v1/data-requests/{id}/commands` | `commandDataRequest` | implemented | Finite workflows and recovery source reviewed; actual disposition/hold races unexecuted. |
+| GET | `/api/v1/files` | `listFiles` | implemented | Business/HTTP/FE acceptance pending. |
+| POST | `/api/v1/files` | `uploadFile` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/files/{id}` | `getFile` | implemented | Business/HTTP/FE acceptance pending. |
+| DELETE | `/api/v1/files/{id}` | `deleteUnattachedFile` | implemented | Business/HTTP/FE acceptance pending. |
+| POST | `/api/v1/files/{id}/commands` | `commandFile` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/files/{id}/content` | `downloadFile` | implemented | Real reviewed REDACTED binding; no FULL fallback; download acceptance unexecuted. |
+| GET | `/api/v1/jobs` | `listJobs` | implemented | All5 Job kinds traced; crash/retry/race acceptance unexecuted. |
+| GET | `/api/v1/jobs/{id}` | `getJob` | implemented | All5 Job kinds traced; crash/retry/race acceptance unexecuted. |
+| POST | `/api/v1/jobs/{id}/commands` | `commandJob` | implemented | All5 Job kinds traced; crash/retry/race acceptance unexecuted. |
+| GET | `/api/v1/audit-events` | `listAuditEvents` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/dashboard` | `getDashboard` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/exports/audit` | `exportAuditCsv` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/reviewer-options` | `getReviewerOptions` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/notices/{id}/capture` | `getNoticeCapture` | implemented | Business/HTTP/FE acceptance pending. |
+| GET | `/api/v1/rounds/{id}/snapshot` | `getRoundSnapshot` | implemented | Business/HTTP/FE acceptance pending. |
 
-## Verification boundary
+## Evidence and limitations
 
-Source review covers role/scope/assignment, stable contributor SoD, closed schema/nullability, current auth before idempotency replay, transactional response validation, private finalized byte references, scanner source/lease guards and migration definitions. Build and extraction evidence appears in docs/plan/reviews/backend-foundation-follow-up.md. Operational startup, scanner connectivity and Flyway001–008 have been observed separately in the primary runtime report. HTTP scope/session behavior, FE browser integration, actual PDF/signing/activation workflows, races/recovery and integrated acceptance remain pending.
-
-PowerShell package from `apps/api`: `.\mvnw.cmd '-Dmaven.test.skip=true' package`; quote the full Maven `-D` argument. This skips both test compilation and execution.
-
-
-Original agreement artifact tranche: final dossier APPROVE now invokes a real mandatory-transaction original-contract port, persists immutable render source and durable PDF intent. FILE_SCAN and original CONTRACT ARTIFACT_PDF/EFFECTIVITY retry paths are implemented; other job kinds remain partial. Original signing, readiness commands and immutable version/effectivity source are implemented, with real creation-only G5 consequence factories. Negotiated CHANGE signing/renewal/apply are now implemented; tariff Notice, public G5 and termination remain incomplete. Compilation is not artifact rendering, scanner/provider or business acceptance.
-
-Current source review and 73-source package passed at 6585c4f; primary V008/bean initialization also passed. These do not establish business acceptance. S060 and S024 maker hint corrections are owner-approved and internally reviewed at A/B1.2.2; actual external FE acknowledgement remains pending.
-
-Current G4: negotiated Change CRUD/approval/signing/commit/rebase/cancel/timeline source reviewed,84-source package PASS. V009 has not been applied at this checkpoint. Notice/tariff readiness remains partial; CONTROL_REQUEST Round and future Notice/Data jobs remain partial. See reviews/backend-change-source-review.md.
-
-Current corrected G4 source GO2af915d/review86035f9;84-source skipped-test package PASS18October18:59:20+07, JAR SHA2568bc3554e12edfe0c4bf180dec6b8c109c8135227ce6c994ce1aa2a18356b493d. The earlier review missed an enum violation in TERM_REVIEW supersession, now repaired and explicitly recorded. V009/startup was observed on prior7e2975c package only; this corrected package has not been started.
-
-Current Notice/tariff source GO5142b83/review3254e4c supersedes earlier temporary Notice blockers below/above. Six Notice operations and full tariff Change source path are implemented; remaining partial scope is CONTROL_REQUEST Round (four operations) and DATA_DISPOSITION Job retry. Public Obligation/Incident, Control and Privacy remain next. JAR SHA256 ac9012ce8908bbeb743c31552c6728f540106d2180ac85d2f35e920d7c481a42. No HTTP/business/PDF/FE acceptance.
-
-Latest G5 source GO992946d/reviewb42e821: six new operations implemented, commandObligation remains partial for CLOSEOUT Control proof. Four CONTROL_REQUEST Round operations and DATA_DISPOSITION Job retry also remain partial. Missing operations are Control4 and Privacy4. Earlier checkpoint counts below/above are historical. JAR SHA25687c6db685098ac1acd4c7522ccf7d76907520968a06560358f9232b5675fab5a. No G5 runtime/business/HTTP acceptance.
-
-Latest Control source GO8f40974/reviewc96b8ec closes4newControl operations,4CONTROL_REQUEST Round variants and actual CLOSEOUT ServiceEndProof. Current80/1/4 supersedes earlier historical checkpoints. Remaining source: DataRequest4 and DATA_DISPOSITION Job retry/worker. JAR SHA2561d027fb1a0123ea2e1731766c8c4a1a67f108b0018ad1cd4f9ab854c7e8eea89. Owner-approved termination date guard changes behavior at A/B1.3.0 without schema/route changes; external FE acknowledgement remains pending.
+- [Privacy review](reviews/backend-privacy-source-review.md): four operations, six commands, finite File/Relationship actions, actual durable effects and guards.
+- [Crossmodule review](reviews/backend-final-crossmodule-source-review.md): repaired original signing completion time, historical Round authority, Notice retry audit and per-record DataRequest audit ancestry; initial findings retained.
+- Earlier module reviews remain bounded evidence for foundation, policy, dossier/approval, original contract, signing/timeline, Change, Notice, Obligation/Incident, Control and reporting. Prior staged omissions are superseded only by the later source that implements them.
+- All5 Job kinds and all3 Round/reviewer-option targets were traced. Registration alone is not counted as completeness. Inventory retains exact actions, targets, sources, dependencies, permissions and canonical acceptance IDs.
+- S024/S060 hints and termination date guard are owner-approved/internal-reviewed canonical1.3.0; actual external FE acknowledgement/consumer execution remains pending. No new API/schema/role/permission/FE change in this final tranche.
+- Java25.0.1 used locally differs from pinned25.0.4.1. Fresh isolated migration, actual workflow/PDF/signing/disposition, negative permissions/SoD, concurrency, crash recovery, backup/restore and NFR remain unexecuted.
+- [Proposed verification plan](backend-verification-plan.md) is NOT AUTHORIZED / NOT EXECUTED. Source Complete, Build Verified, Runtime Started, Business Verified, Integrated Acceptance and Production Ready are separate verdicts.

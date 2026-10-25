@@ -48,5 +48,28 @@ public class PolicyAccess {
         if(!java.util.Set.of("ACTIVE","RETIRED").contains(policy.body().path("state").asString()))throw ApiException.of("POLICY_BLOCKED","Business evaluation requires an applicable or frozen historical published policy.");
         return evaluator.evaluateBusinessAt(policy,facts,targetBranchId,sourceFactsHash,humanVerificationRequired,actionAt);
     }
+    /** Internal Round port: exemptions come only from persisted approved steps and their immutable decisions.
+     * Caller source modules still validate current actor/scope/material and lock their aggregate for mutations.
+     * No HTTP facts, simulation, signing or arbitrary historical clock can grant this exemption.
+     */
+    public JsonNode evaluateApprovalRound(UUID roundId,JsonNode facts,UUID branchId,String sourceFactsHash,java.time.LocalDate renewalFrom) {
+        var round=store.require("Round",roundId);
+        if(!java.util.Set.of("DOSSIER","CHANGE").contains(round.body().path("targetKind").asString())||!java.util.Objects.equals(branchId,round.branchId()))throw ApiException.of("STORAGE_INTEGRITY","Round policy scope mismatch.");
+        String targetType=round.body().path("targetKind").asString().equals("DOSSIER")?"Dossier":"Change";
+        var source=store.require(targetType,UUID.fromString(round.body().path("targetId").asString()));
+        if(!java.util.Objects.equals(source.branchId(),branchId)||!round.id().toString().equals(source.body().path("roundId").asString()))throw ApiException.of("STORAGE_INTEGRITY","Round no longer belongs to its authoritative source.");
+        var historical=new java.util.HashSet<UUID>();
+        for(var step:round.body().path("steps")) {
+            String level=step.path("level").asString();UUID reviewer=UUID.fromString(step.path("reviewerId").asString());
+            if(!reviewer.toString().equals(facts.path(level.equals("L1")?"candidateL1Id":"candidateL2Id").asString()))throw ApiException.of("STORAGE_INTEGRITY","Reviewer facts do not match persisted Round.");
+            if(!step.path("state").asString().equals("APPROVED"))continue;
+            var decision=store.jdbc().queryForObject("select count(*) from cg_round_decision where round_id=? and level=? and actor_id=? and action='APPROVE'",Long.class,roundId,level,reviewer);
+            if(!reviewer.toString().equals(step.path("decidedBy").asString())||!step.hasNonNull("decisionAt")||decision==null||decision!=1)throw ApiException.of("STORAGE_INTEGRITY","Approved reviewer lacks immutable decision proof.");
+            historical.add(reviewer);
+        }
+        var policy=store.require("Policy",UUID.fromString(round.body().path("policyVersionId").asString()));
+        if(!java.util.Set.of("ACTIVE","RETIRED").contains(policy.body().path("state").asString()))throw ApiException.of("POLICY_BLOCKED","Frozen policy is not published.");
+        return evaluator.evaluateRoundBusiness(policy,facts,branchId,sourceFactsHash,true,clock.instant(),renewalFrom,java.util.Set.copyOf(historical));
+    }
 }
 

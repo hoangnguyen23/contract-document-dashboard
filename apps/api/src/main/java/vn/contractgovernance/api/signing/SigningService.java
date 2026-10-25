@@ -129,9 +129,9 @@ public class SigningService {
                     }
                     var body=(ObjectNode)packet.body().deepCopy();
                     if (request.path("action").asString().equals("VERIFY_SIGNING")) {
-                        verify(contract,packet,request,actor);
+                        var verifiedAt=verify(contract,packet,request,actor);
                         body.put("verificationStatus","VERIFIED").put("verifiedBy",actor.id().toString())
-                                .put("verifiedAt",JsonSupport.timestamp(clock.instant()));
+                                .put("verifiedAt",JsonSupport.timestamp(verifiedAt));
                     } else if (request.path("action").asString().equals("RETURN_SIGNING")) {
                         body.put("verificationStatus","RETURNED");
                     } else throw ApiException.validation("/action","Command không hỗ trợ.");
@@ -143,7 +143,7 @@ public class SigningService {
                 });
     }
 
-    private void verify(EntityStore.Entity contract, EntityStore.Entity packet, JsonNode request, Actor actor) {
+    private Instant verify(EntityStore.Entity contract, EntityStore.Entity packet, JsonNode request, Actor actor) {
         var start=calendar.startOfDay(LocalDate.parse(contract.body().path("approvedTerms").path("startOn").asString()));
         if (!clock.instant().isBefore(start)) throw ApiException.of("LATE_SIGNING","Readiness phải được server xác minh trước startOn 00:00 Việt Nam.");
         if (ContractLifecycle.unresolvedRisk(contract.body())) throw ApiException.of("READINESS_BLOCKED","Còn readiness risk chưa giải quyết.");
@@ -154,19 +154,20 @@ public class SigningService {
         var refs=new TreeSet<>(evidence.packetFiles(packet.body()));
         for (var check:request.path("checks")) refs.add(SigningEvidence.uuid(check,"fileId"));
         for (var check:request.path("mandatoryChecks")) refs.addAll(SigningEvidence.uniqueIds(check.path("evidenceFileIds"),"/mandatoryChecks/evidenceFileIds"));
-        var verifiedAt=clock.instant();
-        if (!verifiedAt.isBefore(start)) throw ApiException.of("LATE_SIGNING","Server hoàn tất rà soát sau start boundary.");
         var assessment=(ObjectNode)request.deepCopy();
         assessment.set("fileManifest",evidence.manifest(contract,refs,actor));
         historical.retain(contract.id(),refs);
+        var verifiedAt=clock.instant();
+        if (!verifiedAt.isBefore(start)) throw ApiException.of("LATE_SIGNING","Server hoàn tất rà soát sau start boundary.");
         store.jdbc().update("insert into cg_signing_assessment(packet_id,assessment,assessed_by,assessed_at) values(?,?::jsonb,?,?)",
-                packet.id(),json.stringify(assessment),actor.id(),Timestamp.from(clock.instant()));
+                packet.id(),json.stringify(assessment),actor.id(),Timestamp.from(verifiedAt));
         var body=(ObjectNode)contract.body().deepCopy();
         body.put("state","SCHEDULED").put("readiness","READY").put("readinessVerifiedAt",JsonSupport.timestamp(verifiedAt))
                 .put("signingPacketId",packet.id().toString());
         body.set("mandatoryChecks",request.path("mandatoryChecks").deepCopy());
         var updated=lifecycle.save(contract,body,actor,"VERIFY_SIGNING",request.path("reason").asString());
         EffectivityJobs.enqueue(jobs,store,json,clock,updated,packet.body(),start);
+        return verifiedAt;
     }
 
     public JsonNode get(UUID id, Actor actor) {

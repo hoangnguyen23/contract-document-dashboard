@@ -1,9 +1,11 @@
-# Current delivery
+# Backend delivery documentation
 
-See [backend-implementation.md](backend-implementation.md). The current sequential approval tranche is on `feature/backend-approval-agreement`, based on the independently reviewed Policy prerequisite `61af581` (application code `29d1993`). Foundation and Policy remain separately reviewable prerequisites; independent source review is required before integration. Production/runtime acceptance is not implied by a successful build.
+Canonical sources are [A](../Final_Project_Specification.md) and [B](../FE_BE_Shared_Development_Contract.md), currently1.3.0. Implementation plans describe delivery and do not override these specifications.
 
-The user waived writing and running tests for this delivery. Build commands must skip test compilation and execution. No test dependency or automated test workflow is added. Independent review checks code against canonical A/B, reviews persistence/security and reports any missing operation honestly.
+Current source checkpoint:85 implemented /0 partial /0 missing at appe718ccc5f7f6ba4d3881d924174440bedfbf7db1, Privacy review1595418 and separate final crossmodule repair review. All five Job kinds and three approval/reviewer-option targets are implemented. See [coverage](backend-operation-coverage.md), [execution checkpoints](completion-execution.md) and [Privacy review](reviews/backend-privacy-source-review.md). Business and FE acceptance remain pending.
 
-No integration into `dev` or release to `main` occurs automatically. Modules must remain within the agreed A/B scope and dependency order; a product or wire change requires a concrete canonical patch and review.
+The work continues through whole-backend source reconciliation, independent review, skipped-test build, exact runtime-source matching and FE handoff. Completed feature branches remain reviewable Draft PRs with explicit dependencies; no merge or main/dev push is authorized.
 
-The Docker continuation verifies real local service startup and completes remaining foundation maintenance. Startup and connectivity evidence are recorded separately from browser, business, concurrency and integrated gate acceptance. The user's no-test instruction remains in force.
+The owner prohibits writing/running automated tests and unapproved HTTP/business scenarios. Permitted build uses maven.test.skip=true, skipping test resources, compilation and execution. Source review, compilation, operational startup, business verification, FE integrated acceptance and production readiness are separate statuses. The [proposed verification plan](backend-verification-plan.md) is NOT AUTHORIZED and has not been executed.
+
+The active repository is D:/contract-document-dashboard; active feature worktrees are under D:/contract-document-dashboard-worktrees. Earlier C: locations are retained backups. D Docker ownership was independently verified without deleting volumes; see [relocation evidence](reviews/backend-d-relocation-runtime.md). Current integrated application startup must be recorded separately from historical startup reports.

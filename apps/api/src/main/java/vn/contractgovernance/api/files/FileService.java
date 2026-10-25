@@ -19,13 +19,13 @@ import java.util.UUID;
 
 @Service
 public class FileService {
-    private final ContractContributions contractContributions;
+    private final DispositionLocks dispositionLocks;private final ContractContributions contractContributions;
     private static final org.slf4j.Logger LOG=org.slf4j.LoggerFactory.getLogger(FileService.class);
     public record Download(byte[] bytes,String mediaType,String filename,String hash,int version) {}
     private final EntityStore store; private final EvidenceAccess access; private final PrivateBlobStore blobs;
     private final JsonSupport json; private final Clock clock; private final CommandExecutor commands; private final AuditService audit;private final JobQueue jobs;private final ListQueries lists;
-    public FileService(ContractContributions contractContributions,EntityStore store,EvidenceAccess access,PrivateBlobStore blobs,JsonSupport json,Clock clock,CommandExecutor commands,AuditService audit,JobQueue jobs,ListQueries lists) {
-        this.contractContributions=contractContributions;this.store=store;this.access=access;this.blobs=blobs;this.json=json;this.clock=clock;this.commands=commands;this.audit=audit;this.jobs=jobs;this.lists=lists;
+    public FileService(DispositionLocks dispositionLocks,ContractContributions contractContributions,EntityStore store,EvidenceAccess access,PrivateBlobStore blobs,JsonSupport json,Clock clock,CommandExecutor commands,AuditService audit,JobQueue jobs,ListQueries lists) {
+        this.dispositionLocks=dispositionLocks;this.contractContributions=contractContributions;this.store=store;this.access=access;this.blobs=blobs;this.json=json;this.clock=clock;this.commands=commands;this.audit=audit;this.jobs=jobs;this.lists=lists;
     }
     public EntityStore.Entity requireClean(UUID id,String kind,UUID parent,UUID branch,Actor actor) {return access.requireClean(id,kind,parent,branch,actor);}
     public JsonNode get(UUID id,Actor actor) {return project(access.requireFile(id,actor),actor);}
@@ -139,7 +139,7 @@ public class FileService {
     public Map<UUID,UUID> cloneEvidence(EntityStore.Entity source,UUID newParent,UUID branch,Set<UUID> ids,Actor actor) {
         var result=new LinkedHashMap<UUID,UUID>();
         for(var sourceId:ids) {
-            var old=store.lock("File",sourceId);access.requireClean(sourceId,"DOSSIER",source.id(),source.branchId(),actor);var blob=blob(sourceId);blobs.read(blob.key(),blob.hash());
+            var old=store.lock("File",sourceId);dispositionLocks.available(sourceId);access.requireClean(sourceId,"DOSSIER",source.id(),source.branchId(),actor);var blob=blob(sourceId);blobs.read(blob.key(),blob.hash());
             var id=UUID.randomUUID();var body=(ObjectNode)old.body().deepCopy();var now=JsonSupport.timestamp(clock.instant());body.put("createdAt",now);body.put("updatedAt",now);body.put("branchId",branch.toString());body.put("targetId",newParent.toString());body.put("uploadedBy",actor.id().toString());body.put("attached",false);body.put("humanVerification","NOT_CHECKED");body.putNull("scanJobId");body.set("allowedActions",json.array());body.set("blockedActions",json.array());store.create("File",id,branch,body);
             store.jdbc().update("insert into cg_file_blob(file_id,storage_key,original_sha256,size_bytes,created_at) values(?,?,?,?,?)",id,blob.key(),blob.hash(),body.path("sizeBytes").asLong(),Timestamp.from(clock.instant()));result.put(sourceId,id);
         }
