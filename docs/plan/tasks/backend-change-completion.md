@@ -1,7 +1,7 @@
 ---
 id: backend-change-completion
 scope: scoped lag repair and real G4 Change integration
-status: ready
+status: done
 depends-on: [backend-completion-inventory-572c65d, original-signing-b8a026e]
 ---
 
@@ -11,7 +11,7 @@ First repair BASELINE-LAG-SCOPE P2 in a standalone reviewable commit. Then imple
 
 # Authority and context
 
-Read full master mission at C:/Users/PC/.codex/attachments/a9dbf5ab-3a0f-42d8-9e48-20ee2455ec48/Pasted text.txt, canonical A/B1.2.0, all contracts, execution inventory/plan, current Java/migrations and reviews. Canonical wins over stale plans. No canonical/FE changes. S060 owner decision remains pending independently.
+Read full master mission at C:/Users/PC/.codex/attachments/a9dbf5ab-3a0f-42d8-9e48-20ee2455ec48/Pasted text.txt, canonical A/B1.2.2, all contracts, execution inventory/plan, current Java/migrations and reviews. Canonical wins over stale plans. No canonical/FE changes. S060/S024 exact fixture corrections are owner-approved and internally reviewed; external FE acknowledgement remains pending.
 
 # Ownership
 
@@ -33,3 +33,6 @@ Developer owns change/** and necessary source dispatch/real adapters in approval
 # Verification/delivery
 
 No tests/testdeps/HTTP/smoke/manualPDF/data mutation/Docker in isolated development. Allowed skipped-test clean/package and source/static review. Independent reviewer separate; final exact source build after findings close. No forced history, existing PR merge or main/dev pushes. Update inventory/coverage honest supported/missing targets and exact FE impact. Commit coherent source for review, report hash. Root automatically continues Notice and remaining backend after GO; do not finish mission at this tranche.
+Completed bounded negotiated Change scope at7e2975c/review2310638;84-source skipped-test package PASS. Tariff Notice dependency deliberately belongs to next backend-notice-completion task; this is not full Change or mission closure.
+
+Current corrected G4 source GO2af915d/review86035f9;84-source skipped-test package PASS18October18:59:20+07, JAR SHA2568bc3554e12edfe0c4bf180dec6b8c109c8135227ce6c994ce1aa2a18356b493d. The earlier review missed an enum violation in TERM_REVIEW supersession, now repaired and explicitly recorded. V009/startup was observed on prior7e2975c package only; this corrected package has not been started.

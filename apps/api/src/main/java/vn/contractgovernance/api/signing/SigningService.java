@@ -17,6 +17,7 @@ import vn.contractgovernance.api.shared.*;
 /** Original CONTRACT adapter. CHANGE is deliberately unavailable until its real source adapter exists. */
 @Service
 public class SigningService {
+    private final org.springframework.beans.factory.ObjectProvider<vn.contractgovernance.api.change.ChangeSigning> changes;
     private final EvidenceAccess access;
     private final EntityStore store;
     private final OriginalAgreementService originals;
@@ -35,12 +36,12 @@ public class SigningService {
     private final JobQueue jobs;
     private final ContractRegistry schemas;
 
-    public SigningService(EvidenceAccess access, EntityStore store, OriginalAgreementService originals, ContractLifecycle lifecycle,
+    public SigningService(org.springframework.beans.factory.ObjectProvider<vn.contractgovernance.api.change.ChangeSigning> changes,EvidenceAccess access, EntityStore store, OriginalAgreementService originals, ContractLifecycle lifecycle,
             SigningEvidence evidence, ContractContributions contributions, HistoricalContractFiles historical,
             CustomerAccess customers, UserDirectory users, JsonSupport json, Clock clock,
             CalendarService calendar, CommandExecutor commands, AuditService audit, ListQueries lists,
             JobQueue jobs, ContractRegistry schemas) {
-        this.access=access; this.store=store; this.originals=originals; this.lifecycle=lifecycle; this.evidence=evidence;
+        this.changes=changes;this.access=access; this.store=store; this.originals=originals; this.lifecycle=lifecycle; this.evidence=evidence;
         this.contributions=contributions; this.historical=historical; this.customers=customers; this.users=users;
         this.json=json; this.clock=clock; this.calendar=calendar; this.commands=commands;
         this.audit=audit; this.lists=lists; this.jobs=jobs; this.schemas=schemas;
@@ -66,6 +67,7 @@ public class SigningService {
     }
 
     public ApiResult create(JsonNode request, String key, Actor actor) {
+        if(request.path("targetKind").asString().equals("CHANGE"))return changes.getObject().create(request,key,actor);
         users.actor(actor.id()).requireRole("MAKER");
         if (!request.path("targetKind").asString().equals("CONTRACT")) {
             access.parent(request.path("targetKind").asString(),SigningEvidence.uuid(request,"targetId"),users.actor(actor.id()));
@@ -109,6 +111,7 @@ public class SigningService {
     }
 
     public ApiResult command(UUID id, JsonNode request, String tag, String key, Actor actor) {
+        if(changePacket(id))return changes.getObject().command(id,request,tag,key,actor);
         checker(id,actor); ETags.require(tag);
         var preview=contractForPacket(id,actor);
         return commands.execute(actor,key,"POST","/api/v1/signing-packets/"+id+"/commands",request,tag,
@@ -167,6 +170,7 @@ public class SigningService {
     }
 
     public JsonNode get(UUID id, Actor actor) {
+        if(changePacket(id))return changes.getObject().get(id,actor);
         var contract=contractForPacket(id,actor);
         lifecycle.maintain(contract.id(),actor);
         return project(store.require("SigningPacket",id).body(),actor);
@@ -175,11 +179,8 @@ public class SigningService {
     public JsonNode list(Map<String,String> query, Actor actor) {
         actor=users.actor(actor.id());
         actor.requireRole("MAKER","CHECKER","MANAGER","DATA_OFFICER","AUDITOR");
-        if (query.getOrDefault("targetKind","CONTRACT").equals("CHANGE")) {
-            throw ApiException.of("SERVICE_UNAVAILABLE","Signing CHANGE adapter chưa triển khai.");
-        }
         var args=new ArrayList<Object>();
-        var scope="e.body->>'targetKind'='CONTRACT' and exists(select 1 from cg_entity c join cg_entity r on r.entity_type='Relationship' and r.id=(c.body->>'relationshipId')::uuid and r.branch_id=c.branch_id where c.entity_type='Contract' and c.id=(e.body->>'targetId')::uuid and c.branch_id=e.branch_id and "+customers.businessSqlScope(actor,"r")+")";
+        var scope="e.body->>'targetKind' in ('CONTRACT','CHANGE') and exists(select 1 from cg_entity c join cg_entity r on r.entity_type='Relationship' and r.id=(c.body->>'relationshipId')::uuid and r.branch_id=c.branch_id where c.entity_type='Contract' and c.id=case e.body->>'targetKind' when 'CONTRACT' then (e.body->>'targetId')::uuid else (select (ch.body->>'contractId')::uuid from cg_entity ch where ch.entity_type='Change' and ch.id=(e.body->>'targetId')::uuid and ch.branch_id=e.branch_id) end and c.branch_id=e.branch_id and "+customers.businessSqlScope(actor,"r")+")";
         if (!actor.hasAnyRole("CHECKER","MANAGER","DATA_OFFICER","AUDITOR")) args.add(actor.id().toString());
         var caller=actor;
         return lists.page("SigningPacket",actor,query,false,scope,args,body -> project(body,caller));
@@ -191,7 +192,9 @@ public class SigningService {
         return actor.hasRole("MAKER") && store.require("Relationship",SigningEvidence.uuid(contract.body(),"relationshipId"))
                 .body().path("assignedMakerId").asString().equals(actor.id().toString());
     }
+    private boolean changePacket(UUID id){return store.require("SigningPacket",id).body().path("targetKind").asString().equals("CHANGE");}
     public JsonNode project(JsonNode raw, Actor actor) {
+        if(raw.path("targetKind").asString().equals("CHANGE"))return changes.getObject().project(raw,actor);
         var body=(ObjectNode)raw.deepCopy();
         var actions=json.array(); var blocked=json.array();
         if (body.path("verificationStatus").asString().equals("PENDING") && actor.hasRole("CHECKER")) {

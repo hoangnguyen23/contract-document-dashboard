@@ -19,11 +19,15 @@ public class PolicyEvaluator {
         return evaluateBusinessAt(policy,facts,branchId,sourceFactsHash,humanRequired,clock.instant());
     }
     public JsonNode evaluateBusinessAt(EntityStore.Entity policy,JsonNode facts,UUID branchId,String sourceFactsHash,boolean humanRequired,Instant authorityAt) {
+        return evaluateBusinessDurationAt(policy,facts,branchId,sourceFactsHash,humanRequired,authorityAt,null);
+    }
+    /** A renewal keeps original startOn in consolidated terms but validates its extension interval. */
+    public JsonNode evaluateBusinessDurationAt(EntityStore.Entity policy,JsonNode facts,UUID branchId,String sourceFactsHash,boolean humanRequired,Instant authorityAt,LocalDate durationFrom) {
         Objects.requireNonNull(authorityAt,"Real business evaluation requires an action instant");
         Objects.requireNonNull(branchId,"Real business evaluation requires a target branch");
         return evaluateAt(policy,facts,sourceFactsHash,(id,role)->{
             try {var actor=users.actor(id);return actor.hasRole(role)&&actor.inBranch(branchId);}catch(ApiException invalid){return false;}
-        },humanRequired,authorityAt);
+        },humanRequired,authorityAt,durationFrom);
     }
     JsonNode evaluate(EntityStore.Entity policy,JsonNode facts,String factsHash,BiPredicate<UUID,String> eligible,boolean humanRequired) {
         Instant startInstant;
@@ -31,6 +35,9 @@ public class PolicyEvaluator {
         return evaluateAt(policy,facts,factsHash,eligible,humanRequired,startInstant);
     }
     private JsonNode evaluateAt(EntityStore.Entity policy,JsonNode facts,String factsHash,BiPredicate<UUID,String> eligible,boolean humanRequired,Instant authorityAt) {
+        return evaluateAt(policy,facts,factsHash,eligible,humanRequired,authorityAt,null);
+    }
+    private JsonNode evaluateAt(EntityStore.Entity policy,JsonNode facts,String factsHash,BiPredicate<UUID,String> eligible,boolean humanRequired,Instant authorityAt,LocalDate durationFrom) {
         JsonNode config=policy.body().path("config"),terms=facts.path("terms");var results=json.array();
         String source=policy.id().toString();long fee;
         try{fee=Long.parseLong(terms.path("feeVnd").asString());}catch(NumberFormatException invalid){fee=-1;}
@@ -41,7 +48,7 @@ public class PolicyEvaluator {
             case "NEGOTIATED_FIXED"->terms.path("clauseVersion").asString().equals("NEGOTIATED-VA-1");case "STANDARD_TARIFF"->terms.path("clauseVersion").asString().equals("TARIFF-ACK-7D-1");default->false;};
         add(results,"CLAUSE",clause,"HARD_INVARIANT","A1.2.0",terms.path("clauseVersion").asString(),"Điều khoản đúng pricingMode","Loại biểu phí phải khớp điều khoản.");
         String kind=terms.path("termKind").asString();boolean allowed=contains(config.path("allowedTermKinds"),kind);boolean duration=false;
-        LocalDate start=null;try{start=LocalDate.parse(terms.path("startOn").asString());if(kind.equals("OPEN_ENDED"))duration=terms.path("endExclusive").isNull();else if(kind.equals("FIXED")&&terms.hasNonNull("endExclusive")){long days=ChronoUnit.DAYS.between(start,LocalDate.parse(terms.path("endExclusive").asString()));duration=days>=1&&days<=3650&&days>=config.path("minFixedTermDays").asInt()&&days<=config.path("maxFixedTermDays").asInt();}}catch(DateTimeException ignored){}
+        LocalDate start=null;try{start=durationFrom==null?LocalDate.parse(terms.path("startOn").asString()):durationFrom;if(kind.equals("OPEN_ENDED"))duration=terms.path("endExclusive").isNull();else if(kind.equals("FIXED")&&terms.hasNonNull("endExclusive")){long days=ChronoUnit.DAYS.between(start,LocalDate.parse(terms.path("endExclusive").asString()));duration=days>=1&&days<=3650&&days>=config.path("minFixedTermDays").asInt()&&days<=config.path("maxFixedTermDays").asInt();}}catch(DateTimeException ignored){}
         add(results,"TERM",allowed&&duration,"INTERNAL_POLICY",source,kind,"Loại và khoảng thời hạn hợp lệ","Ngày kết thúc exclusive theo cấu hình.");
         boolean documents=true,human=true;for(var purpose:config.path("requiredDocumentPurposes")){boolean clean=false,verified=false;for(var doc:facts.path("documents"))if(doc.path("purpose").asString().equals(purpose.asString())){clean|=doc.path("clean").asBoolean();verified|=doc.path("clean").asBoolean()&&doc.path("humanVerified").asBoolean();}documents&=clean;human&=verified;}
         add(results,"REQUIRED_DOCUMENTS",documents,"HARD_INVARIANT","A1.2.0",documents?"CLEAN":"MISSING_OR_UNCLEAN","CLEAN required purposes","Bằng chứng bắt buộc phải được scanner xác nhận.");

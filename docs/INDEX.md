@@ -1,7 +1,7 @@
 # Project documentation
 
-- [Final Project Specification](Final_Project_Specification.md): canonical product, business rules and acceptance criteria (A1.2.1).
-- [FE/BE Shared Development Contract](FE_BE_Shared_Development_Contract.md): canonical HTTP schema, permissions, fixtures and protocol (B1.2.1, policy corpus/empty schedule consistency and generated metadata correction).
+- [Final Project Specification](Final_Project_Specification.md): canonical product, business rules and acceptance criteria (A1.2.2).
+- [FE/BE Shared Development Contract](FE_BE_Shared_Development_Contract.md): canonical HTTP schema, permissions, fixtures and protocol (B1.2.2, policy corpus/empty schedule consistency and generated metadata correction).
 - [Backend delivery plan](plan/backend-implementation.md): implementation sequence and verification scope for the current Backend work.
 - [Backend operation coverage](plan/backend-operation-coverage.md): implementation status and limitations for all 85 canonical operations.
 - [Independent foundation review](plan/reviews/backend-foundation-follow-up.md): closed source findings and build evidence, with runtime acceptance still pending.
@@ -17,4 +17,9 @@ Implementation plans and module setup notes are derived operational documentatio
 - [Original signing and lifecycle](plan/signing-implementation.md): CONTRACT-only signing, original readiness/effectivity and real lifecycle consequence creation; not integrated acceptance.
 
 - [Original signing source review](plan/reviews/backend-g3-signing-source-review.md): bounded source/build verdict, separate from workflow acceptance.
-- [S060 shared fixture proposal](plan/contract-change-proposals/S060-action-hints.md): owner-approved S060 canonical patch; internal shared review and external FE acknowledgement pending.
+- [S060 shared fixture proposal](plan/contract-change-proposals/S060-action-hints.md): owner-approved S060 canonical patch; internal shared review GO; external FE acknowledgement pending.
+
+- [S024 action hint correction](plan/contract-change-proposals/S024-action-hints.md): owner approved; internal shared review GO; external FE acknowledgement pending.
+
+- [Controlled Change implementation](plan/change-implementation.md): negotiated Change and remaining tariff dependency.
+- [Change source review](plan/reviews/backend-change-source-review.md): bounded source GO and skipped-test build evidence.

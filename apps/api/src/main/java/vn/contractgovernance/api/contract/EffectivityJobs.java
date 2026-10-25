@@ -16,6 +16,7 @@ import vn.contractgovernance.api.signing.SigningEvidence;
 /** Durable original EFFECTIVITY with action-boundary availability and per-claim lease fencing. */
 @Service
 public class EffectivityJobs {
+    private final org.springframework.beans.factory.ObjectProvider<vn.contractgovernance.api.change.ChangeTimeline> changes;
     private final JobQueue queue;
     private final EntityStore store;
     private final ContractLifecycle lifecycle;
@@ -25,10 +26,10 @@ public class EffectivityJobs {
     private final CalendarService calendar;
     private final AuditService audit;
     private final TransactionTemplate tx;
-    public EffectivityJobs(JobQueue queue, EntityStore store, ContractLifecycle lifecycle,
+    public EffectivityJobs(org.springframework.beans.factory.ObjectProvider<vn.contractgovernance.api.change.ChangeTimeline> changes,JobQueue queue, EntityStore store, ContractLifecycle lifecycle,
             OriginalAgreementService originals, JsonSupport json, Clock clock, CalendarService calendar,
             AuditService audit, PlatformTransactionManager manager) {
-        this.queue=queue; this.store=store; this.lifecycle=lifecycle; this.originals=originals;
+        this.changes=changes;this.queue=queue; this.store=store; this.lifecycle=lifecycle; this.originals=originals;
         this.json=json; this.clock=clock; this.calendar=calendar; this.audit=audit;
         this.tx=new TransactionTemplate(manager);
     }
@@ -61,6 +62,7 @@ public class EffectivityJobs {
         if (claimed.isEmpty()) return;
         var job=claimed.get();
         try {
+            if(job.targetType().equals("CHANGE")){changes.getObject().run(job);return;}
             tx.executeWithoutResult(status -> {
                 if (!job.targetType().equals("CONTRACT")) {
                     queue.fail(job,"GUARD_BLOCKED","CHANGE effectivity adapter unavailable"); return;
@@ -71,6 +73,12 @@ public class EffectivityJobs {
                 }
                 if (!queue.renew(job)) return;
                 var updated=lifecycle.advanceLocked(contract);
+                if(job.payload().path("boundaryKind").asString().equals("EXPIRED")
+                        && java.util.Set.of("ACTIVE","EXPIRED").contains(updated.body().path("state").asString())
+                        && !job.payload().path("boundaryAt").asString().equals(JsonSupport.timestamp(calendar.startOfDay(LocalDate.parse(updated.body().path("currentVersion").path("terms").path("endExclusive").asString()))))) {
+                    if(!queue.cancel(job,"Old expiry boundary superseded by current version"))throw new IllegalStateException("Effectivity lease lost");
+                    return;
+                }
                 boolean due= !clock.instant().isBefore(Instant.parse(job.payload().path("boundaryAt").asString()));
                 boolean completed=job.payload().path("boundaryKind").asString().equals("ACTIVE")
                         ? updated.body().hasNonNull("currentVersion")
@@ -106,9 +114,10 @@ public class EffectivityJobs {
         return hashes.size()==1 && hashes.getFirst().equals(payload.path("packetInputHash").asString());
     }
 
-    public void authorize(UUID id, Actor actor) { originals.authorizeArtifactMutation(id,actor); }
+    public void authorize(UUID id, Actor actor) {if(store.find("Change",id).isPresent()){changes.getObject().authorize(id,actor);return;} originals.authorizeArtifactMutation(id,actor); }
 
     public void requireRetry(EntityStore.Entity job, Actor actor) {
+        if(job.body().path("parentKind").asString().equals("CHANGE")){changes.getObject().requireRetry(job,actor);return;}
         var id=SigningEvidence.uuid(job.body(),"parentId");
         authorize(id,actor);
         var contract=store.require("Contract",id);
@@ -139,6 +148,7 @@ public class EffectivityJobs {
         return store.require("Dossier",SigningEvidence.uuid(contract.body(),"dossierId")).body().path("state").asString().equals("APPROVED");
     }
     public EntityStore.Entity retry(UUID id, String tag, String reason, Actor actor) {
+        if(store.require("Job",id).body().path("parentKind").asString().equals("CHANGE"))return changes.getObject().retry(id,tag,reason,actor);
         var preview=store.require("Job",id);
         lifecycle.lock(SigningEvidence.uuid(preview.body(),"parentId"));
         var job=store.lock("Job",id);
