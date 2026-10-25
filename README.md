@@ -1,6 +1,6 @@
 # Contract Document Dashboard
 
-Backend cho hệ thống quản trị hồ sơ và hợp đồng thu hộ doanh nghiệp. Đợt hiện tại triển khai nền tảng BE G1/G2 và policy G3 trên nhánh `feature/backend-approval-policies`.
+Backend cho hệ thống quản trị hồ sơ và hợp đồng thu hộ doanh nghiệp. Đợt hiện tại triển khai nền tảng BE G1/G2 và policy và xét duyệt hồ sơ G3 trên nhánh `feature/backend-approval-agreement`.
 
 ## Phần đã triển khai
 
@@ -9,11 +9,12 @@ Backend cho hệ thống quản trị hồ sơ và hợp đồng thu hộ doanh 
 - Người dùng, chi nhánh, Party, quan hệ khách hàng, phân công maker và xác nhận contact độc lập.
 - Hồ sơ nháp, private evidence, quét ClamAV và durable jobs.
 - Policy hữu hạn, mô phỏng, regression độc lập và lịch công bố bền vững.
+- Nộp/rút hồ sơ, bản chốt bất biến, kiểm tra bằng chứng và vòng L1/L2; duyệt cuối tạo hợp đồng PREPARED và job PDF thực.
 - Schema canonical, ETag, idempotency, audit và cursor có chữ ký.
 
-Phê duyệt, ký/effectivity, thay đổi hợp đồng, thông báo và các luồng G3–G5 nằm trong các đợt tiếp theo. Có schema của một operation không đồng nghĩa operation đó đã được triển khai.
+Hợp đồng/PDF, signing CONTRACT, readiness và timeline hợp đồng gốc đã có mã triển khai. Tạo TERM_REVIEW/CLOSEOUT/SYSTEM STOP là dữ liệu pending thật, chưa có API hoàn tất G5. CHANGE/gia hạn, thông báo và các luồng G4–G5 còn lại nằm trong các đợt tiếp theo. Có schema của một operation không đồng nghĩa operation đó đã được triển khai.
 
-Xem [bảng đủ 85 operation](docs/plan/backend-operation-coverage.md): 42 operation đã có handler, 2 operation mới hỗ trợ một phần và 41 operation thuộc các đợt tiếp theo. Đây là mức độ triển khai từ mã nguồn; nghiệm thu tích hợp vẫn còn chờ.
+Xem [bảng đủ 85 operation](docs/plan/backend-operation-coverage.md): 47 operation đã có handler, 9 operation mới hỗ trợ một phần và 29 operation thuộc các đợt tiếp theo. Đây là mức độ triển khai từ mã nguồn; nghiệm thu tích hợp vẫn còn chờ.
 
 ## Bắt đầu
 

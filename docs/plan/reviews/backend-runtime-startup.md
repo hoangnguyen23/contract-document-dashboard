@@ -1,6 +1,6 @@
 # Backend operational startup evidence
 
-Latest observation, 17 October 2026 at 13:02 local time: Policy checkout `61af581` built successfully, but operational verification is blocked by a Docker Desktop Secrets Engine startup crash. No API is listening on `8081`; Policy migrations V004/V005 have not been observed. The earlier successful foundation startup at `3577f5ce` is preserved below as history, not current service health. No business/FE acceptance is claimed.
+Latest observation, 17 October 2026 at 20:26 local time: the reviewed original agreement/PDF checkout `f66fcaac` built and started successfully. API PID `5292` listens on `127.0.0.1:8081`; PostgreSQL and ClamAV are healthy. Flyway actually applied V006/V007 after the previously observed Policy migrations. The earlier Docker Desktop failure and foundation/Policy process snapshots below are historical. This confirms local startup and migrations only; no business/PDF/FE or full G3 acceptance is claimed.
 
 The initial observations below were recorded on 11 October 2026, with a read-only snapshot at `2026-10-11T16:40:15Z` (`Asia/Ho_Chi_Minh` local time: 23:40). The later 17 October continuation is recorded at the end of this report and supersedes the initial process/port status. This records local process startup, migrations and infrastructure readiness. It does not replace the [source review](backend-foundation-follow-up.md) or establish G1/G2 business acceptance.
 
@@ -206,3 +206,92 @@ The migration observations came from actual startup logs and a read-only Postgre
 At the final passive snapshot `2026-10-17T13:20:03.2042686Z` (20:20:03 local), the launcher's exact executable/PID/start-time/JAR identity verifier still accepted the process. Its current unique logs are `var/local-runtime/api-ebcbfedcb2df4700b18710ebda5d0870.stdout.log` and `.stderr.log`. The ready marker remained present; there were zero ERROR or Exception entries, no generated security password, and stderr was empty. The Policy scheduler initialized without an observed startup exception while the schedule was empty; no publication, regression or activation business scenario was requested or executed.
 
 This closes the earlier host-engine blocker for the reviewed Policy package and establishes actual migrations, bean initialization, container health and listener readiness only. Runtime Java remains installed Oracle JDK `25.0.1`, so this is not certification against the specification's exact `25.0.4.1` patch. It does not verify Policy publication/SoD/evaluation behavior, approval/contract/signing, SQL races, scanner file outcomes, recovery, HTTP/session/FE behavior or integrated G3 acceptance. No tests, HTTP business requests, product regression request, EICAR, orphan deletion or synthetic concurrency scenarios were run. Approval V006 and later artifact/signing migrations are absent from this Policy JAR and have not been executed here.
+
+
+## Original agreement/approval operational startup — 17 October 2026, 20:26 local
+
+The primary checkout was clean on branch `feature/backend-approval-agreement`, HEAD `f66fcaaca926013df445995ccabce5a39ec78e47`, after root integrated the independently reviewed agreement source. Application source remained `ac85ecee4ad6ac668e1cdf57b7257b34fe0a2062`; intervening review/delivery/Policy operational-report commits did not change it. The root had guarded-stopped the earlier exact Policy process PID 9360. Fresh preflight observed no Java API process or 8081 listener and found the retained project PostgreSQL/scanner containers healthy. No unrelated process was stopped.
+
+One clean primary build was required after switching the checkout:
+
+```powershell
+.\mvnw.cmd '-Dmaven.test.skip=true' -V clean package
+```
+
+BUILD SUCCESS completed at `2026-10-17T20:25:00+07:00`. Maven 3.10.0 compiled 64 sources with Oracle JDK 25.0.1 and release 25. Test resources were not copied, test sources were not compiled and Surefire reported Tests are skipped. The packaged JAR SHA-256 was `056256308037ed47c8dff01d30b553d510a5667a857331e2c0a1d2621dd9acca`, identical to the reviewed isolated package. The optional-feed metadata HTTP 401 warnings and existing deprecation notice were nonblocking.
+
+The existing reviewed launcher was then invoked once, with packaging skipped:
+
+```powershell
+.\scripts\start-backend.ps1 -DatabasePort 56432 -Demo -SkipBuild
+```
+
+It returned `API startup complete`. Existing `.env`, private storage and Docker volumes were retained. The `.env` was not printed or overwritten: its metadata remained 219 bytes, last write `2026-10-11T16:32:35.4989486Z`, matching preflight. Secrets/demo credentials were not put into the report. The opt-in synthetic demo profile was used; no workflow fixture policy/approval/contract/artifact success was imported to make startup appear complete.
+
+| Observation | Actual result |
+| --- | --- |
+| Source/document HEAD | `f66fcaaca926013df445995ccabce5a39ec78e47` |
+| Reviewed application | `ac85ecee4ad6ac668e1cdf57b7257b34fe0a2062` |
+| Managed API | PID `5292`, `C:\Program Files\Java\jdk-25\bin\java.exe` |
+| Process creation | `2026-10-17T13:25:15.3566420Z` = 20:25:15 local |
+| Post-runner readiness | `CG_BACKEND_READY` at `2026-10-17T13:25:19.428Z` |
+| Listener | `127.0.0.1:8081`, owner PID `5292` |
+| PostgreSQL | 18.6; healthy; retained `127.0.0.1:56432` → container 5432 |
+| Scanner | Healthy; retained `127.0.0.1:3310`; PING returned PONG |
+| Scanner VERSION | `ClamAV 1.5.4/28155/Fri Oct 16 06:24:17 2026` |
+| Flyway | Validated seven migrations, then applied `006 - approval revisions` and `007 - original agreement`, schema advanced from 005 to 007 |
+| All history rows | V001–V007 each `success=true` in a read-only flyway_schema_history query |
+| Core data | User 11, Branch 2, Party 1, Relationship 1 |
+| Workflow data | Revisions 0, Round decisions 0, Round assessments 0, original agreements 0, agreement artifacts 0, jobs 0, private file blobs 0 |
+| Policy schedule | Version 0, active/future policy IDs null |
+
+The PostgreSQL diagnostics ran inside an explicit READ ONLY transaction and queried migration history and counts only. V006/V007 installed successfully at database-recorded times `2026-10-17 13:25:18.068522` and `2026-10-17 13:25:18.163393`, respectively. Startup logs also recorded both migration names and successful application. There was no direct business-data mutation or fabricated completed job.
+
+Compose continues to use the pinned images:
+
+```text
+postgres:18.6@sha256:74935e72241653ca55e0414067e6d8763aceb8a810eb51b452253ec3dcfc4336
+clamav/clamav:1.5.4@sha256:ebec5bc138401b36ae987caa1a3fa3c3b2a21ed3d51f0bfa5852825e663e67b0
+```
+
+The launcher's exact PID/start-time/executable/JAR verifier accepted the running process again at the final passive snapshot `2026-10-17T20:26:45.9319945+07:00`. Its owned metadata is `var/local-runtime/api-process.json`; current unique logs are `var/local-runtime/api-1389b0ae25524e83b1cbbe37640c6eed.stdout.log` and `.stderr.log`. Storage is the absolute repository `var/private-files`. The process retains the reviewed UTC/native-access/loopback launcher settings. There were zero ERROR/Exception lines, no generated fallback security password, and stderr remained empty.
+
+ApplicationReady confirms actual construction of the approval/original agreement/worker dependency graph and the renderer's startup font-manifest checks. Worker components initialized while their queues remained empty; this is not evidence of a rendered/scanned/downloaded artifact. The API is intentionally left running for the next authorized continuation, with its metadata and retained volumes intact.
+
+This closes the V006/V007 startup question for this exact package. It does not verify final approval transaction behavior, actual PDF output/glyphs/pagination, file scan outcomes, retries, stale leases/races, recovery, signing/readiness/timeline, HTTP/session/FE integration or full G3 acceptance. No tests, product regression request, HTTP business request, manual PDF generation, EICAR, synthetic scanner scenario or deletion/concurrency case was executed. Only scanner PING/VERSION health commands were used. Installed Java remains 25.0.1, not the specification's exact 25.0.4.1 patch.
+
+## Original signing/readiness/lifecycle operational startup — 17 October 2026, 22:00 local
+
+Independent operational continuation after the bounded signing source GO at `6585c4f896d6b201a77bea77380e7b1f9e511812`. Primary branch is `feature/backend-approval-agreement`. Preflight HEAD was `456488cae78f6ecb4e8dae8a97c767b14334c264`; a concurrent documentation-only S060 proposal commit advanced HEAD to `9354ccb9453d24164f44cfebeb34374178bcf4ea` before final observation. There were no application-source differences between reviewed source and the primary checkout. The S060 proposal is owner-pending and changes no canonical or application source.
+
+The root had guarded-stopped the old exact API process and copied the exact independently reviewed package into the primary target. The reviewer verified JAR SHA-256 `97bfb98cf9e21fbb309fae0201d7189ae1bdf67a813e1e926c0429de48921068` before launch. This is the package built from 73 sources at `2026-10-17T21:57:22+07:00` with all tests skipped, as recorded in `backend-g3-signing-source-review.md`; no duplicate build was run. Existing PostgreSQL/scanner containers and their retained volumes were already healthy. Primary tracked source was clean.
+
+The reviewed launcher was invoked once:
+
+```powershell
+.\scripts\start-backend.ps1 -DatabasePort 56432 -Demo -SkipBuild
+```
+
+It returned `API startup complete`. Existing `.env` was compared byte-identical before/after without printing its contents or digest. Existing absolute private storage, volumes and project ports were preserved. No global Java/timezone/service configuration was changed, no unrelated process was stopped and no reset or deletion was performed. Opt-in demo uses retained core identities; no workflow fixture or success was seeded.
+
+| Observation | Actual result |
+| --- | --- |
+| Reviewed application source | `6585c4f896d6b201a77bea77380e7b1f9e511812` |
+| Primary final source/document HEAD | `9354ccb9453d24164f44cfebeb34374178bcf4ea` |
+| API identity | PID `25204`, `C:\Program Files\Java\jdk-25\bin\java.exe` |
+| Process creation | `2026-10-17T14:59:30.9619962Z` = 21:59:30 local |
+| ApplicationReady marker | `CG_BACKEND_READY` at `2026-10-17T14:59:35.128Z` |
+| Listener | `127.0.0.1:8081`, owner PID `25204` |
+| PostgreSQL | 18.6, healthy, retained loopback port `56432` |
+| Scanner container | Healthy, retained loopback port `3310`; no scanner file request issued |
+| Flyway | Validated eight migrations; applied `008 - signing lifecycle`, advancing schema from007 to008 |
+| Database history | V001–V008 each `success=true` |
+| Core entity counts | User11, Branch2, Party1, Relationship1; no other entity types |
+| New signing/lifecycle counts | Signing inputs0, assessments0, contract contributors0, versions0, effects0, interval closures0, consequences0, lifecycle breaches0 |
+| Existing workflow counts | Jobs0, private file blobs0, original agreements0, agreement artifacts0 |
+
+Actual startup logs recorded V008 migration at `2026-10-17T14:59:33.662Z`, followed by successful migration completion at `14:59:33.740Z`. An explicit `BEGIN READ ONLY` PostgreSQL diagnostic queried Flyway history, entity counts and all listed actual tables, then committed. Successful queries confirm the V008 tables were created; they do not establish behavior on populated signing or lifecycle data.
+
+At the final passive observation `2026-10-17T22:00:13.6287965+07:00`, the launcher's executable/PID/start-time/JAR identity verifier still accepted the process. Current ignored logs are `var/local-runtime/api-ca7e520eb9a24c209bcdbb52465922d5.stdout.log` and `.stderr.log`, recorded in `api-process.json`. The ready marker was present, ERROR/Exception matches were zero, no fallback generated security password was observed and stderr length was zero. The API is left running for the next authorized continuation.
+
+ApplicationReady establishes actual Spring construction of the new signing/lifecycle/consequence/effectivity bean graph and successful migration/storage initialization. Empty queues mean no new worker business outcome was exercised. This closes V008 startup/DI readiness for this exact package only. No tests, product regression execution, HTTP workflow, signing decision, generated PDF, scanner file exercise, private download, synthetic business mutation, hold/cancel case, 412/replay scenario, deadline/activation/expiry scenario, lease/race/recovery, browser/FE integration, NFR or backup/restore verification was performed. No smoke approval was inferred. Installed JDK remains Oracle25.0.1, not certification on exact25.0.4.1. Integrated G3 remains unaccepted; the S060 action-hint fixture contradiction remains owner-pending.

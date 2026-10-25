@@ -9,3 +9,12 @@
 - [Approval implementation notes](plan/approval-implementation.md): deferred G3 dependencies and contract questions, distinct from implemented coverage.
 
 Implementation plans and module setup notes are derived operational documentation; they do not override A/B. Schema or business changes require a concrete canonical A/B patch and review before implementation.
+
+- [Policy source review](plan/reviews/backend-policy-source-review.md): bounded Policy source findings and build.
+- [Dossier approval source review](plan/reviews/backend-approval-source-review.md): immutable revisions and DOSSIER Round scope.
+- [Original agreement artifact source review](plan/reviews/backend-agreement-artifact-source-review.md): PREPARED/PDF integration; later signing/timeline remain pending.
+
+- [Original signing and lifecycle](plan/signing-implementation.md): CONTRACT-only signing, original readiness/effectivity and real lifecycle consequence creation; not integrated acceptance.
+
+- [Original signing source review](plan/reviews/backend-g3-signing-source-review.md): bounded source/build verdict, separate from workflow acceptance.
+- [S060 shared fixture proposal](plan/contract-change-proposals/S060-action-hints.md): owner/shared review pending; canonical unchanged.
