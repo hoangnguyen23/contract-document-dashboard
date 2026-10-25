@@ -1,13 +1,13 @@
 {
   "inventoryVersion": 1,
-  "auditedAt": "2026-10-18",
-  "sourceCommit": "86035f9",
+  "auditedAt": "2026-10-19",
+  "sourceCommit": "3254e4c",
   "canonicalVersion": "1.2.2",
   "purpose": "Working semantic source inventory; source/build are not business or integrated acceptance",
   "counts": {
-    "implemented": 58,
-    "partial": 6,
-    "not implemented": 21
+    "implemented": 65,
+    "partial": 5,
+    "not implemented": 15
   },
   "readBoundary": "All listed artifacts read as UTF-8/JSON for indexing; semantic focus includes canonical domain sections and source ports/guards. This is an inventory, not an independent full-code correctness verdict.",
   "provenance": [
@@ -4739,9 +4739,9 @@
         "AC-056"
       ],
       "verification": {
-        "source": "Corrected bounded G4 GO2af915d/review86035f9 after reopened enum finding",
-        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:59:20+07:00",
-        "runtime": "V009 applied/startup observed on prior7e2975c JAR only; corrected2af915d package not started",
+        "source": "Bounded Notice/tariff GO app5142b83/review3254e4c",
+        "build": "Independent88-source skipped-test clean/package PASS2026-10-19T00:02:19+07:00",
+        "runtime": "Notice V010 unapplied; no Notice runtime/business/HTTP/PDF acceptance",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
@@ -4752,8 +4752,8 @@
       "FEImpact": {
         "breakingChange": false,
         "canonicalChangeApproved": false,
-        "schemaChange": "None proposed",
-        "availability": "Existing source paths; no business acceptance",
+        "schemaChange": "None; canonical A/B1.2.2 unchanged",
+        "availability": "Source available for supported scope; actual FE integration pending",
         "fields": "Canonical request/response schemas and action hints; async states remain authoritative",
         "ownerDecision": "S060 pending: MAKER fixture HOLD_READINESS conflicts with CHECKER-only prose"
       },
@@ -5684,7 +5684,7 @@
         "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeSigning.java",
         "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeTimeline.java"
       ],
-      "coverage": "partial",
+      "coverage": "implemented",
       "supportedActions": [
         "APPROVE_CANCEL_SCHEDULE",
         "CANCEL",
@@ -5699,13 +5699,11 @@
       "supportedTargets": [
         "AMENDMENT",
         "RENEWAL",
-        "TARIFF_NOTICE:draft/review only"
+        "TARIFF_NOTICE"
       ],
-      "missingTargets": [
-        "TARIFF_NOTICE:Notice readiness/cleanup/application dependency"
-      ],
+      "missingTargets": [],
       "businessDependencies": [
-        "Contract-locked immutable Change revision/approval/artifact/signing, current base/schedule/material guards, one future slot and renewal-before-expiry; tariff Notice dependency remains missing"
+        "Real negotiated signing and tariff Notice readiness/artifact/independent ACK; explicit COMMIT/slot/rebase/cancel/application under Contract lock"
       ],
       "databaseDependencies": [
         "V009 additive immutable revision/render/signing/effect history, future-slot and open-round constraints; V001-V008 preserved"
@@ -5774,20 +5772,20 @@
         "AC-056"
       ],
       "verification": {
-        "source": "Corrected bounded G4 GO2af915d/review86035f9 after reopened enum finding",
-        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:59:20+07:00",
-        "runtime": "V009 applied/startup observed on prior7e2975c JAR only; corrected2af915d package not started",
+        "source": "Bounded Notice/tariff GO app5142b83/review3254e4c",
+        "build": "Independent88-source skipped-test clean/package PASS2026-10-19T00:02:19+07:00",
+        "runtime": "Notice V010 unapplied; no Notice runtime/business/HTTP/PDF acceptance",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
       "limitations": [
-        "TARIFF_NOTICE readiness and existing Notice cleanup await real Notice module; no business acceptance"
+        "Negotiated and tariff source paths reviewed; runtime/business acceptance not executed"
       ],
       "FEImpact": {
         "breakingChange": false,
         "canonicalChangeApproved": false,
-        "schemaChange": "None; separate owner-approved S060/S024 fixture hint corrections at A/B1.2.2",
-        "availability": "Source available for listed supported targets; missing scope remains explicit",
+        "schemaChange": "None; canonical A/B1.2.2 unchanged",
+        "availability": "Source available for supported scope; actual FE integration pending",
         "fields": "Canonical request/response schemas and action hints; async states remain authoritative",
         "ownerDecision": null
       }
@@ -5797,17 +5795,21 @@
       "method": "GET",
       "path": "/api/v1/notices",
       "module": "notice",
-      "implementationLocation": [],
-      "coverage": "not implemented",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeJobs.java"
+      ],
+      "coverage": "implemented",
       "supportedActions": [],
       "missingActions": [],
       "supportedTargets": [],
       "missingTargets": [],
       "businessDependencies": [
-        "Confirmed contact snapshot; independent approval; stable local capture ID; receipt vs ack separation; Change dependency cleanup; NOTICE_ACK duty"
+        "Immutable confirmed-contact/source/attachments and actual PDF; local accepted dispatch or independently assessed external receipt; immutable ACK candidate/assessment; real NOTICE_ACK and tariff readiness/application/cleanup"
       ],
       "databaseDependencies": [
-        "V001: cg_mailbox_capture exists; missing immutable Notice source/ack assessment persistence"
+        "V010 immutable Notice source/artifact/events/ACK and existing unique local capture; V001-V009 unchanged"
       ],
       "jobDependencies": [
         "NOTICE_DISPATCH",
@@ -5919,20 +5921,20 @@
         "AC-056"
       ],
       "verification": {
-        "source": "No public handler; implementation required",
-        "build": "Baseline 73-source skipped-test package reported at 6585c4f; not rerun by inventory agent",
-        "runtime": "Baseline V001-V008/startup reported only; not observed by inventory agent",
+        "source": "Bounded Notice/tariff GO app5142b83/review3254e4c",
+        "build": "Independent88-source skipped-test clean/package PASS2026-10-19T00:02:19+07:00",
+        "runtime": "Notice V010 unapplied; no Notice runtime/business/HTTP/PDF acceptance",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
       "limitations": [
-        "Later gate; schema availability alone does not register a handler. |"
+        "Source reviewed; runtime/HTTP/PDF/business/FE acceptance not executed; V010 unapplied"
       ],
       "FEImpact": {
         "breakingChange": false,
         "canonicalChangeApproved": false,
-        "schemaChange": "None proposed",
-        "availability": "Incomplete: implement missing scope without wire changes",
+        "schemaChange": "None; canonical A/B1.2.2 unchanged",
+        "availability": "Source available for supported scope; actual FE integration pending",
         "fields": "Canonical request/response schemas and action hints; async states remain authoritative",
         "ownerDecision": null
       },
@@ -5945,17 +5947,21 @@
       "method": "POST",
       "path": "/api/v1/notices",
       "module": "notice",
-      "implementationLocation": [],
-      "coverage": "not implemented",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeJobs.java"
+      ],
+      "coverage": "implemented",
       "supportedActions": [],
       "missingActions": [],
       "supportedTargets": [],
       "missingTargets": [],
       "businessDependencies": [
-        "Confirmed contact snapshot; independent approval; stable local capture ID; receipt vs ack separation; Change dependency cleanup; NOTICE_ACK duty"
+        "Immutable confirmed-contact/source/attachments and actual PDF; local accepted dispatch or independently assessed external receipt; immutable ACK candidate/assessment; real NOTICE_ACK and tariff readiness/application/cleanup"
       ],
       "databaseDependencies": [
-        "V001: cg_mailbox_capture exists; missing immutable Notice source/ack assessment persistence"
+        "V010 immutable Notice source/artifact/events/ACK and existing unique local capture; V001-V009 unchanged"
       ],
       "jobDependencies": [
         "NOTICE_DISPATCH",
@@ -6011,20 +6017,20 @@
         "AC-056"
       ],
       "verification": {
-        "source": "No public handler; implementation required",
-        "build": "Baseline 73-source skipped-test package reported at 6585c4f; not rerun by inventory agent",
-        "runtime": "Baseline V001-V008/startup reported only; not observed by inventory agent",
+        "source": "Bounded Notice/tariff GO app5142b83/review3254e4c",
+        "build": "Independent88-source skipped-test clean/package PASS2026-10-19T00:02:19+07:00",
+        "runtime": "Notice V010 unapplied; no Notice runtime/business/HTTP/PDF acceptance",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
       "limitations": [
-        "Later gate; schema availability alone does not register a handler. |"
+        "Source reviewed; runtime/HTTP/PDF/business/FE acceptance not executed; V010 unapplied"
       ],
       "FEImpact": {
         "breakingChange": false,
         "canonicalChangeApproved": false,
-        "schemaChange": "None proposed",
-        "availability": "Incomplete: implement missing scope without wire changes",
+        "schemaChange": "None; canonical A/B1.2.2 unchanged",
+        "availability": "Source available for supported scope; actual FE integration pending",
         "fields": "Canonical request/response schemas and action hints; async states remain authoritative",
         "ownerDecision": null
       }
@@ -6034,17 +6040,21 @@
       "method": "GET",
       "path": "/api/v1/notices/{id}",
       "module": "notice",
-      "implementationLocation": [],
-      "coverage": "not implemented",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeJobs.java"
+      ],
+      "coverage": "implemented",
       "supportedActions": [],
       "missingActions": [],
       "supportedTargets": [],
       "missingTargets": [],
       "businessDependencies": [
-        "Confirmed contact snapshot; independent approval; stable local capture ID; receipt vs ack separation; Change dependency cleanup; NOTICE_ACK duty"
+        "Immutable confirmed-contact/source/attachments and actual PDF; local accepted dispatch or independently assessed external receipt; immutable ACK candidate/assessment; real NOTICE_ACK and tariff readiness/application/cleanup"
       ],
       "databaseDependencies": [
-        "V001: cg_mailbox_capture exists; missing immutable Notice source/ack assessment persistence"
+        "V010 immutable Notice source/artifact/events/ACK and existing unique local capture; V001-V009 unchanged"
       ],
       "jobDependencies": [
         "NOTICE_DISPATCH",
@@ -6097,20 +6107,20 @@
         "AC-056"
       ],
       "verification": {
-        "source": "No public handler; implementation required",
-        "build": "Baseline 73-source skipped-test package reported at 6585c4f; not rerun by inventory agent",
-        "runtime": "Baseline V001-V008/startup reported only; not observed by inventory agent",
+        "source": "Bounded Notice/tariff GO app5142b83/review3254e4c",
+        "build": "Independent88-source skipped-test clean/package PASS2026-10-19T00:02:19+07:00",
+        "runtime": "Notice V010 unapplied; no Notice runtime/business/HTTP/PDF acceptance",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
       "limitations": [
-        "Later gate; schema availability alone does not register a handler. |"
+        "Source reviewed; runtime/HTTP/PDF/business/FE acceptance not executed; V010 unapplied"
       ],
       "FEImpact": {
         "breakingChange": false,
         "canonicalChangeApproved": false,
-        "schemaChange": "None proposed",
-        "availability": "Incomplete: implement missing scope without wire changes",
+        "schemaChange": "None; canonical A/B1.2.2 unchanged",
+        "availability": "Source available for supported scope; actual FE integration pending",
         "fields": "Canonical request/response schemas and action hints; async states remain authoritative",
         "ownerDecision": null
       }
@@ -6120,17 +6130,21 @@
       "method": "PUT",
       "path": "/api/v1/notices/{id}",
       "module": "notice",
-      "implementationLocation": [],
-      "coverage": "not implemented",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeJobs.java"
+      ],
+      "coverage": "implemented",
       "supportedActions": [],
       "missingActions": [],
       "supportedTargets": [],
       "missingTargets": [],
       "businessDependencies": [
-        "Confirmed contact snapshot; independent approval; stable local capture ID; receipt vs ack separation; Change dependency cleanup; NOTICE_ACK duty"
+        "Immutable confirmed-contact/source/attachments and actual PDF; local accepted dispatch or independently assessed external receipt; immutable ACK candidate/assessment; real NOTICE_ACK and tariff readiness/application/cleanup"
       ],
       "databaseDependencies": [
-        "V001: cg_mailbox_capture exists; missing immutable Notice source/ack assessment persistence"
+        "V010 immutable Notice source/artifact/events/ACK and existing unique local capture; V001-V009 unchanged"
       ],
       "jobDependencies": [
         "NOTICE_DISPATCH",
@@ -6192,20 +6206,20 @@
         "AC-056"
       ],
       "verification": {
-        "source": "No public handler; implementation required",
-        "build": "Baseline 73-source skipped-test package reported at 6585c4f; not rerun by inventory agent",
-        "runtime": "Baseline V001-V008/startup reported only; not observed by inventory agent",
+        "source": "Bounded Notice/tariff GO app5142b83/review3254e4c",
+        "build": "Independent88-source skipped-test clean/package PASS2026-10-19T00:02:19+07:00",
+        "runtime": "Notice V010 unapplied; no Notice runtime/business/HTTP/PDF acceptance",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
       "limitations": [
-        "Later gate; schema availability alone does not register a handler. |"
+        "Source reviewed; runtime/HTTP/PDF/business/FE acceptance not executed; V010 unapplied"
       ],
       "FEImpact": {
         "breakingChange": false,
         "canonicalChangeApproved": false,
-        "schemaChange": "None proposed",
-        "availability": "Incomplete: implement missing scope without wire changes",
+        "schemaChange": "None; canonical A/B1.2.2 unchanged",
+        "availability": "Source available for supported scope; actual FE integration pending",
         "fields": "Canonical request/response schemas and action hints; async states remain authoritative",
         "ownerDecision": null
       }
@@ -6215,10 +6229,13 @@
       "method": "POST",
       "path": "/api/v1/notices/{id}/commands",
       "module": "notice",
-      "implementationLocation": [],
-      "coverage": "not implemented",
-      "supportedActions": [],
-      "missingActions": [
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeJobs.java"
+      ],
+      "coverage": "implemented",
+      "supportedActions": [
         "APPROVE",
         "CANCEL",
         "DISPATCH",
@@ -6231,13 +6248,14 @@
         "SUBMIT",
         "VERIFY_ACK"
       ],
+      "missingActions": [],
       "supportedTargets": [],
       "missingTargets": [],
       "businessDependencies": [
-        "Confirmed contact snapshot; independent approval; stable local capture ID; receipt vs ack separation; Change dependency cleanup; NOTICE_ACK duty"
+        "Immutable confirmed-contact/source/attachments and actual PDF; local accepted dispatch or independently assessed external receipt; immutable ACK candidate/assessment; real NOTICE_ACK and tariff readiness/application/cleanup"
       ],
       "databaseDependencies": [
-        "V001: cg_mailbox_capture exists; missing immutable Notice source/ack assessment persistence"
+        "V010 immutable Notice source/artifact/events/ACK and existing unique local capture; V001-V009 unchanged"
       ],
       "jobDependencies": [
         "NOTICE_DISPATCH",
@@ -6299,20 +6317,20 @@
         "AC-056"
       ],
       "verification": {
-        "source": "No public handler; implementation required",
-        "build": "Baseline 73-source skipped-test package reported at 6585c4f; not rerun by inventory agent",
-        "runtime": "Baseline V001-V008/startup reported only; not observed by inventory agent",
+        "source": "Bounded Notice/tariff GO app5142b83/review3254e4c",
+        "build": "Independent88-source skipped-test clean/package PASS2026-10-19T00:02:19+07:00",
+        "runtime": "Notice V010 unapplied; no Notice runtime/business/HTTP/PDF acceptance",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
       "limitations": [
-        "Later gate; schema availability alone does not register a handler. |"
+        "Source reviewed; runtime/HTTP/PDF/business/FE acceptance not executed; V010 unapplied"
       ],
       "FEImpact": {
         "breakingChange": false,
         "canonicalChangeApproved": false,
-        "schemaChange": "None proposed",
-        "availability": "Incomplete: implement missing scope without wire changes",
+        "schemaChange": "None; canonical A/B1.2.2 unchanged",
+        "availability": "Source available for supported scope; actual FE integration pending",
         "fields": "Canonical request/response schemas and action hints; async states remain authoritative",
         "ownerDecision": null
       }
@@ -8868,9 +8886,9 @@
         "AC-056"
       ],
       "verification": {
-        "source": "Present bounded review evidence; completeness limitations retained",
-        "build": "Baseline 73-source skipped-test package reported at 6585c4f; not rerun by inventory agent",
-        "runtime": "Baseline V001-V008/startup reported only; not observed by inventory agent",
+        "source": "Bounded Notice/tariff GO app5142b83/review3254e4c",
+        "build": "Independent88-source skipped-test clean/package PASS2026-10-19T00:02:19+07:00",
+        "runtime": "Notice V010 unapplied; no Notice runtime/business/HTTP/PDF acceptance",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
@@ -8880,8 +8898,8 @@
       "FEImpact": {
         "breakingChange": false,
         "canonicalChangeApproved": false,
-        "schemaChange": "None proposed",
-        "availability": "Existing source paths; no business acceptance",
+        "schemaChange": "None; canonical A/B1.2.2 unchanged",
+        "availability": "Source available for supported scope; actual FE integration pending",
         "fields": "Canonical request/response schemas and action hints; async states remain authoritative",
         "ownerDecision": null
       },
@@ -8970,9 +8988,9 @@
         "AC-056"
       ],
       "verification": {
-        "source": "Present bounded review evidence; completeness limitations retained",
-        "build": "Baseline 73-source skipped-test package reported at 6585c4f; not rerun by inventory agent",
-        "runtime": "Baseline V001-V008/startup reported only; not observed by inventory agent",
+        "source": "Bounded Notice/tariff GO app5142b83/review3254e4c",
+        "build": "Independent88-source skipped-test clean/package PASS2026-10-19T00:02:19+07:00",
+        "runtime": "Notice V010 unapplied; no Notice runtime/business/HTTP/PDF acceptance",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
@@ -8982,8 +9000,8 @@
       "FEImpact": {
         "breakingChange": false,
         "canonicalChangeApproved": false,
-        "schemaChange": "None proposed",
-        "availability": "Existing source paths; no business acceptance",
+        "schemaChange": "None; canonical A/B1.2.2 unchanged",
+        "availability": "Source available for supported scope; actual FE integration pending",
         "fields": "Canonical request/response schemas and action hints; async states remain authoritative",
         "ownerDecision": null
       }
@@ -9008,16 +9026,15 @@
       "missingActions": [],
       "supportedTargets": [
         "FILE_SCAN",
-        "ARTIFACT_PDF:CONTRACT/CHANGE",
-        "EFFECTIVITY:CONTRACT/CHANGE"
+        "ARTIFACT_PDF:CONTRACT/CHANGE/NOTICE",
+        "EFFECTIVITY:CONTRACT/CHANGE",
+        "NOTICE_DISPATCH"
       ],
       "missingTargets": [
-        "ARTIFACT_PDF:NOTICE",
-        "NOTICE_DISPATCH",
         "DATA_DISPOSITION"
       ],
       "businessDependencies": [
-        "Current source-bound retry/lease/fencing/obsolete cancellation for original and Change; Notice/Data workers missing"
+        "Real source-bound artifact/effectivity/scan/local-dispatch retry and failure reconciliation; DATA_DISPOSITION pending"
       ],
       "databaseDependencies": [
         "V001: durable job claim/lease/dedupe and audit; V007/V008 source references"
@@ -9079,20 +9096,20 @@
         "AC-056"
       ],
       "verification": {
-        "source": "Corrected bounded G4 GO2af915d/review86035f9 after reopened enum finding",
-        "build": "Independent84-source skipped-test clean/package PASS2026-10-18T18:59:20+07:00",
-        "runtime": "V009 applied/startup observed on prior7e2975c JAR only; corrected2af915d package not started",
+        "source": "Bounded Notice/tariff GO app5142b83/review3254e4c",
+        "build": "Independent88-source skipped-test clean/package PASS2026-10-19T00:02:19+07:00",
+        "runtime": "Notice V010 unapplied; no Notice runtime/business/HTTP/PDF acceptance",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
       "limitations": [
-        "Notice artifact/dispatch and data disposition retry dependencies remain missing"
+        "DATA_DISPOSITION source/worker/retry still missing"
       ],
       "FEImpact": {
         "breakingChange": false,
         "canonicalChangeApproved": false,
-        "schemaChange": "None; separate owner-approved S060/S024 fixture hint corrections at A/B1.2.2",
-        "availability": "Source available for listed supported targets; missing scope remains explicit",
+        "schemaChange": "None; canonical A/B1.2.2 unchanged",
+        "availability": "Source available for supported scope; actual FE integration pending",
         "fields": "Canonical request/response schemas and action hints; async states remain authoritative",
         "ownerDecision": null
       }
@@ -9588,17 +9605,21 @@
       "method": "GET",
       "path": "/api/v1/notices/{id}/capture",
       "module": "notice",
-      "implementationLocation": [],
-      "coverage": "not implemented",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeJobs.java"
+      ],
+      "coverage": "implemented",
       "supportedActions": [],
       "missingActions": [],
       "supportedTargets": [],
       "missingTargets": [],
       "businessDependencies": [
-        "Confirmed contact snapshot; independent approval; stable local capture ID; receipt vs ack separation; Change dependency cleanup; NOTICE_ACK duty"
+        "Immutable confirmed-contact/source/attachments and actual PDF; local accepted dispatch or independently assessed external receipt; immutable ACK candidate/assessment; real NOTICE_ACK and tariff readiness/application/cleanup"
       ],
       "databaseDependencies": [
-        "V001: cg_mailbox_capture exists; missing immutable Notice source/ack assessment persistence"
+        "V010 immutable Notice source/artifact/events/ACK and existing unique local capture; V001-V009 unchanged"
       ],
       "jobDependencies": [
         "NOTICE_DISPATCH",
@@ -9651,20 +9672,20 @@
         "AC-056"
       ],
       "verification": {
-        "source": "No public handler; implementation required",
-        "build": "Baseline 73-source skipped-test package reported at 6585c4f; not rerun by inventory agent",
-        "runtime": "Baseline V001-V008/startup reported only; not observed by inventory agent",
+        "source": "Bounded Notice/tariff GO app5142b83/review3254e4c",
+        "build": "Independent88-source skipped-test clean/package PASS2026-10-19T00:02:19+07:00",
+        "runtime": "Notice V010 unapplied; no Notice runtime/business/HTTP/PDF acceptance",
         "business": "NOT EXECUTED",
         "integration": "NOT EXECUTED"
       },
       "limitations": [
-        "Later gate; schema availability alone does not register a handler. |"
+        "Source reviewed; runtime/HTTP/PDF/business/FE acceptance not executed; V010 unapplied"
       ],
       "FEImpact": {
         "breakingChange": false,
         "canonicalChangeApproved": false,
-        "schemaChange": "None proposed",
-        "availability": "Incomplete: implement missing scope without wire changes",
+        "schemaChange": "None; canonical A/B1.2.2 unchanged",
+        "availability": "Source available for supported scope; actual FE integration pending",
         "fields": "Canonical request/response schemas and action hints; async states remain authoritative",
         "ownerDecision": null
       }

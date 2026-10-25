@@ -23,3 +23,6 @@ Implementation plans and module setup notes are derived operational documentatio
 
 - [Controlled Change implementation](plan/change-implementation.md): negotiated Change and remaining tariff dependency.
 - [Change source review](plan/reviews/backend-change-source-review.md): bounded source GO and skipped-test build evidence.
+
+- [Notice implementation](plan/notice-implementation.md): reviewed source dispatch, receipt/ACK and tariff integration.
+- [Notice source review](plan/reviews/backend-notice-source-review.md): bounded source and88-source skipped-test build evidence.

@@ -37,16 +37,17 @@ public class ChangeService {
     private final EvidenceAccess evidence;
     private final SigningEvidence signingEvidence;
     private final JobQueue jobs;
+    private final ObjectProvider<ChangeNoticeBridge> notices;
     private final ObjectProvider<ChangeApproval> approval;
     private final ObjectProvider<ChangeSigning> signing;
     public ChangeService(EntityStore store,JsonSupport json,Clock clock,CalendarService calendar,
             ContractLifecycle lifecycle,OriginalAgreementService originals,CustomerAccess customers,
             UserDirectory users,CommandExecutor commands,AuditService audit,ContractRegistry schemas,
             ListQueries lists,PolicyAccess policies,FileService files,EvidenceAccess evidence,SigningEvidence signingEvidence,JobQueue jobs,
-            ObjectProvider<ChangeApproval> approval,ObjectProvider<ChangeSigning> signing) {
+            ObjectProvider<ChangeApproval> approval,ObjectProvider<ChangeSigning> signing,ObjectProvider<ChangeNoticeBridge> notices) {
         this.store=store; this.json=json; this.clock=clock; this.calendar=calendar; this.lifecycle=lifecycle;
         this.originals=originals; this.customers=customers; this.users=users; this.commands=commands;
-        this.audit=audit; this.schemas=schemas; this.lists=lists; this.policies=policies;
+        this.notices=notices; this.audit=audit; this.schemas=schemas; this.lists=lists; this.policies=policies;
         this.files=files; this.evidence=evidence; this.signingEvidence=signingEvidence; this.jobs=jobs; this.approval=approval; this.signing=signing;
     }
     public static UUID id(JsonNode body,String field) { return SigningEvidence.uuid(body,field); }
@@ -265,27 +266,50 @@ public class ChangeService {
         files.validateDraftLimits("CHANGE",change.id(),seen);
         files.synchronizeDraftReferences("CHANGE",change.id(),change.branchId(),new TreeSet<>(seen),actor);
     }
-    public JsonNode manifest(EntityStore.Entity change,Collection<UUID> ids,Actor actor) {
+    public JsonNode manifest(EntityStore.Entity change,Collection<UUID> ids,Actor actor){return manifest(change,ids,actor,true);}
+    public JsonNode manifest(EntityStore.Entity change,Collection<UUID> ids,Actor actor,boolean attach) {
         var values=new ArrayList<JsonNode>();
         for(var id:new TreeSet<>(ids)) {
-            var file=store.lock("File",id);
+            var file=attach?store.lock("File",id):store.require("File",id);
             if(!file.body().path("targetKind").asString().equals("CHANGE")||!file.body().path("targetId").asString().equals(change.id().toString())||!Objects.equals(file.branchId(),change.branchId())) throw ApiException.of("NOT_FOUND","Bằng chứng không thuộc đúng Change.");
             if(!file.body().path("state").asString().equals("CLEAN")) throw ApiException.of("FILE_NOT_CLEAN","Bằng chứng chưa CLEAN.");
             if(actor!=null) { evidence.requireFile(id,actor); evidence.requireFull(file,actor); }
             var hash=file.body().path("sha256").asString(); if(!hash.equals(files.blob(id).hash())) throw ApiException.of("STORAGE_INTEGRITY","Metadata không khớp bytes."); files.bytesForScan(id,hash);
             values.add(json.object().put("fileId",id.toString()).put("purpose",file.body().path("purpose").asString()).put("sha256",hash));
-            store.jdbc().update("insert into cg_file_association(file_id,target_type,target_id,historical,created_at) values(?,'CHANGE',?,true,?) on conflict(file_id,target_type,target_id) do update set historical=true",id,change.id(),Timestamp.from(clock.instant()));
-            if(!file.body().path("attached").asBoolean()) {
+            if(attach)store.jdbc().update("insert into cg_file_association(file_id,target_type,target_id,historical,created_at) values(?,'CHANGE',?,true,?) on conflict(file_id,target_type,target_id) do update set historical=true",id,change.id(),Timestamp.from(clock.instant()));
+            if(attach&&!file.body().path("attached").asBoolean()) {
                 var attached=(ObjectNode)file.body().deepCopy(); attached.put("attached",true).put("updatedAt",now()); store.update(file,attached);
             }
         }
         values.sort(Comparator.comparing((JsonNode b)->b.path("purpose").asString()).thenComparing(b->b.path("fileId").asString())); var result=json.array(); values.forEach(result::add); return result;
     }
     private void cleanup(EntityStore.Entity change,String reason,Actor actor) {
-        if(change.body().hasNonNull("noticeId")) throw ApiException.of("NOTICE_NOT_READY","Notice dependency cần adapter cancellation/supersession thật.");
+        notices.getObject().cleanup(change,reason,actor);
         store.jdbc().update("update cg_job set state='CANCELLED',lease_owner=null,lease_until=null,error_code='GUARD_BLOCKED',updated_at=? where target_type='CHANGE' and target_id=? and state in ('QUEUED','RUNNING','FAILED')",Timestamp.from(clock.instant()),change.id());
         event(change.id(),reason,change.body(),actor);
     }
+    public void detachNotice(EntityStore.Entity change,UUID noticeId,Actor actor){
+        if(!change.body().path("noticeId").asString().equals(noticeId.toString()))return;
+        if(!Set.of("APPROVED","READY").contains(change.body().path("state").asString()))throw ApiException.of("STATE_CONFLICT","Không thể thay Notice của Change đã scheduled/terminal.");
+        var body=(ObjectNode)change.body().deepCopy();body.putNull("noticeId").put("state","APPROVED");save(change,body,actor,"NOTICE_DETACHED",noticeId.toString());
+    }
+    public void attachNotice(EntityStore.Entity change,UUID noticeId,Actor actor) {
+        if(!change.body().path("target").path("kind").asString().equals("TARIFF_NOTICE")||!change.body().path("state").asString().equals("APPROVED")) throw ApiException.of("STATE_CONFLICT","Tariff source chưa APPROVED.");
+        if(change.body().hasNonNull("noticeId")&&!change.body().path("noticeId").asString().equals(noticeId.toString())) throw ApiException.of("NOTICE_NOT_READY","Change đã có Notice khác; cần cleanup rõ ràng.");
+        recheckNotice(change,actor); var body=(ObjectNode)change.body().deepCopy();body.put("noticeId",noticeId.toString());save(change,body,actor,"NOTICE_ATTACHED",null);
+    }
+    public void recheckNotice(EntityStore.Entity change,Actor actor) {
+        var contract=store.require("Contract",id(change.body(),"contractId"));active(contract);requireCurrentGuard(contract);signingEvidence.requireMaterial(contract);
+        if(!contract.body().path("currentVersion").path("id").equals(change.body().path("baseContractVersionId")))throw ApiException.of("BASE_CONFLICT","Tariff base đã thay đổi.");
+        if(!change.body().path("state").asString().equals("SCHEDULED")){currentBase(contract,change.body());if(contract.body().hasNonNull("scheduledChangeId"))throw ApiException.of("SCHEDULE_CONFLICT","Future slot đã được sử dụng.");beforeBoundary(change);}
+        approval.getObject().noticeCurrent(change,actor);var frozen=approval.getObject().frozen(change);if(!frozen.revision().path("target").equals(change.body().path("target"))||!frozen.revision().path("effectiveOn").equals(change.body().path("effectiveOn")))throw ApiException.of("STORAGE_INTEGRITY","Tariff khác approved revision.");
+    }
+    public void promoteNotice(EntityStore.Entity change,UUID noticeId,Actor actor) {
+        if(!change.body().path("state").asString().equals("APPROVED")||!change.body().path("noticeId").asString().equals(noticeId.toString()))throw ApiException.of("NOTICE_NOT_READY","Notice không còn là nguồn hiện hành.");
+        recheckNotice(change,actor);var body=(ObjectNode)change.body().deepCopy();body.put("state","READY");save(change,body,actor,"NOTICE_READY",null);
+    }
+    public JsonNode effectiveArtifact(EntityStore.Entity change) {return change.body().path("target").path("kind").asString().equals("TARIFF_NOTICE")?notices.getObject().artifact(change):change.body();}
+    public void noticeReady(EntityStore.Entity change,Actor actor){notices.getObject().requireReady(change,actor);}
     public void event(UUID id,String kind,JsonNode body,Actor actor) {
         store.jdbc().update("insert into cg_change_event(id,change_id,kind,body,actor_id,recorded_at) values(?,?,?,?::jsonb,?,?)",UUID.randomUUID(),id,kind,json.stringify(body),actor==null?null:actor.id(),Timestamp.from(clock.instant()));
     }
