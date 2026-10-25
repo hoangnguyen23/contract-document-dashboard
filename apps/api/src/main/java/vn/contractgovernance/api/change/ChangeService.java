@@ -310,6 +310,10 @@ public class ChangeService {
     }
     public JsonNode effectiveArtifact(EntityStore.Entity change) {return change.body().path("target").path("kind").asString().equals("TARIFF_NOTICE")?notices.getObject().artifact(change):change.body();}
     public void noticeReady(EntityStore.Entity change,Actor actor){notices.getObject().requireReady(change,actor);}
+    public void endApplicability(EntityStore.Entity contract,Actor actor){
+        var ids=store.jdbc().query("select id from cg_entity where entity_type='Change' and body->>'contractId'=? and body->>'state' not in ('APPLIED','CANCELLED','REJECTED') order by id",(rs,n)->rs.getObject(1,UUID.class),contract.id().toString());for(var id:ids){var change=store.lock("Change",id);cleanup(change,"TERMINATION",actor);if(change.body().hasNonNull("roundId")){var round=store.lock("Round",id(change.body(),"roundId"));if(round.body().path("state").asString().equals("OPEN")){var rb=(ObjectNode)round.body().deepCopy();rb.put("state","CANCELLED").put("updatedAt",now());for(var step:rb.path("steps"))if(Set.of("PENDING","WAITING").contains(step.path("state").asString()))((ObjectNode)step).put("state","CANCELLED");audit.record(actor,"CANCEL",store.update(round,rb),"Contract termination ended change applicability");}}var b=(ObjectNode)change.body().deepCopy();b.put("state","CANCELLED");save(change,b,actor,"CANCEL","Contract termination ended applicability");}
+        var current=store.require("Contract",contract.id());if(current.body().hasNonNull("scheduledChangeId")){var b=(ObjectNode)current.body().deepCopy();b.putNull("scheduledChangeId").put("scheduleVersion",current.body().path("scheduleVersion").asLong()+1);lifecycle.save(current,b,actor,"RELEASE_TERMINATED_SLOT",null);}
+    }
     public void event(UUID id,String kind,JsonNode body,Actor actor) {
         store.jdbc().update("insert into cg_change_event(id,change_id,kind,body,actor_id,recorded_at) values(?,?,?,?::jsonb,?,?)",UUID.randomUUID(),id,kind,json.stringify(body),actor==null?null:actor.id(),Timestamp.from(clock.instant()));
     }

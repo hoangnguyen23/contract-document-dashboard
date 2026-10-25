@@ -35,7 +35,7 @@ public class LifecycleControls {
                 Long.class, versionId, version.path("number").asInt()) != 0L) return;
         if (store.jdbc().queryForObject("select count(*) from cg_entity where entity_type='ControlRequest' and body->>'contractId'=? and body->>'kind'='STOP' and body->>'state' not in ('CONFIRMED','REJECTED','CANCELLED')",
                 Long.class, contract.id().toString()) != 0L) {
-            throw ApiException.of("STATE_CONFLICT", "Đã có STOP chưa kết thúc; cần xử lý nguồn kiểm soát hiện hành.");
+            var pending=store.jdbc().queryForObject("select id from cg_entity where entity_type='ControlRequest' and body->>'contractId'=? and body->>'kind'='STOP' and body->>'state' not in ('CONFIRMED','REJECTED','CANCELLED')",UUID.class,contract.id().toString());store.jdbc().update("insert into cg_lifecycle_consequence(kind,source_id,source_version,entity_id,created_at) values('SYSTEM_STOP',?,?,?,?) on conflict do nothing",versionId,version.path("number").asInt(),pending,Timestamp.from(clock.instant()));return;
         }
         var now = JsonSupport.timestamp(clock.instant());
         var artifact = UUID.fromString(version.path("artifactId").asString());

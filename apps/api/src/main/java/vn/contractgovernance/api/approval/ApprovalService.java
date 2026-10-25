@@ -15,6 +15,7 @@ import java.util.*;
 
 @Service
 public class ApprovalService implements DossierApprovalBridge {
+    private final org.springframework.beans.factory.ObjectProvider<vn.contractgovernance.api.control.ControlApproval> controls;
     private final org.springframework.beans.factory.ObjectProvider<vn.contractgovernance.api.change.ChangeApproval> changes;
     private final EntityStore store;
     private final JsonSupport json;
@@ -31,11 +32,11 @@ public class ApprovalService implements DossierApprovalBridge {
     private final UserDirectory users;
     private final ContractRegistry contracts;
     private final ObjectProvider<OriginalAgreementPort> originals;
-    public ApprovalService(org.springframework.beans.factory.ObjectProvider<vn.contractgovernance.api.change.ChangeApproval> changes,EntityStore store,JsonSupport json,Clock clock,DossierAccess access,EvidenceAccess evidence,
+    public ApprovalService(org.springframework.beans.factory.ObjectProvider<vn.contractgovernance.api.control.ControlApproval> controls,org.springframework.beans.factory.ObjectProvider<vn.contractgovernance.api.change.ChangeApproval> changes,EntityStore store,JsonSupport json,Clock clock,DossierAccess access,EvidenceAccess evidence,
             PolicyAccess policies,ApprovalInputs inputs,RevisionStore revisions,CalendarService calendar,
             CommandExecutor commands,AuditService audit,ListQueries lists,UserDirectory users,ContractRegistry contracts,
             ObjectProvider<OriginalAgreementPort> originals) {
-        this.changes=changes;this.store=store;this.json=json;this.clock=clock;this.access=access;this.evidence=evidence;this.policies=policies;
+        this.controls=controls;this.changes=changes;this.store=store;this.json=json;this.clock=clock;this.access=access;this.evidence=evidence;this.policies=policies;
         this.inputs=inputs;this.revisions=revisions;this.calendar=calendar;this.commands=commands;this.audit=audit;
         this.lists=lists;this.users=users;this.contracts=contracts;this.originals=originals;
     }
@@ -119,18 +120,20 @@ public class ApprovalService implements DossierApprovalBridge {
     }
     public JsonNode list(Map<String,String> query,Actor actor) {
         actor.requireRole("MAKER","CHECKER","MANAGER","DATA_OFFICER","AUDITOR");
-        var args=new ArrayList<Object>();String where="e.body->>'targetKind' in ('DOSSIER','CHANGE') and exists(select 1 from cg_entity d left join cg_entity c on c.entity_type='Contract' and c.id=(d.body->>'contractId')::uuid join cg_entity r on r.entity_type='Relationship' and r.id=(coalesce(d.body->>'relationshipId',c.body->>'relationshipId'))::uuid and r.branch_id=d.branch_id where d.entity_type=case e.body->>'targetKind' when 'DOSSIER' then 'Dossier' else 'Change' end and d.id=(e.body->>'targetId')::uuid and d.branch_id=e.branch_id";
+        var args=new ArrayList<Object>();String where="e.body->>'targetKind' in ('DOSSIER','CHANGE','CONTROL_REQUEST') and exists(select 1 from cg_entity d left join cg_entity c on c.entity_type='Contract' and c.id=(d.body->>'contractId')::uuid join cg_entity r on r.entity_type='Relationship' and r.id=(coalesce(d.body->>'relationshipId',c.body->>'relationshipId'))::uuid and r.branch_id=d.branch_id where d.entity_type=case e.body->>'targetKind' when 'DOSSIER' then 'Dossier' when 'CHANGE' then 'Change' else 'ControlRequest' end and d.id=(e.body->>'targetId')::uuid and d.branch_id=e.branch_id";
         if(!actor.hasAnyRole("CHECKER","MANAGER","DATA_OFFICER","AUDITOR")){where+=" and r.body->>'assignedMakerId'=?";args.add(actor.id().toString());}where+=")";
         if(query.containsKey("reviewerId")){where+=" and exists(select 1 from jsonb_array_elements(e.body->'steps') s where s->>'reviewerId'=?)";args.add(query.get("reviewerId"));}
         return lists.page("Round",actor,query,false,where,args,b->project(entity(b),actor));
     }
-    public JsonNode get(UUID id,Actor actor){if(changeRound(id))return changes.getObject().project(changes.getObject().requireRound(id,actor),actor);return project(require(id,actor),actor);}
+    public JsonNode get(UUID id,Actor actor){if(controlRound(id))return controls.getObject().project(controls.getObject().requireRound(id,actor),actor);if(changeRound(id))return changes.getObject().project(changes.getObject().requireRound(id,actor),actor);return project(require(id,actor),actor);}
     public JsonNode snapshot(UUID id,Actor actor) {
+        if(controlRound(id))return controls.getObject().snapshot(id,actor);
         if(changeRound(id))return changes.getObject().snapshot(id,actor);
         var round=require(id,actor);var dossier=access.require(uuid(round.body(),"targetId"),actor);var frozen=frozen(round);
         var result=json.object();result.put("targetKind","DOSSIER");result.set("revision",redactRevision(frozen.revision(),dossier,actor));return result;
     }
     public ApiResult command(UUID id,JsonNode request,String tag,String key,Actor actor) {
+        if(controlRound(id))return controls.getObject().command(id,request,tag,key,actor);
         if(changeRound(id))return changes.getObject().command(id,request,tag,key,actor);
         authorize(id,request,actor);ETags.require(tag);
         return commands.execute(actor,key,"POST","/api/v1/rounds/"+id+"/commands",request,tag,()->authorize(id,request,actor),()->{
@@ -257,8 +260,10 @@ public class ApprovalService implements DossierApprovalBridge {
     private static UUID uuid(JsonNode body,String field){return UUID.fromString(body.path(field).asString());}
     private String now(){return JsonSupport.timestamp(clock.instant());}
 
+    private boolean controlRound(UUID id){return store.require("Round",id).body().path("targetKind").asString().equals("CONTROL_REQUEST");}
     private boolean changeRound(UUID id){return store.require("Round",id).body().path("targetKind").asString().equals("CHANGE");}
     public JsonNode project(EntityStore.Entity round,Actor actor) {
+        if(round.body().path("targetKind").asString().equals("CONTROL_REQUEST"))return controls.getObject().project(round,actor);
         if(round.body().path("targetKind").asString().equals("CHANGE"))return changes.getObject().project(round,actor);
         var body=(ObjectNode)round.body().deepCopy();var allowed=json.array();var blocked=json.array();
         if(body.path("state").asString().equals("OPEN")) {

@@ -78,6 +78,7 @@ public class EvidenceAccess {
     public EntityStore.Entity lockOwner(String kind,UUID id) {
         var type=TYPES.get(kind); if(type==null)throw ApiException.of("STORAGE_INTEGRITY","Unknown evidence parent");
         var parent=store.require(type,id);
+        if(kind.equals("CONTROL_REQUEST"))lockOwner("CONTRACT",UUID.fromString(parent.body().path("contractId").asString()));
         if(kind.equals("NOTICE")){lockOwner("CONTRACT",UUID.fromString(parent.body().path("contractId").asString()));if(parent.body().hasNonNull("changeId"))store.lock("Change",UUID.fromString(parent.body().path("changeId").asString()));}
         if(java.util.Set.of("INCIDENT","OBLIGATION").contains(kind))lockOwner("CONTRACT",UUID.fromString(parent.body().path("contractId").asString()));
         if(kind.equals("CHANGE")) lockOwner("CONTRACT",UUID.fromString(parent.body().path("contractId").asString()));

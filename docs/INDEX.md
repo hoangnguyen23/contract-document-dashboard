@@ -1,7 +1,7 @@
 # Project documentation
 
-- [Final Project Specification](Final_Project_Specification.md): canonical product, business rules and acceptance criteria (A1.2.2).
-- [FE/BE Shared Development Contract](FE_BE_Shared_Development_Contract.md): canonical HTTP schema, permissions, fixtures and protocol (B1.2.2, policy corpus/empty schedule consistency and generated metadata correction).
+- [Final Project Specification](Final_Project_Specification.md): canonical product, business rules and acceptance criteria (A1.3.0).
+- [FE/BE Shared Development Contract](FE_BE_Shared_Development_Contract.md): canonical HTTP schema, permissions, fixtures and protocol (B1.3.0, policy corpus/empty schedule consistency and generated metadata correction).
 - [Backend delivery plan](plan/backend-implementation.md): implementation sequence and verification scope for the current Backend work.
 - [Backend operation coverage](plan/backend-operation-coverage.md): implementation status and limitations for all 85 canonical operations.
 - [Independent foundation review](plan/reviews/backend-foundation-follow-up.md): closed source findings and build evidence, with runtime acceptance still pending.
@@ -29,3 +29,7 @@ Implementation plans and module setup notes are derived operational documentatio
 
 - [Obligation/Incident implementation](plan/obligation-incident-implementation.md): operative deadlines, immutable breaches/source and explicit CLOSEOUT dependency.
 - [G5 source review](plan/reviews/backend-obligation-incident-source-review.md): bounded source GO and95-source skipped-test package.
+
+- [Control implementation](plan/control-implementation.md): source acknowledgement/Round/termination/closeout evidence.
+- [Control source review](plan/reviews/backend-control-source-review.md): bounded source and100-source skipped-test package.
+- [Approved termination boundary](plan/contract-change-proposals/termination-retroactive-boundary.md): A/B1.3.0 owner decision and internal shared review.

@@ -1,7 +1,7 @@
 ---
 id: backend-control-completion
 scope: real service acknowledgement, CONTROL_REQUEST Round and termination/closeout
-status: ready
+status: done
 depends-on: [backend-obligation-incident-completion]
 ---
 
@@ -33,3 +33,4 @@ Own control/** and additive V012 exclusively after root allocation. Extend real 
 # Verification
 
 No automated tests/dependencies, HTTP/smoke/manual PDF/business-data operations or isolated Docker. Static/source/schema and skipped-test compilation only. Commit coherent source, independent review/repair then final skipped-test clean/package. No PR merge/main/dev push. Report truthful partial paths/owner decisions and actual FE impact. Continue Privacy and final85-source closure automatically after GO.
+Owner approved boundary guard19October; A/B1.3.0 candidate96c198e/internal reviewc5120f5 merged1ecf6c3. Earlier pending-decision wording is historical. Bounded source task completed8f40974/reviewc96b8ec with100-source skipped-test package PASS; next Privacy/source closure continues automatically. No runtime acceptance.
