@@ -1,6 +1,6 @@
 # Backend operational startup evidence
 
-Latest result, 17 October 2026 local time: integrated source `3577f5ce` built successfully and the reviewed launcher started the real API JVM as PID `23100`, listening on `127.0.0.1:8081`. PostgreSQL on `127.0.0.1:56432` and ClamAV on `127.0.0.1:3310` are healthy. The final section records the resolved Windows blockers and precise evidence. This is operational startup readiness, not business/FE acceptance.
+Latest observation, 17 October 2026 at 13:02 local time: Policy checkout `61af581` built successfully, but operational verification is blocked by a Docker Desktop Secrets Engine startup crash. No API is listening on `8081`; Policy migrations V004/V005 have not been observed. The earlier successful foundation startup at `3577f5ce` is preserved below as history, not current service health. No business/FE acceptance is claimed.
 
 The initial observations below were recorded on 11 October 2026, with a read-only snapshot at `2026-10-11T16:40:15Z` (`Asia/Ho_Chi_Minh` local time: 23:40). The later 17 October continuation is recorded at the end of this report and supersedes the initial process/port status. This records local process startup, migrations and infrastructure readiness. It does not replace the [source review](backend-foundation-follow-up.md) or establish G1/G2 business acceptance.
 
@@ -147,3 +147,62 @@ The process metadata's PID, start-time ticks, actual executable and exact `-jar`
 Current unique logs are `var/local-runtime/api-ebcab89cdbd248e3ab924640b5e089e6.stdout.log` and `.stderr.log`. The final read-only snapshot at `2026-10-16T18:19:13Z` (17 October, 01:19:13 local) verified the same PID and loopback listener after 96 seconds of uptime, beyond the maintenance worker's initial delay. There were zero `ERROR` entries, zero exception entries, no generated security password and no `inMemoryUserDetailsManager` initialization; stderr remained empty. The private storage root and `.guards` directory existed. This is passive startup observation with an empty file/job store, not an orphan-deletion exercise. PostgreSQL validation did not add or rewrite migration history. Scanner health commands transmitted no file content.
 
 This closes the observed startup blockers for the final integrated revision. It does not demonstrate file scanning outcomes, GC deletion/race safety, HTTP session/role/scope behavior, signing/approval workflows, recovery, concurrency, performance or FE acceptance. Those scenarios were not run. G1/G2 integrated business acceptance remains pending while the user has explicitly chosen to continue Backend work sequentially.
+
+## Policy checkout attempt — 17 October 2026, 13:02 local
+
+The reviewed Policy branch is now the primary checkout, `feature/backend-approval-policies`, at `61af5810d9d6ee7201b3e8d3dc5af2022e0f6f68`. This is documentation commit `61af581` over final reviewed application source `29d1993`. The previous managed foundation process was absent at preflight, its process metadata had been removed by the guarded stop, and port `8081` had no listener. No unrelated process was stopped.
+
+One primary build ran from `apps/api`:
+
+```powershell
+.\mvnw.cmd '-Dmaven.test.skip=true' -V clean package
+```
+
+`BUILD SUCCESS` completed at `2026-10-17T13:00:00+07:00`. Maven `3.10.0` compiled 54 Java source files using Oracle JDK `25.0.1` with `release 25`. Test resources, test sources and tests were skipped. Packaged artifact: `apps/api/target/contract-governance-api-0.1.0-SNAPSHOT.jar`; SHA-256 `3A975B8D192D75B4812A488788E36CBC6D2C1BDA29D921E87879C8DEBBE90CE5`.
+
+Docker Engine was unavailable: the `dockerDesktopLinuxEngine` named pipe did not exist. The supported command `docker desktop start --detach --timeout 30` accepted a start request. Host diagnostics then recorded a Docker Desktop startup crash at `2026-10-17T06:00:25Z`:
+
+```text
+starting services: initializing Secrets Engine
+engine.sock → engine.sock.stale: The file cannot be accessed by the system.
+```
+
+The Docker host log subsequently recorded that all local engines had been stopped and an unexpected-error dialog reported. A successful detached start request therefore did not establish engine readiness. No factory reset, WSL/global configuration change, socket rename/deletion, upgrade, volume deletion or unrelated container operation was performed. The temporary read-only status helper was interrupted; project data was not touched.
+
+At the final read-only snapshot, `2026-10-17T06:02:26Z` (13:02:26 local), there was still no API listener. Container health, scanner PING and database counts could not be queried through the unavailable engine. The requested Policy launch on database port `56432` remains pending engine recovery; no API JVM was started for this revision and no live application/migration success is inferred from compilation. V004/V005 execution, schema/counter state and scheduler readiness have not been observed.
+
+The existing private `.env` was not changed or printed; its last-write timestamp remained `2026-10-11T16:32:35Z`. No secrets were put in commands/reports. Existing database/private-file data and volumes were preserved. The untracked `docs/plan/agreement-implementation.md` was preserved and is excluded from the report-only commit.
+
+Policy source review and compilation remain PASS within their stated limits. Policy operational startup is BLOCKED by this host runtime condition, and HTTP/business/FE/G3 acceptance remains unperformed. No tests, product regression request, business HTTP request or deletion/race scenario was run.
+
+## Policy operational startup after engine recovery — 17 October 2026, 20:20 local
+
+A fresh read-only preflight observed Docker Engine `29.8.0` available after the earlier host startup crash. The primary checkout remained `feature/backend-approval-policies`, HEAD `4771ab8bc1a2d949b777e415cfcc3826fa812462`. The already packaged JAR was verified unchanged against the earlier build: SHA-256 `3A975B8D192D75B4812A488788E36CBC6D2C1BDA29D921E87879C8DEBBE90CE5`, built from `61af581` over independently reviewed application `29d1993`. No rebuild or application source change was made for this operational run.
+
+The existing reviewed launcher was invoked from the primary repository:
+
+```powershell
+.\scripts\start-backend.ps1 -DatabasePort 56432 -Demo -SkipBuild
+```
+
+It returned `API startup complete`. Existing project PostgreSQL/scanner containers were started with their retained volumes; no database reset, volume deletion, global configuration change or unrelated process/container action occurred. The private `.env` SHA-256 compared byte-identical before and after launch, without printing its contents or digest. Existing private-file storage and the untracked agreement implementation plan were preserved.
+
+| Observation | Actual result |
+| --- | --- |
+| API process | PID `9360`, `C:\Program Files\Java\jdk-25\bin\java.exe` |
+| Process start | `2026-10-17T13:19:22.8925723Z` = 20:19:22 local |
+| Post-runner marker | `CG_BACKEND_READY` at `2026-10-17T13:19:27.250Z` |
+| Listener | `127.0.0.1:8081`, owner PID `9360` |
+| PostgreSQL | `18.6`, healthy, `127.0.0.1:56432` |
+| Scanner | Healthy, `127.0.0.1:3310`; protocol `PING` returned `PONG` |
+| Scanner VERSION | `ClamAV 1.5.4/28155/Fri Oct 16 06:24:17 2026` |
+| Flyway | Validated five migrations; actually migrated `003` → `004 - policy` → `005 - policy publication request`; both new migrations succeeded |
+| Persistent schedule | Singleton version `0`; active/future policy IDs null |
+| Core rows | User `11`, Branch `2`, Party `1`, Relationship `1` |
+| Workflow rows | Policy `0`; jobs `0`; file blobs `0`; publication requester metadata `0` |
+
+The migration observations came from actual startup logs and a read-only PostgreSQL query of `flyway_schema_history`, `cg_policy_schedule`, entity counts, jobs, blobs and requester metadata. All migrations `001`–`005` reported `success=true`. No fixture ACTIVE policy or successful workflow/job was inserted to make startup appear successful.
+
+At the final passive snapshot `2026-10-17T13:20:03.2042686Z` (20:20:03 local), the launcher's exact executable/PID/start-time/JAR identity verifier still accepted the process. Its current unique logs are `var/local-runtime/api-ebcbfedcb2df4700b18710ebda5d0870.stdout.log` and `.stderr.log`. The ready marker remained present; there were zero ERROR or Exception entries, no generated security password, and stderr was empty. The Policy scheduler initialized without an observed startup exception while the schedule was empty; no publication, regression or activation business scenario was requested or executed.
+
+This closes the earlier host-engine blocker for the reviewed Policy package and establishes actual migrations, bean initialization, container health and listener readiness only. Runtime Java remains installed Oracle JDK `25.0.1`, so this is not certification against the specification's exact `25.0.4.1` patch. It does not verify Policy publication/SoD/evaluation behavior, approval/contract/signing, SQL races, scanner file outcomes, recovery, HTTP/session/FE behavior or integrated G3 acceptance. No tests, HTTP business requests, product regression request, EICAR, orphan deletion or synthetic concurrency scenarios were run. Approval V006 and later artifact/signing migrations are absent from this Policy JAR and have not been executed here.
