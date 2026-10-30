@@ -6,6 +6,7 @@ param(
     [ValidateRange(1024, 65535)] [int] $ScannerPort = 3310,
     [ValidatePattern('^[a-z0-9][a-z0-9_-]*$')] [string] $ComposeProjectName = 'contract-governance',
     [ValidateRange(30, 1800)] [int] $StartupTimeoutSeconds = 240,
+    [string] $JavaHome,
     [switch] $Demo,
     [switch] $SkipBuild
 )
@@ -52,11 +53,40 @@ try {
     $storage = [IO.Path]::GetFullPath($storage)
     [IO.Directory]::CreateDirectory($storage) | Out-Null
 
+    if ([string]::IsNullOrWhiteSpace($JavaHome)) {
+        $javaCommand = (Get-Command java.exe -CommandType Application | Select-Object -First 1).Source
+    } else {
+        if (-not [IO.Path]::IsPathRooted($JavaHome)) { throw '-JavaHome must be an absolute Oracle JDK 25.0.4.1 directory.' }
+        $javaCommand = [IO.Path]::GetFullPath((Join-Path $JavaHome 'bin/java.exe'))
+        if (-not [IO.File]::Exists($javaCommand)) { throw '-JavaHome does not contain bin/java.exe.' }
+    }
+    $javaProperties = Invoke-BackendNative $javaCommand @('-XshowSettings:properties', '-version') `
+        $paths 'java-properties' 10 $secrets -CaptureStandardError -RequiredOutputPatterns @(
+            '(?m)^\s*java\.home\s*=\s*[^\r\n]+\r?$', '(?:java|openjdk) version "[^"\r\n]+"')
+    $javaVersion = [regex]::Match($javaProperties, '(?m)^\s*java\.version\s*=\s*([^\r\n]+)\r?$').Groups[1].Value.Trim()
+    $javaVendor = [regex]::Match($javaProperties, '(?m)^\s*java\.vendor\s*=\s*([^\r\n]+)\r?$').Groups[1].Value.Trim()
+    $javaRuntimeVersion = [regex]::Match($javaProperties, '(?m)^\s*java\.runtime\.version\s*=\s*([^\r\n]+)\r?$').Groups[1].Value.Trim()
+    if ($javaVersion -ne '25.0.4.1' -or $javaVendor -ne 'Oracle Corporation' -or $javaRuntimeVersion -ne '25.0.4.1+1-LTS-5') {
+        throw 'Canonical runtime requires Oracle JDK 25.0.4.1 build 25.0.4.1+1-LTS-5. Supply -JavaHome with that verified JDK; existing processes are retained.'
+    }
+    # Oracle javapath can spawn a separate JVM. Launch the real JDK binary, retaining its own handle/PID.
+    $resolvedJavaHome = [regex]::Match($javaProperties, '(?m)^\s*java\.home\s*=\s*([^\r\n]+)\r?$').Groups[1].Value.Trim()
+    if (-not [IO.Path]::IsPathRooted($resolvedJavaHome)) { throw 'The Java probe did not identify an absolute java.home.' }
+    $resolvedJavaHome = [IO.Path]::GetFullPath($resolvedJavaHome)
+    if (-not [string]::IsNullOrWhiteSpace($JavaHome) -and -not [string]::Equals($resolvedJavaHome.TrimEnd('\'), [IO.Path]::GetFullPath($JavaHome).TrimEnd('\'), [StringComparison]::OrdinalIgnoreCase)) {
+        throw '-JavaHome probe resolved to a different JDK directory; no existing process was changed.'
+    }
+    $java = [IO.Path]::GetFullPath((Join-Path $resolvedJavaHome 'bin/java.exe'))
+    if (-not [IO.File]::Exists($java) -or -not [IO.File]::Exists((Join-Path $resolvedJavaHome 'bin/javac.exe'))) {
+        throw 'The Java probe did not identify a complete Oracle JDK 25.0.4.1.'
+    }
+
     $metadata = Read-BackendMetadata $paths.ProcessMetadata
     $managedProcess = Get-ManagedBackendProcess $paths $metadata
     if ($null -ne $managedProcess) {
         try {
-            if ($metadata.apiPort -ne $ApiPort -or $metadata.databasePort -ne $DatabasePort -or
+            if (-not [string]::Equals([string] $metadata.javaPath, $java, [StringComparison]::OrdinalIgnoreCase) -or
+                $metadata.apiPort -ne $ApiPort -or $metadata.databasePort -ne $DatabasePort -or
                 $metadata.scannerPort -ne $ScannerPort -or $metadata.composeProjectName -ne $ComposeProjectName -or
                 $metadata.profile -ne [string] $profile -or $metadata.storagePath -ne $storage -or
                 $metadata.jarSha256 -ne (Get-FileHash -LiteralPath $paths.Jar -Algorithm SHA256).Hash -or
@@ -72,21 +102,10 @@ try {
     try { $listener.Start() } catch { throw "API port $ApiPort is already occupied. Choose -ApiPort; no other process will be stopped." }
     finally { $listener.Stop() }
 
-    $javaCommand = (Get-Command java.exe -CommandType Application | Select-Object -First 1).Source
     $docker = (Get-Command docker.exe -CommandType Application | Select-Object -First 1).Source
-    $javaProperties = Invoke-BackendNative $javaCommand @('-XshowSettings:properties', '-version') `
-        $paths 'java-properties' 10 $secrets -CaptureStandardError -RequiredOutputPatterns @(
-            '(?m)^\s*java\.home\s*=\s*[^\r\n]+\r?$', '(?:java|openjdk) version "[^"\r\n]+"')
-    if ($javaProperties -notmatch '(?:java|openjdk) version "25(?:\.|\")') {
-        throw 'A Java 25 JDK must be available as java.exe on PATH.'
-    }
-    # Oracle javapath can spawn a separate JVM. Launch the real JDK binary, retaining its own handle/PID.
-    $javaHome = [regex]::Match($javaProperties, '(?m)^\s*java\.home\s*=\s*([^\r\n]+)\r?$').Groups[1].Value.Trim()
-    if (-not [IO.Path]::IsPathRooted($javaHome)) { throw 'The Java probe did not identify an absolute java.home.' }
-    $java = [IO.Path]::GetFullPath((Join-Path $javaHome 'bin/java.exe'))
-    if (-not [IO.File]::Exists($java) -or -not [IO.File]::Exists((Join-Path $javaHome 'bin/javac.exe'))) {
-        throw 'The Java probe did not identify a complete JDK. Install Java 25 JDK and configure PATH.'
-    }
+    foreach ($key in @('JAVA_HOME', 'PATH')) { $previousEnvironment[$key] = [Environment]::GetEnvironmentVariable($key, 'Process') }
+    [Environment]::SetEnvironmentVariable('JAVA_HOME', $resolvedJavaHome, 'Process')
+    [Environment]::SetEnvironmentVariable('PATH', ((Join-Path $resolvedJavaHome 'bin') + [IO.Path]::PathSeparator + $previousEnvironment['PATH']), 'Process')
     if (-not $SkipBuild) {
         Push-Location (Join-Path $paths.Repository 'apps/api')
         try {
