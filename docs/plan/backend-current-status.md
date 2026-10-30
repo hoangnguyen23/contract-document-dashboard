@@ -9,8 +9,8 @@ This is the current operational status entry point. A/B remain the canonical req
 | Current candidate source/config | `2487adb9ea26b1020c9a448ded56be77c2e9e87d`; application fencing repair `d306166cfc9dc6dff45eee80685d5d05f86cd077` |
 | Prior email/JSONB application repair | `81c3d7f66628a397aa9c2d62dd26877448c25d10`, retained runtime baseline |
 | Delivery branch | `feature/backend-smoke-fixes`; pre-completion-plan HEAD `60e4f3e308a2b103abda793bf31cc0730078d994` |
-| PR | [11](https://github.com/hoangnguyen23/contract-document-dashboard/pull/11), GitHub API observed OPEN/Draft, base dev, head60e4f3e on30October |
-| Remote dev | `df34af6d6a865607d17169535e5129e6f3b04615`, observed by git ls-remote30October; repair not integrated |
+| PR | [11](https://github.com/hoangnguyen23/contract-document-dashboard/pull/11), Owner approved merge before testing; merged30October at54af6f1b4b59c30ee6e9f01c40cde95368a79ecd |
+| Remote dev | `54af6f1b4b59c30ee6e9f01c40cde95368a79ecd`, PR11 merged after owner authorization; prior devdf34af6 retained in history |
 | Remote main | `b536f6ec4afb572ff4c807849dbaf0e4baf2e607`, observed30October; initial README tree |
 | Current candidate JAR SHA256 | `99e695f8a28f998eafe9264ea9c5883e2317f1ac2ae4593dc9caa6bc1c0f74ed` |
 | Prior packaged/runtime baseline JAR | `b29274dc1dc401ac4c0019233449f01e8cd85e2e0e8b6ceddaf43da867e26fe3`, main package freshly rehashed and preserved |
@@ -42,8 +42,14 @@ Later completion-plan/status/review documentation changes do not alter the appli
 
 ## Next work and owners
 
-Use [completion ledger](backend-completion-ledger.md) and [plan](backend-completion-plan-20261030.md). C01 reconciliation and bounded C02–C06 source reviews are delivered. JOB-FENCE-01 source repair and C07 toolchain configuration passed independent review; exact-JDK skipped-test build passed. Recovery runbook and FE handoff are prepared and independently read. C09 reviewable package has independent delivery-evidence GO (reviews/backend-completion-delivery-review-20261030.md); feature publication is recorded by the delivery Git HEAD, while owner merge authorization remains pending; FE acknowledgement and all deferred runtime acceptance remain open. No newly established source blocker remains in the recorded review scopes.
+Use [completion ledger](backend-completion-ledger.md) and [plan](backend-completion-plan-20261030.md). C01 reconciliation and bounded C02–C06 source reviews are delivered. JOB-FENCE-01 source repair and C07 toolchain configuration passed independent review; exact-JDK skipped-test build passed. Recovery runbook and FE handoff are prepared and independently read. C09 reviewable package has independent delivery-evidence GO (reviews/backend-completion-delivery-review-20261030.md); feature publication is recorded by the delivery Git HEAD, and PR11 is merged under owner approval before testing; FE acknowledgement and all deferred runtime acceptance remain open. No newly established source blocker remains in the recorded review scopes.
 
 BE owns API/domain/SQL/runtime preparation. FE owns apps/web and consumer/browser implementation; shared configuration/contract changes follow A/B ownership and acknowledgement. Only owner decides unresolved product/canonical baseline changes and PR integration. External messages are not sent by creating this document.
 
 Testing handoff follows V01–V05 in the completion plan when the owner opens that stage. The old verification proposal is an acceptance backlog, not current execution permission. Individual results must keep source/review/build/startup/runtime-business distinctions and expected outcomes authored from A/B.
+
+## Owner-approved postmerge continuation
+
+Owner explicitly authorized merging PR11 into dev and completing Backend development before testing. Merge54af6f1 contains the reviewed repairs. Follow-up branch feature/backend-release-readiness starts from this merge to close RD01 exact launcher build/runtime JDK selection, RD02 concrete secure TLS preparation and RD03 documentation provenance. This authorization changes execution/integration order, not A/B business semantics or the meaning of acceptance. No automated/manual workflow test is run. The new runtime tooling has not replaced the main process or its JAR.
+
+Postmerge development closure: [Backend development completion](backend-development-completion.md). RD01 pinned launcher and RD02 concrete optional HTTPS preparation are delivered in5e58768/7bfbeaa, with independent review recorded in reviews/backend-postmerge-gap-review-20261030.md. Final feature integration is recorded in Git; all testing and runtime activation remain deferred.
