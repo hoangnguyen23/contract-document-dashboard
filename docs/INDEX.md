@@ -1,5 +1,9 @@
 # Project documentation
 
+- [Backend current delivery status](plan/backend-current-status.md): current source/JAR/PR, evidence limits and owner decisions.
+
+- [Backend completion plan — 30 October 2026](plan/backend-completion-plan-20261030.md): next delivery tasks, dependencies and completion criteria; testing remains a separate deferred stage.
+
 - [Final Project Specification](Final_Project_Specification.md): canonical product, business rules and acceptance criteria (A1.3.0).
 - [FE/BE Shared Development Contract](FE_BE_Shared_Development_Contract.md): canonical HTTP schema, permissions, fixtures and protocol (B1.3.0, policy corpus/empty schedule consistency and generated metadata correction).
 - [Backend delivery plan](plan/backend-implementation.md): implementation sequence and verification scope for the current Backend work.
@@ -45,3 +49,6 @@ Implementation plans and module setup notes are derived operational documentatio
 
 - [Final Backend handoff](plan/backend-final-handoff.md):85/0/0 source, exact build/startup, precise FE impact and acceptance gaps.
 - [18-domain acceptance matrix](plan/backend-acceptance-matrix.md): source implementation versus unexecuted business/FE/NFR acceptance.
+
+- [Reviewed smoke-defect repairs](plan/reviews/backend-manual-smoke-repairs-review.md): exact source/build evidence; candidate HTTP retest not run.
+- [Repair operational startup](plan/reviews/backend-repair-runtime-20261030.md):30October Docker recovery and exact candidate startup, distinct from testing.

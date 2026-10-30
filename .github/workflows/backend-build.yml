@@ -24,13 +24,28 @@ jobs:
         run: |
           python scripts/extract_contracts.py
           git diff --exit-code -- contracts apps/api/src/main/resources/contracts
-      - name: Java 25
-        uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
-        with:
-          distribution: temurin
-          java-version: '25'
-          cache: maven
-          cache-dependency-path: apps/api/pom.xml
+      - name: Verified Oracle JDK 25.0.4.1
+        shell: bash
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/jdk-25.0.4.1_linux-x64_bin.tar.gz"
+          target="$RUNNER_TEMP/cg-oracle-jdk-25.0.4.1"
+          test ! -e "$target"
+          curl --fail --location --retry 3 --proto '=https' --tlsv1.2 \
+            https://download.oracle.com/java/25/archive/jdk-25.0.4.1_linux-x64_bin.tar.gz \
+            --output "$archive"
+          echo "dd7e7f51d23bcffe85f1a439577ce1c0190a33417b34afdb338f9b3897bdeaec  $archive" | sha256sum --check --strict
+          python - "$archive" "$target" <<'PY'
+          import pathlib, sys, tarfile
+          target = pathlib.Path(sys.argv[2])
+          target.mkdir()
+          with tarfile.open(sys.argv[1], 'r:gz') as archive:
+              archive.extractall(target, filter='data')
+          PY
+          jdk="$target/jdk-25.0.4.1"
+          "$jdk/bin/java" -version
+          echo "JAVA_HOME=$jdk" >> "$GITHUB_ENV"
+          echo "$jdk/bin" >> "$GITHUB_PATH"
       - name: Package Backend (tests explicitly skipped)
         working-directory: apps/api
         run: ./mvnw -B -Dmaven.test.skip=true package

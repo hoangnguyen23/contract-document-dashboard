@@ -23,13 +23,13 @@ final class ReportingScope {
             when 'CONTROL_REQUEST' then 'ControlRequest' when 'INCIDENT' then 'Incident'
             when 'OBLIGATION' then 'Obligation' when 'NOTICE' then 'Notice' when 'DATA_REQUEST' then 'DataRequest'
             when 'RELATIONSHIP' then 'Relationship' when 'POLICY' then 'Policy' when 'FILE' then 'File' end
-          when n.body ? 'relationshipId' then 'Relationship' when n.body ? 'contractId' then 'Contract' end
+          when jsonb_exists(n.body,'relationshipId') then 'Relationship' when jsonb_exists(n.body,'contractId') then 'Contract' end
         """;
     static final String PARENT_ID="""
         case when n.entity_type in ('Round','SigningPacket','File') then (n.body->>'targetId')::uuid
           when n.entity_type='Job' then (n.body->>'parentId')::uuid
-          when n.body ? 'relationshipId' then (n.body->>'relationshipId')::uuid
-          when n.body ? 'contractId' then (n.body->>'contractId')::uuid end
+          when jsonb_exists(n.body,'relationshipId') then (n.body->>'relationshipId')::uuid
+          when jsonb_exists(n.body,'contractId') then (n.body->>'contractId')::uuid end
         """;
     static Predicate business(Actor actor,List<UUID> branches,String alias) {
         var args=new ArrayList<Object>(); args.add(array(branches));

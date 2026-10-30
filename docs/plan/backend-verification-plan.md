@@ -1,3 +1,5 @@
+> **Current status — 30 October 2026:** testing is deferred by the owner's latest instruction. Item 1 was previously authorized and partially executed on 21 October; its FAIL evidence remains valid. The candidate repair has source review/build/startup evidence but no HTTP retest. The historical proposal below does not describe current authorization. See backend-completion-plan-20261030.md and the manual-smoke record on feature/backend-manual-smoke@d352f0d. No automated tests or further HTTP scenarios are authorized by this document.
+
 # Proposed final backend verification — NOT AUTHORIZED / NOT EXECUTED
 
 Owner master mission18October preserves the no-automated-tests decision. This plan requests future explicit permission only after source closure. It authorizes nothing by itself. Source Complete, Build Verified, Runtime Started, Business Verified, Integrated Acceptance and Production Ready remain separate verdicts.

@@ -4,7 +4,9 @@ import com.networknt.schema.Schema;
 import com.networknt.schema.SchemaLocation;
 import com.networknt.schema.SchemaRegistry;
 import com.networknt.schema.SchemaRegistryConfig;
-import com.networknt.schema.SpecificationVersion;
+import com.networknt.schema.dialect.Dialect;
+import com.networknt.schema.dialect.Dialects;
+import com.networknt.schema.format.EmailFormat;
 import com.networknt.schema.path.PathType;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.io.ClassPathResource;
@@ -26,7 +28,7 @@ public class ContractRegistry {
     private final JsonNode seed;
     private final List<Operation> operations=new ArrayList<>();
     private final Map<String,Schema> validators=new ConcurrentHashMap<>();
-    private final SchemaRegistry schemas=SchemaRegistry.withDefaultDialect(SpecificationVersion.DRAFT_2020_12,builder->builder.schemaRegistryConfig(SchemaRegistryConfig.builder().pathType(PathType.JSON_POINTER).formatAssertionsEnabled(true).build()));
+    private final SchemaRegistry schemas=SchemaRegistry.withDefaultDialect(Dialect.builder(Dialects.getDraft202012()).format(new EmailFormat(new CanonicalEmailValidator())).build(),builder->builder.schemaRegistryConfig(SchemaRegistryConfig.builder().pathType(PathType.JSON_POINTER).formatAssertionsEnabled(true).build()));
     public ContractRegistry(JsonSupport json) {
         this.json=json;this.openapi=read("openapi-v1");this.protocol=read("protocol-rules-v1");this.seed=read("seed-v1");
         openapi.path("paths").properties().forEach(path->{

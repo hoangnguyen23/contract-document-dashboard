@@ -1,5 +1,7 @@
 # Backend acceptance matrix — 20 October 2026
 
+> Current status: [30 October delivery checkpoint](backend-current-status.md). Historical source/build/startup reports below retain their recorded scope; testing remains deferred.
+
 **SOURCE IMPLEMENTATION COMPLETE — ACCEPTANCE PENDING.** Canonical A/B1.3.0,85 implemented/0 partial/0 missing after separate module and final crossmodule source reviews. Application e718ccc5f7f6ba4d3881d924174440bedfbf7db1; Privacy review1595418; final crossmodule repair1ae46a3. This matrix maps evidence and does not certify executed business correctness.
 
 Paths resolve from the integrated checkout. `J` means apps/api/src/main/java/vn/contractgovernance/api/; `R` means docs/plan/reviews/. Historical evidence keys retain their original scope; B107/U and O13 are the final cumulative build/startup evidence.

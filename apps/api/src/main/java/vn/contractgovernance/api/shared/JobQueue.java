@@ -22,13 +22,14 @@ public class JobQueue {
         return jdbc.queryForObject("select id from cg_job where dedupe_key=?",UUID.class,dedupeKey);
     }
     public Optional<Job> claim(UUID workerId) { return claimForKind(null,workerId); }
+    /** workerId is retained for caller compatibility; each claim owns a fresh fencing token. */
     public Optional<Job> claimForKind(String kind,UUID workerId) {
         return transactions.execute(transaction->{
             var now=Timestamp.from(clock.instant());
             jdbc.update("update cg_job set state=case when attempts>=5 then 'FAILED' else 'QUEUED' end,lease_owner=null,lease_until=null,error_code='LEASE_EXPIRED',updated_at=? where state='RUNNING' and lease_until<=?",now,now);
-            var claimed=jdbc.query("select id,kind,target_type,target_id,branch_id,expected_version,expected_hash,payload::text,attempts,trace_id from cg_job where state='QUEUED' and available_at<=? and (?::text is null or kind=?) order by available_at,created_at,id for update skip locked limit 1",(rs,row)->new Job(rs.getObject(1,UUID.class),rs.getString(2),rs.getString(3),rs.getObject(4,UUID.class),rs.getObject(5,UUID.class),rs.getInt(6),rs.getString(7),json.parse(rs.getString(8)),rs.getInt(9)+1,workerId,rs.getObject(10,UUID.class)),now,kind,kind);
+            var claimed=jdbc.query("select id,kind,target_type,target_id,branch_id,expected_version,expected_hash,payload::text,attempts,trace_id from cg_job where state='QUEUED' and available_at<=? and (?::text is null or kind=?) order by available_at,created_at,id for update skip locked limit 1",(rs,row)->new Job(rs.getObject(1,UUID.class),rs.getString(2),rs.getString(3),rs.getObject(4,UUID.class),rs.getObject(5,UUID.class),rs.getInt(6),rs.getString(7),json.parse(rs.getString(8)),rs.getInt(9)+1,UUID.randomUUID(),rs.getObject(10,UUID.class)),now,kind,kind);
             if(claimed.isEmpty())return Optional.empty();var job=claimed.getFirst();
-            jdbc.update("update cg_job set state='RUNNING',attempts=attempts+1,lease_owner=?,lease_until=?,updated_at=? where id=?",workerId,Timestamp.from(clock.instant().plusSeconds(60)),now,job.id());return Optional.of(job);
+            jdbc.update("update cg_job set state='RUNNING',attempts=attempts+1,lease_owner=?,lease_until=?,updated_at=? where id=?",job.leaseOwner(),Timestamp.from(clock.instant().plusSeconds(60)),now,job.id());return Optional.of(job);
         });
     }
     public boolean renew(Job job) { return jdbc.update("update cg_job set lease_until=?,updated_at=? where id=? and state='RUNNING' and lease_owner=? and lease_until>?",Timestamp.from(clock.instant().plusSeconds(60)),Timestamp.from(clock.instant()),job.id(),job.leaseOwner(),Timestamp.from(clock.instant()))==1; }

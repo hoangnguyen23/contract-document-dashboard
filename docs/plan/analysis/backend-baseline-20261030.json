@@ -1,0 +1,1711 @@
+{
+  "date": "2026-10-30",
+  "scope": "Static inventory reconciliation only; not runtime or business acceptance",
+  "applicationCommit": "81c3d7f66628a397aa9c2d62dd26877448c25d10",
+  "canonicalCount": 85,
+  "inventoryCount": 85,
+  "missingFromInventory": [],
+  "extraInInventory": [],
+  "missingImplementationPaths": [],
+  "hashes": {
+    "docs/Final_Project_Specification.md": "0dc6885d1b7faf65c6d5adf49389baa37474a2036735ed73e5710c47057e43a1",
+    "docs/FE_BE_Shared_Development_Contract.md": "d89a36ea7ae04750589b654442f690832fd675e074df8b23441578b43291e201",
+    "contracts/contract-manifest-v1.json": "cb486182799b6319bc3069aecb7cec3ad22a663f3f219a80f3a7356bf3540d18"
+  },
+  "limitations": [
+    "Action and target completeness inherited from prior inventory; semantic re-review pending",
+    "Existing paths do not prove correct handlers",
+    "HTTP retest deferred by owner"
+  ],
+  "operations": [
+    {
+      "operationId": "getSession",
+      "method": "GET",
+      "path": "/api/v1/session",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/identity/SessionController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/identity/SessionService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/identity/UserDirectory.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/identity/SessionFilter.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "login",
+      "method": "POST",
+      "path": "/api/v1/session/login",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/identity/SessionController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/identity/SessionService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/identity/UserDirectory.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/identity/SessionFilter.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "logout",
+      "method": "POST",
+      "path": "/api/v1/session/logout",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/identity/SessionController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/identity/SessionService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/identity/UserDirectory.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/identity/SessionFilter.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "listUsers",
+      "method": "GET",
+      "path": "/api/v1/users",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/identity/IdentityController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/identity/IdentityAdministration.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "createUser",
+      "method": "POST",
+      "path": "/api/v1/users",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/identity/IdentityController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/identity/IdentityAdministration.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "getUser",
+      "method": "GET",
+      "path": "/api/v1/users/{id}",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/identity/IdentityController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/identity/IdentityAdministration.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "updateUser",
+      "method": "PUT",
+      "path": "/api/v1/users/{id}",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/identity/IdentityController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/identity/IdentityAdministration.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "listBranchs",
+      "method": "GET",
+      "path": "/api/v1/branches",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/identity/IdentityController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/identity/IdentityAdministration.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "createBranch",
+      "method": "POST",
+      "path": "/api/v1/branches",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/identity/IdentityController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/identity/IdentityAdministration.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "getBranch",
+      "method": "GET",
+      "path": "/api/v1/branches/{id}",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/identity/IdentityController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/identity/IdentityAdministration.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "updateBranch",
+      "method": "PUT",
+      "path": "/api/v1/branches/{id}",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/identity/IdentityController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/identity/IdentityAdministration.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "listPartys",
+      "method": "GET",
+      "path": "/api/v1/parties",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerAccess.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "createParty",
+      "method": "POST",
+      "path": "/api/v1/parties",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerAccess.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "getParty",
+      "method": "GET",
+      "path": "/api/v1/parties/{id}",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerAccess.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "updateParty",
+      "method": "PUT",
+      "path": "/api/v1/parties/{id}",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerAccess.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "listRelationships",
+      "method": "GET",
+      "path": "/api/v1/relationships",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerAccess.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "createRelationship",
+      "method": "POST",
+      "path": "/api/v1/relationships",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerAccess.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "getRelationship",
+      "method": "GET",
+      "path": "/api/v1/relationships/{id}",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerAccess.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "updateRelationship",
+      "method": "PUT",
+      "path": "/api/v1/relationships/{id}",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerAccess.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "listContactRequests",
+      "method": "GET",
+      "path": "/api/v1/contact-requests",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerAccess.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "createContactRequest",
+      "method": "POST",
+      "path": "/api/v1/contact-requests",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerAccess.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "getContactRequest",
+      "method": "GET",
+      "path": "/api/v1/contact-requests/{id}",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerAccess.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "commandContactRequest",
+      "method": "POST",
+      "path": "/api/v1/contact-requests/{id}/commands",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerAccess.java"
+      ],
+      "supportedActions": [
+        "APPROVE",
+        "REJECT"
+      ],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "listDossiers",
+      "method": "GET",
+      "path": "/api/v1/dossiers",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/dossier/DossierController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/dossier/DossierService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/dossier/DossierAccess.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/approval/ApprovalService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/approval/RevisionStore.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "createDossier",
+      "method": "POST",
+      "path": "/api/v1/dossiers",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/dossier/DossierController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/dossier/DossierService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/dossier/DossierAccess.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/approval/ApprovalService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/approval/RevisionStore.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "getDossier",
+      "method": "GET",
+      "path": "/api/v1/dossiers/{id}",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/dossier/DossierController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/dossier/DossierService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/dossier/DossierAccess.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/approval/ApprovalService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/approval/RevisionStore.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "updateDossier",
+      "method": "PUT",
+      "path": "/api/v1/dossiers/{id}",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/dossier/DossierController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/dossier/DossierService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/dossier/DossierAccess.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/approval/ApprovalService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/approval/RevisionStore.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "commandDossier",
+      "method": "POST",
+      "path": "/api/v1/dossiers/{id}/commands",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/dossier/DossierController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/dossier/DossierService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/dossier/DossierAccess.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/approval/ApprovalService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/approval/RevisionStore.java"
+      ],
+      "supportedActions": [
+        "CANCEL",
+        "CLONE",
+        "SUBMIT",
+        "WITHDRAW"
+      ],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "listRounds",
+      "method": "GET",
+      "path": "/api/v1/rounds",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/approval/ApprovalController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/approval/ApprovalService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/approval/ApprovalInputs.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/approval/RevisionStore.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeApproval.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/control/ControlApproval.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [
+        "DOSSIER",
+        "CHANGE",
+        "CONTROL_REQUEST"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "getRound",
+      "method": "GET",
+      "path": "/api/v1/rounds/{id}",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/approval/ApprovalController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/approval/ApprovalService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/approval/ApprovalInputs.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/approval/RevisionStore.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeApproval.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/control/ControlApproval.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [
+        "DOSSIER",
+        "CHANGE",
+        "CONTROL_REQUEST"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "commandRound",
+      "method": "POST",
+      "path": "/api/v1/rounds/{id}/commands",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/approval/ApprovalController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/approval/ApprovalService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/approval/ApprovalInputs.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/approval/RevisionStore.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeApproval.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/control/ControlApproval.java"
+      ],
+      "supportedActions": [
+        "APPROVE",
+        "REASSIGN",
+        "REJECT",
+        "RETURN",
+        "VERIFY_EVIDENCE"
+      ],
+      "missingActions": [],
+      "supportedTargets": [
+        "DOSSIER",
+        "CHANGE",
+        "CONTROL_REQUEST"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "listPolicys",
+      "method": "GET",
+      "path": "/api/v1/policies",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicyController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicyService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicyAccess.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicySchedule.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicyEvaluator.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicyRegression.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "createPolicy",
+      "method": "POST",
+      "path": "/api/v1/policies",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicyController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicyService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicyAccess.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicySchedule.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicyEvaluator.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicyRegression.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "getPolicy",
+      "method": "GET",
+      "path": "/api/v1/policies/{id}",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicyController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicyService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicyAccess.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicySchedule.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicyEvaluator.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicyRegression.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "updatePolicy",
+      "method": "PUT",
+      "path": "/api/v1/policies/{id}",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicyController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicyService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicyAccess.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicySchedule.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicyEvaluator.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicyRegression.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "commandPolicy",
+      "method": "POST",
+      "path": "/api/v1/policies/{id}/commands",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicyController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicyService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicyAccess.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicySchedule.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicyEvaluator.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicyRegression.java"
+      ],
+      "supportedActions": [
+        "APPROVE_PUBLICATION",
+        "CLONE",
+        "REJECT_PUBLICATION",
+        "REQUEST_PUBLICATION",
+        "RUN_REGRESSION"
+      ],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "simulatePolicy",
+      "method": "POST",
+      "path": "/api/v1/policies/{id}/simulation",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicyController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicyService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicyAccess.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicySchedule.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicyEvaluator.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/policy/PolicyRegression.java"
+      ],
+      "supportedActions": [
+        "FACTS",
+        "REGRESSION"
+      ],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "listContracts",
+      "method": "GET",
+      "path": "/api/v1/contracts",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/contract/ContractController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/contract/OriginalAgreementService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/contract/ContractLifecycle.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/contract/EffectivityJobs.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/contract/ArtifactJobs.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "getContract",
+      "method": "GET",
+      "path": "/api/v1/contracts/{id}",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/contract/ContractController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/contract/OriginalAgreementService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/contract/ContractLifecycle.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/contract/EffectivityJobs.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/contract/ArtifactJobs.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "commandContract",
+      "method": "POST",
+      "path": "/api/v1/contracts/{id}/commands",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/contract/ContractController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/contract/OriginalAgreementService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/contract/ContractLifecycle.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/contract/EffectivityJobs.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/contract/ArtifactJobs.java"
+      ],
+      "supportedActions": [
+        "CANCEL",
+        "HOLD_READINESS",
+        "RELEASE_READINESS"
+      ],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "listContractVersions",
+      "method": "GET",
+      "path": "/api/v1/contracts/{id}/versions",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/contract/ContractController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/contract/OriginalAgreementService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/contract/ContractLifecycle.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/contract/EffectivityJobs.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/contract/ArtifactJobs.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "listSigningPackets",
+      "method": "GET",
+      "path": "/api/v1/signing-packets",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/signing/SigningController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/signing/SigningService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/signing/SigningEvidence.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/contract/ContractLifecycle.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeSigning.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [
+        "CONTRACT",
+        "CHANGE"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "createSigningPacket",
+      "method": "POST",
+      "path": "/api/v1/signing-packets",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/signing/SigningController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/signing/SigningService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/signing/SigningEvidence.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/contract/ContractLifecycle.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeSigning.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [
+        "CONTRACT",
+        "CHANGE"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "getSigningPacket",
+      "method": "GET",
+      "path": "/api/v1/signing-packets/{id}",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/signing/SigningController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/signing/SigningService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/signing/SigningEvidence.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/contract/ContractLifecycle.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeSigning.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [
+        "CONTRACT",
+        "CHANGE"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "commandSigningPacket",
+      "method": "POST",
+      "path": "/api/v1/signing-packets/{id}/commands",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/signing/SigningController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/signing/SigningService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/signing/SigningEvidence.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/contract/ContractLifecycle.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeSigning.java"
+      ],
+      "supportedActions": [
+        "RETURN_SIGNING",
+        "VERIFY_SIGNING"
+      ],
+      "missingActions": [],
+      "supportedTargets": [
+        "CONTRACT",
+        "CHANGE"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "listChanges",
+      "method": "GET",
+      "path": "/api/v1/changes",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeApproval.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeArtifacts.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeSigning.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeTimeline.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [
+        "AMENDMENT",
+        "RENEWAL",
+        "TARIFF_NOTICE"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "createChange",
+      "method": "POST",
+      "path": "/api/v1/changes",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeApproval.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeArtifacts.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeSigning.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeTimeline.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [
+        "AMENDMENT",
+        "RENEWAL",
+        "TARIFF_NOTICE"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "getChange",
+      "method": "GET",
+      "path": "/api/v1/changes/{id}",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeApproval.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeArtifacts.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeSigning.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeTimeline.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [
+        "AMENDMENT",
+        "RENEWAL",
+        "TARIFF_NOTICE"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "updateChange",
+      "method": "PUT",
+      "path": "/api/v1/changes/{id}",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeApproval.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeArtifacts.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeSigning.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeTimeline.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [
+        "AMENDMENT",
+        "RENEWAL",
+        "TARIFF_NOTICE"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "commandChange",
+      "method": "POST",
+      "path": "/api/v1/changes/{id}/commands",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeApproval.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeArtifacts.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeSigning.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeTimeline.java"
+      ],
+      "supportedActions": [
+        "APPROVE_CANCEL_SCHEDULE",
+        "CANCEL",
+        "COMMIT",
+        "REBASE",
+        "REJECT_CANCEL_SCHEDULE",
+        "REQUEST_CANCEL_SCHEDULE",
+        "SUBMIT",
+        "WITHDRAW"
+      ],
+      "missingActions": [],
+      "supportedTargets": [
+        "AMENDMENT",
+        "RENEWAL",
+        "TARIFF_NOTICE"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "listNotices",
+      "method": "GET",
+      "path": "/api/v1/notices",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeJobs.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "createNotice",
+      "method": "POST",
+      "path": "/api/v1/notices",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeJobs.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "getNotice",
+      "method": "GET",
+      "path": "/api/v1/notices/{id}",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeJobs.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "updateNotice",
+      "method": "PUT",
+      "path": "/api/v1/notices/{id}",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeJobs.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "commandNotice",
+      "method": "POST",
+      "path": "/api/v1/notices/{id}/commands",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeJobs.java"
+      ],
+      "supportedActions": [
+        "APPROVE",
+        "CANCEL",
+        "DISPATCH",
+        "RECORD_ACK",
+        "RECORD_EXTERNAL_DISPATCH",
+        "RECORD_RECEIPT",
+        "REJECT",
+        "RETRY",
+        "RETURN",
+        "SUBMIT",
+        "VERIFY_ACK"
+      ],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "listObligations",
+      "method": "GET",
+      "path": "/api/v1/obligations",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/ObligationController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/ObligationService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/LifecycleObligations.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/DutyEvidence.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/ObligationDeadlines.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [
+        "NOTICE_ACK",
+        "REMEDIATION",
+        "TERM_REVIEW",
+        "CLOSEOUT:read/source only"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "getObligation",
+      "method": "GET",
+      "path": "/api/v1/obligations/{id}",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/ObligationController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/ObligationService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/LifecycleObligations.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/DutyEvidence.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/ObligationDeadlines.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [
+        "NOTICE_ACK",
+        "REMEDIATION",
+        "TERM_REVIEW",
+        "CLOSEOUT:read/source only"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "commandObligation",
+      "method": "POST",
+      "path": "/api/v1/obligations/{id}/commands",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/ObligationController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/ObligationService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/LifecycleObligations.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/DutyEvidence.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/ObligationDeadlines.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/control/ControlEndProof.java"
+      ],
+      "supportedActions": [
+        "APPROVE",
+        "CANCEL_INAPPLICABLE",
+        "DECIDE_EXTENSION",
+        "DECIDE_WAIVER",
+        "REQUEST_EXTENSION",
+        "REQUEST_WAIVER",
+        "RETURN",
+        "SUBMIT_EVIDENCE",
+        "SUPERSEDE"
+      ],
+      "missingActions": [],
+      "supportedTargets": [
+        "NOTICE_ACK",
+        "REMEDIATION",
+        "TERM_REVIEW",
+        "CLOSEOUT"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "listIncidents",
+      "method": "GET",
+      "path": "/api/v1/incidents",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/incident/IncidentController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/incident/IncidentService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/DutyEvidence.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [
+        "CONTRACT_PERFORMANCE",
+        "PAYMENT_COMPLAINT_REFERENCE"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "createIncident",
+      "method": "POST",
+      "path": "/api/v1/incidents",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/incident/IncidentController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/incident/IncidentService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/DutyEvidence.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [
+        "CONTRACT_PERFORMANCE",
+        "PAYMENT_COMPLAINT_REFERENCE"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "getIncident",
+      "method": "GET",
+      "path": "/api/v1/incidents/{id}",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/incident/IncidentController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/incident/IncidentService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/DutyEvidence.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [
+        "CONTRACT_PERFORMANCE",
+        "PAYMENT_COMPLAINT_REFERENCE"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "commandIncident",
+      "method": "POST",
+      "path": "/api/v1/incidents/{id}/commands",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/incident/IncidentController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/incident/IncidentService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/obligation/DutyEvidence.java"
+      ],
+      "supportedActions": [
+        "CLOSE",
+        "RESOLVE",
+        "SUBMIT_RESOLUTION",
+        "VERIFY"
+      ],
+      "missingActions": [],
+      "supportedTargets": [
+        "CONTRACT_PERFORMANCE",
+        "PAYMENT_COMPLAINT_REFERENCE"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "listControlRequests",
+      "method": "GET",
+      "path": "/api/v1/control-requests",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/control/ControlController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/control/ControlService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/control/ControlEvidence.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/control/ControlApproval.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/control/ControlEndProof.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/control/LifecycleControls.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [
+        "ACTIVATE",
+        "SUSPEND",
+        "RESUME",
+        "TERMINATE",
+        "STOP"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "createControlRequest",
+      "method": "POST",
+      "path": "/api/v1/control-requests",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/control/ControlController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/control/ControlService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/control/ControlEvidence.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/control/ControlApproval.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/control/ControlEndProof.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/control/LifecycleControls.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [
+        "ACTIVATE",
+        "SUSPEND",
+        "RESUME",
+        "TERMINATE",
+        "STOP"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "getControlRequest",
+      "method": "GET",
+      "path": "/api/v1/control-requests/{id}",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/control/ControlController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/control/ControlService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/control/ControlEvidence.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/control/ControlApproval.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/control/ControlEndProof.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/control/LifecycleControls.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [
+        "ACTIVATE",
+        "SUSPEND",
+        "RESUME",
+        "TERMINATE",
+        "STOP"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "commandControlRequest",
+      "method": "POST",
+      "path": "/api/v1/control-requests/{id}/commands",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/control/ControlController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/control/ControlService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/control/ControlEvidence.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/control/ControlApproval.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/control/ControlEndProof.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/control/LifecycleControls.java"
+      ],
+      "supportedActions": [
+        "CANCEL",
+        "CONFIRM",
+        "SUBMIT"
+      ],
+      "missingActions": [],
+      "supportedTargets": [
+        "ACTIVATE",
+        "SUSPEND",
+        "RESUME",
+        "TERMINATE",
+        "STOP"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "listDataRequests",
+      "method": "GET",
+      "path": "/api/v1/data-requests",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/privacy/PrivacyController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/privacy/PrivacyService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/privacy/PrivacyRecords.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/privacy/PrivacyJobs.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/FileDispositions.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/ContactCorrectionProof.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [
+        "ERASURE",
+        "ACCESS",
+        "CORRECTION"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "createDataRequest",
+      "method": "POST",
+      "path": "/api/v1/data-requests",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/privacy/PrivacyController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/privacy/PrivacyService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/privacy/PrivacyRecords.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/privacy/PrivacyJobs.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/FileDispositions.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/ContactCorrectionProof.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [
+        "ERASURE",
+        "ACCESS",
+        "CORRECTION"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "getDataRequest",
+      "method": "GET",
+      "path": "/api/v1/data-requests/{id}",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/privacy/PrivacyController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/privacy/PrivacyService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/privacy/PrivacyRecords.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/privacy/PrivacyJobs.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/FileDispositions.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/ContactCorrectionProof.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [
+        "ERASURE",
+        "ACCESS",
+        "CORRECTION"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "commandDataRequest",
+      "method": "POST",
+      "path": "/api/v1/data-requests/{id}/commands",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/privacy/PrivacyController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/privacy/PrivacyService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/privacy/PrivacyRecords.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/privacy/PrivacyJobs.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/FileDispositions.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/ContactCorrectionProof.java"
+      ],
+      "supportedActions": [
+        "DECIDE",
+        "EXECUTE",
+        "PLACE_HOLD",
+        "REJECT",
+        "RELEASE_HOLD",
+        "START_REVIEW"
+      ],
+      "missingActions": [],
+      "supportedTargets": [
+        "ERASURE",
+        "ACCESS",
+        "CORRECTION"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "listFiles",
+      "method": "GET",
+      "path": "/api/v1/files",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/files/FileController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/FileService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/EvidenceAccess.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/PrivateBlobStore.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/FileScanWorker.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/GeneratedArtifactFiles.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [
+        "DOSSIER",
+        "CONTRACT",
+        "CHANGE",
+        "RELATIONSHIP",
+        "INCIDENT",
+        "OBLIGATION",
+        "CONTROL_REQUEST",
+        "DATA_REQUEST",
+        "NOTICE",
+        "POLICY"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "uploadFile",
+      "method": "POST",
+      "path": "/api/v1/files",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/files/FileController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/FileService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/EvidenceAccess.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/PrivateBlobStore.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/FileScanWorker.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/GeneratedArtifactFiles.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [
+        "DOSSIER",
+        "CONTRACT",
+        "CHANGE",
+        "RELATIONSHIP",
+        "INCIDENT",
+        "OBLIGATION",
+        "CONTROL_REQUEST",
+        "DATA_REQUEST",
+        "NOTICE",
+        "POLICY"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "getFile",
+      "method": "GET",
+      "path": "/api/v1/files/{id}",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/files/FileController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/FileService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/EvidenceAccess.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/PrivateBlobStore.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/FileScanWorker.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/GeneratedArtifactFiles.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [
+        "DOSSIER",
+        "CONTRACT",
+        "CHANGE",
+        "RELATIONSHIP",
+        "INCIDENT",
+        "OBLIGATION",
+        "CONTROL_REQUEST",
+        "DATA_REQUEST",
+        "NOTICE",
+        "POLICY"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "deleteUnattachedFile",
+      "method": "DELETE",
+      "path": "/api/v1/files/{id}",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/files/FileController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/FileService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/EvidenceAccess.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/PrivateBlobStore.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/FileScanWorker.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/GeneratedArtifactFiles.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [
+        "DOSSIER",
+        "CONTRACT",
+        "CHANGE",
+        "RELATIONSHIP",
+        "INCIDENT",
+        "OBLIGATION",
+        "CONTROL_REQUEST",
+        "DATA_REQUEST",
+        "NOTICE",
+        "POLICY"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "commandFile",
+      "method": "POST",
+      "path": "/api/v1/files/{id}/commands",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/files/FileController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/FileService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/EvidenceAccess.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/PrivateBlobStore.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/FileScanWorker.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/GeneratedArtifactFiles.java"
+      ],
+      "supportedActions": [
+        "RETRY"
+      ],
+      "missingActions": [],
+      "supportedTargets": [
+        "DOSSIER",
+        "CONTRACT",
+        "CHANGE",
+        "RELATIONSHIP",
+        "INCIDENT",
+        "OBLIGATION",
+        "CONTROL_REQUEST",
+        "DATA_REQUEST",
+        "NOTICE",
+        "POLICY"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "downloadFile",
+      "method": "GET",
+      "path": "/api/v1/files/{id}/content",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/files/FileController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/FileService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/EvidenceAccess.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/PrivateBlobStore.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/FileScanWorker.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/GeneratedArtifactFiles.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/FileDispositions.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [
+        "DOSSIER",
+        "CONTRACT",
+        "CHANGE",
+        "RELATIONSHIP",
+        "INCIDENT",
+        "OBLIGATION",
+        "CONTROL_REQUEST",
+        "DATA_REQUEST",
+        "NOTICE",
+        "POLICY"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "listJobs",
+      "method": "GET",
+      "path": "/api/v1/jobs",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/files/JobController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/JobService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/FileScanWorker.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/contract/ArtifactJobs.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/contract/EffectivityJobs.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/shared/JobQueue.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/privacy/PrivacyJobs.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/privacy/PrivacyService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeJobs.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [
+        "FILE_SCAN",
+        "ARTIFACT_PDF:CONTRACT/CHANGE/NOTICE",
+        "EFFECTIVITY:CONTRACT/CHANGE",
+        "NOTICE_DISPATCH",
+        "DATA_DISPOSITION"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "getJob",
+      "method": "GET",
+      "path": "/api/v1/jobs/{id}",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/files/JobController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/JobService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/FileScanWorker.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/contract/ArtifactJobs.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/contract/EffectivityJobs.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/shared/JobQueue.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/privacy/PrivacyJobs.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/privacy/PrivacyService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeJobs.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [
+        "FILE_SCAN",
+        "ARTIFACT_PDF:CONTRACT/CHANGE/NOTICE",
+        "EFFECTIVITY:CONTRACT/CHANGE",
+        "NOTICE_DISPATCH",
+        "DATA_DISPOSITION"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "commandJob",
+      "method": "POST",
+      "path": "/api/v1/jobs/{id}/commands",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/files/JobController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/JobService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/files/FileScanWorker.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/contract/ArtifactJobs.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/contract/EffectivityJobs.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/shared/JobQueue.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/privacy/PrivacyJobs.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/privacy/PrivacyService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeJobs.java"
+      ],
+      "supportedActions": [
+        "RETRY"
+      ],
+      "missingActions": [],
+      "supportedTargets": [
+        "FILE_SCAN",
+        "ARTIFACT_PDF:CONTRACT/CHANGE/NOTICE",
+        "EFFECTIVITY:CONTRACT/CHANGE",
+        "NOTICE_DISPATCH",
+        "DATA_DISPOSITION"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "listAuditEvents",
+      "method": "GET",
+      "path": "/api/v1/audit-events",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/reporting/ReportingController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/reporting/AuditReportingService.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "getDashboard",
+      "method": "GET",
+      "path": "/api/v1/dashboard",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/reporting/ReportingController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/reporting/DashboardService.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "exportAuditCsv",
+      "method": "GET",
+      "path": "/api/v1/exports/audit",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/reporting/ReportingController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/reporting/AuditReportingService.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "getReviewerOptions",
+      "method": "GET",
+      "path": "/api/v1/reviewer-options",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/customer/CustomerService.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [
+        "DOSSIER",
+        "CHANGE",
+        "CONTROL_REQUEST"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "getNoticeCapture",
+      "method": "GET",
+      "path": "/api/v1/notices/{id}/capture",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/notice/NoticeJobs.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [],
+      "missingTargets": [],
+      "coverage": "implemented"
+    },
+    {
+      "operationId": "getRoundSnapshot",
+      "method": "GET",
+      "path": "/api/v1/rounds/{id}/snapshot",
+      "implementationLocation": [
+        "apps/api/src/main/java/vn/contractgovernance/api/approval/ApprovalController.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/approval/ApprovalService.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/approval/ApprovalInputs.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/approval/RevisionStore.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/change/ChangeApproval.java",
+        "apps/api/src/main/java/vn/contractgovernance/api/control/ControlApproval.java"
+      ],
+      "supportedActions": [],
+      "missingActions": [],
+      "supportedTargets": [
+        "DOSSIER",
+        "CHANGE",
+        "CONTROL_REQUEST"
+      ],
+      "missingTargets": [],
+      "coverage": "implemented"
+    }
+  ]
+}
