@@ -112,7 +112,7 @@ public class ListQueries {
               from selected s join cg_entity p on p.id=case
                 when s.entity_type in ('Round','SigningPacket','File') then (s.body->>'targetId')::uuid
                 when s.entity_type='Job' then (s.body->>'parentId')::uuid
-                when s.body ? 'contractId' then (s.body->>'contractId')::uuid
+                when jsonb_exists(s.body,'contractId') then (s.body->>'contractId')::uuid
                 else null end
               and p.entity_type=case
                 when s.entity_type in ('Round','SigningPacket','File','Job') then
@@ -122,7 +122,7 @@ public class ListQueries {
                     when 'NOTICE' then 'Notice' when 'OBLIGATION' then 'Obligation'
                     when 'CONTROL_REQUEST' then 'ControlRequest' when 'INCIDENT' then 'Incident'
                     when 'DATA_REQUEST' then 'DataRequest' else null end
-                when s.body ? 'contractId' then 'Contract' else null end
+                when jsonb_exists(s.body,'contractId') then 'Contract' else null end
               where s.depth<6 and p.branch_id=s.branch_id
             ), scoped_contracts as (
               select c.id from cg_entity c
