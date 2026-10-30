@@ -10029,5 +10029,15 @@
     "business": "NOT EXECUTED",
     "integratedAcceptance": "NOT EXECUTED",
     "productionReady": "NOT ESTABLISHED"
+  },
+  "repairCheckpoint20261030": {
+    "applicationCommit": "81c3d7f66628a397aa9c2d62dd26877448c25d10",
+    "jarSha256": "b29274dc1dc401ac4c0019233449f01e8cd85e2e0e8b6ceddaf43da867e26fe3",
+    "review": "docs/plan/reviews/backend-manual-smoke-repairs-review.md",
+    "build": "108-source clean/package PASS2026-10-30T07:51:56+07:00; all test phases skipped",
+    "ownerInstruction": "Continue source/review/build/operational startup; testing is a separate stage; no further HTTP smoke/tests run",
+    "runtime": "Operational startup PASS2026-10-30T08:03:03.223+07:00 PID29280 API127.0.0.1:8081;13Flyway migrations validated; seed counts unchanged/jobs0/blobs0; noHTTP/tests/business acceptance",
+    "candidateHttpRetest": "NOT RUN",
+    "baselineSmokeFailures": "Preserved actual21October FAILs; source causes repaired, candidate HTTP outcomes not yet verified"
   }
 }

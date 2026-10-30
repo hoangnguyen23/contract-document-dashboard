@@ -1,5 +1,16 @@
 # Backend operation coverage
 
+## Current checkpoint — 30 October 2026
+
+Owner resumed after Docker recovery and explicitly separated testing from implementation. No further automated tests, manual HTTP smoke or business scenarios are run under this continuation. Earlier21October smoke evidence and FAILs remain historical, not erased or relabelled as repaired runtime results.
+
+Current reviewed application repair is81c3d7f66628a397aa9c2d62dd26877448c25d10 on feature/backend-smoke-fixes, Draft PR11. Email format syntax now supports canonical synthetic domains without disabling other formats; ten JDBC JSONB operators use jsonb_exists with scope/argument order preserved. Independent source review and108-source skipped-test package passed30Oct07:51:56+07; JAR SHA256 b29274dc1dc401ac4c0019233449f01e8cd85e2e0e8b6ceddaf43da867e26fe3. This is source/build evidence; the original three failing HTTP cases have NOT been rerun on this candidate.
+
+Remote devdf34af6 contains merged PR2–10 and has the same tree as the old ef33bae delivery; PR11 remains separate, with no automatic merge or main/dev push. Source inventory remains85 implemented/0 partial/0 missing, with business/FE/NFR acceptance pending. FE/setup/docs/test branches audited previously contain no implementation. Local Java25.0.1 still differs from pinned25.0.4.1.
+
+Operational readiness for this exact candidate is recorded separately in reviews/backend-repair-runtime-20261030.md. No Clock XML, synthetic time jump, fault injection, data reset, volume deletion or smoke workflow is part of this continuation. Historical statements below describe their recorded dates and sources.
+
+
 Canonical A/B1.3.0: **85 implemented / 0 partial / 0 missing** after bounded independent Privacy review1595418 and final crossmodule repair review. Exact application source e718ccc5f7f6ba4d3881d924174440bedfbf7db1. This is semantic source coverage, not executed business or FE acceptance.
 
 Cumulative 107-source clean/package PASS2026-10-20T10:07:55+07:00; all test phases skipped; Java25.0.1/Maven3.10.0; exact app e718ccc5f7f6ba4d3881d924174440bedfbf7db1. JAR SHA256 `fa4c214eac62813bfeb62cc377f65fdd7e64708e9ffab4ff30f246b01f016602`. Final operational startup/migration is recorded separately in [runtime evidence](reviews/backend-final-runtime-startup.md). No automated tests, HTTP scenarios, manual PDF or actual disposition was executed.
