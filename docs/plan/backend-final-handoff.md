@@ -1,5 +1,7 @@
 # Final Backend source handoff — 20 October 2026
 
+> Current status: [30 October delivery checkpoint](backend-current-status.md). Historical source/build/startup reports below retain their recorded scope; testing remains deferred.
+
 ## Current checkpoint — 30 October 2026
 
 Owner resumed after Docker recovery and explicitly separated testing from implementation. No further automated tests, manual HTTP smoke or business scenarios are run under this continuation. Earlier21October smoke evidence and FAILs remain historical, not erased or relabelled as repaired runtime results.

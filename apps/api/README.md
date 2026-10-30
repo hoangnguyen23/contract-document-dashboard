@@ -1,5 +1,7 @@
 # Contract Governance API
 
+> Current delivery: [30 October checkpoint](../../docs/plan/backend-current-status.md). The repaired candidate has source/build/startup evidence; prior HTTP smoke is partial and candidate retest remains deferred. Historical statements below retain their original scope. Operational preparation: [backup/restore/rollback runbook](../../docs/plan/backend-recovery-runbook.md), not executed recovery proof.
+
 Java 25 LTS · Spring Boot 4.1.1 · Spring Modulith 2.1.1 · Maven Wrapper 3.10.0 · PostgreSQL 18.6 · ClamAV 1.5.4.
 
 Canonical documents remain `docs/Final_Project_Specification.md` and `docs/FE_BE_Shared_Development_Contract.md`. Run `python scripts/extract_contracts.py` from repository root after an approved contract change. The extractor checks A file SHA, all block digests, duplicate keys/blocks and local-only refs, then writes byte-identical derived resources.

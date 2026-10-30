@@ -6410,7 +6410,7 @@
         "NOTICE_ACK",
         "REMEDIATION",
         "TERM_REVIEW",
-        "CLOSEOUT:read/source only"
+        "CLOSEOUT"
       ],
       "missingTargets": [],
       "businessDependencies": [
@@ -6588,7 +6588,7 @@
         "NOTICE_ACK",
         "REMEDIATION",
         "TERM_REVIEW",
-        "CLOSEOUT:read/source only"
+        "CLOSEOUT"
       ],
       "missingTargets": [],
       "businessDependencies": [
@@ -10039,5 +10039,15 @@
     "runtime": "Operational startup PASS2026-10-30T08:03:03.223+07:00 PID29280 API127.0.0.1:8081;13Flyway migrations validated; seed counts unchanged/jobs0/blobs0; noHTTP/tests/business acceptance",
     "candidateHttpRetest": "NOT RUN",
     "baselineSmokeFailures": "Preserved actual21October FAILs; source causes repaired, candidate HTTP outcomes not yet verified"
+  },
+  "completionCheckpoint20261030": {
+    "sourceConfigCommit": "2487adb9ea26b1020c9a448ded56be77c2e9e87d",
+    "fencingRepairCommit": "d306166cfc9dc6dff45eee80685d5d05f86cd077",
+    "jarSha256": "99e695f8a28f998eafe9264ea9c5883e2317f1ac2ae4593dc9caa6bc1c0f74ed",
+    "build": "PASS2026-10-30T08:25:08+07:00; Oracle25.0.4.1+1-LTS-5/Maven3.10.0;108sources; all tests skipped",
+    "sourceReview": "Bounded independent GO; JOB-FENCE-01 repaired; source caller/crossdomain/toolchain reports retained",
+    "runtime": "New candidate NOT STARTED/NOT DEPLOYED; prior main packaged JARb29274dc preserved",
+    "testing": "DEFERRED by owner; no new HTTP/test/race/recovery/FE/NFR acceptance",
+    "statusDocument": "docs/plan/backend-current-status.md"
   }
 }

@@ -1,5 +1,9 @@
 # Project documentation
 
+- [Backend current delivery status](plan/backend-current-status.md): current source/JAR/PR, evidence limits and owner decisions.
+
+- [Backend completion plan — 30 October 2026](plan/backend-completion-plan-20261030.md): next delivery tasks, dependencies and completion criteria; testing remains a separate deferred stage.
+
 - [Final Project Specification](Final_Project_Specification.md): canonical product, business rules and acceptance criteria (A1.3.0).
 - [FE/BE Shared Development Contract](FE_BE_Shared_Development_Contract.md): canonical HTTP schema, permissions, fixtures and protocol (B1.3.0, policy corpus/empty schedule consistency and generated metadata correction).
 - [Backend delivery plan](plan/backend-implementation.md): implementation sequence and verification scope for the current Backend work.
