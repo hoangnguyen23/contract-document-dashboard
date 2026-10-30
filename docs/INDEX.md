@@ -1,5 +1,7 @@
 # Project documentation
 
+- [Backend development completion](plan/backend-development-completion.md): delivered source/runtime preparation and separate deferred verification stage.
+
 - [Backend current delivery status](plan/backend-current-status.md): current source/JAR/PR, evidence limits and owner decisions.
 
 - [Backend completion plan — 30 October 2026](plan/backend-completion-plan-20261030.md): next delivery tasks, dependencies and completion criteria; testing remains a separate deferred stage.

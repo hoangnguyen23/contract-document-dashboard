@@ -12,7 +12,7 @@ This ledger tracks development/readiness deliverables against the completion pla
 | C06 privacy/files/reporting |Independent hold/reservation/manifest/fencing/safe-copy/reporting ancestry review plus prior Privacy/reporting reports | Bounded source integration review complete; physical cleanup/negative scope/meaningful KPI runtime PENDING |
 | C07 toolchain/operations |Exact Oracle25.0.4.1 side-by-side provisioning; official checksums; verified Maven ZIP SHA512 and wrapper SHA256; exact CI commit2487adb; recovery runbook and docs reviewed | Source/configuration/provisioning GO; exact-JDK build PASS30October08:25:08+07; Linux CI, fresh bootstrap and restore NOT RUN |
 | C08 FE/testing handoff |Version/hash-linked handoff, operation/field/semantics impact, protocol/proxy/private file/async states, V01–V05 acceptance backlog | BE preparation delivered; external FE acknowledgement, browser/consumer and execution permissions remain external dependencies |
-| C09 release candidate |Separate source/tooling commits and independent reviews; final source/JAR manifest and Git review package to follow build | Reviewable package PREPARED; independent delivery-evidence GO in reviews/backend-completion-delivery-review-20261030.md. Owner merge authorization PENDING; no main/dev change. Source/build/startup/acceptance remain separate |
+| C09 release candidate |Separate source/tooling commits and independent reviews; final source/JAR manifest and Git review package to follow build | Reviewable package PREPARED; independent delivery-evidence GO in reviews/backend-completion-delivery-review-20261030.md. PR11 owner-authorized merge54af6f1 completed before testing; postmerge runtime readiness refinement recorded separately. Source/build/startup/acceptance remain separate |
 
 ## Findings and disposition
 
@@ -31,4 +31,6 @@ This ledger tracks development/readiness deliverables against the completion pla
 
 No new business rule, API/schema field, migration or product interpretation requires owner approval from these bounded source reviews. Exact canonical JDK artifacts were obtainable; no runtime-version exception is requested. Testing remains deferred under the owner's latest instruction.
 
-PR11 integration into dev requires owner authorization and a clear decision about the outstanding A/B provider/consumer/browser gates. Preparing/pushing the reviewed feature package does not authorize merging it or marking G3–G6 accepted. FE acknowledgement is recorded only when the counterpart actually responds; no unsolicited external message is sent.
+Owner authorized PR11 integration into dev before testing; merge54af6f1 completed. Provider/consumer/browser gates remain deferred, not passed. Preparing/pushing the reviewed feature package does not authorize merging it or marking G3–G6 accepted. FE acknowledgement is recorded only when the counterpart actually responds; no unsolicited external message is sent.
+
+Postmerge development closure: [Backend development completion](backend-development-completion.md). RD01 pinned launcher and RD02 concrete optional HTTPS preparation are delivered in5e58768/7bfbeaa, with independent review recorded in reviews/backend-postmerge-gap-review-20261030.md. Final feature integration is recorded in Git; all testing and runtime activation remain deferred.

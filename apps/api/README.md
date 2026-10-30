@@ -1,6 +1,6 @@
 # Contract Governance API
 
-> Current delivery: [30 October checkpoint](../../docs/plan/backend-current-status.md). The repaired candidate has source/build/startup evidence; prior HTTP smoke is partial and candidate retest remains deferred. Historical statements below retain their original scope. Operational preparation: [backup/restore/rollback runbook](../../docs/plan/backend-recovery-runbook.md), not executed recovery proof.
+> Current delivery: [30 October checkpoint](../../docs/plan/backend-current-status.md). The current candidate has source/build evidence; startup evidence belongs to the prior baseline; prior HTTP smoke is partial and candidate retest remains deferred. Historical statements below retain their original scope. Operational preparation: [backup/restore/rollback runbook](../../docs/plan/backend-recovery-runbook.md), not executed recovery proof.
 
 Java 25 LTS · Spring Boot 4.1.1 · Spring Modulith 2.1.1 · Maven Wrapper 3.10.0 · PostgreSQL 18.6 · ClamAV 1.5.4.
 
@@ -8,11 +8,13 @@ Canonical documents remain `docs/Final_Project_Specification.md` and `docs/FE_BE
 
 ## Local setup
 
-On Windows, install a Java 25 JDK on PATH, Docker Desktop with the engine running and Docker Compose >= 2.24.4. From repository root:
+On Windows, provision the checksum-verified Oracle JDK 25.0.4.1 (build25.0.4.1+1-LTS-5), Docker Desktop with the engine running and Docker Compose >= 2.24.4. From repository root:
 
 ```powershell
-.\scripts\start-backend.ps1 -Demo
+.\scripts\start-backend.ps1 -Demo -JavaHome "D:/contract-document-dashboard/var/toolchains/oracle-jdk-25.0.4.1/jdk-25.0.4.1"
 ```
+
+`-JavaHome` selects an absolute JDK directory without changing system JAVA_HOME/PATH. If omitted, PATH discovery is used but must resolve to the exact Oracle vendor/version/build. The launcher validates the JDK before managed-process reuse, uses it for Maven and the child API, and restores its process environment afterward. An existing process using another JDK is retained and reuse is rejected; a separately authorized stop/start is required. The example is the verified local toolchain path; provision the same pinned JDK at your own path on another machine.
 
 The launcher packages the API with `maven.test.skip=true`, starts this project's PostgreSQL/ClamAV containers, then starts hidden Java on `127.0.0.1:8081`. Defaults are database `127.0.0.1:55432`, scanner `127.0.0.1:3310` and Compose project `contract-governance`. Override using `-DatabasePort`, `-ApiPort`, `-ScannerPort` or `-ComposeProjectName` when occupied. It refuses a Compose project owned by another repository, including retained project volumes without matching containers or previous launcher ownership metadata, and never stops an unrelated process. For an already packaged jar, `-SkipBuild` skips packaging. Readiness is bounded by `-StartupTimeoutSeconds` (default 240, excluding build); ClamAV's first signature download can require a longer value. Scanner failures keep files quarantined.
 
