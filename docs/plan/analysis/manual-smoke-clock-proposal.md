@@ -100,3 +100,7 @@ Independent reviewer must inspect exact XML bytes, bundled-bytecode reasoning, f
 ## Independent design review —21October2026
 
 Separate reviewer confirmed static design GO only: independently recomputed both XML hashes, parsed the single top-level Clock bean, checked bundled Spring bytecode/library hashes and local XSD mapping, and confirmed the specific BlobMaintenance real-filesystem/time interaction. This is not a runtime proof or owner execution approval. Exact isolated process identity, XML allowlist, no-running-job gates, monotonic offsets and no backward restart remain mandatory. Owner execution decision is pending.
+
+## Owner approval and resume30October
+
+Owner21October explicitly approved this exact isolated Clock configuration for execution, superseding proposal-stage pending approval only for the specified scope. No activation evidence exists throughs31. Docker Engine is currently unavailable; future resume must use fresh dates and monotonic chronology, not old21October schedules.

@@ -40,3 +40,11 @@ After item1 completes, present the next bounded acceptance plan for separate app
 Actual isolated project/database/storage/TLS process passed separate isolation review before any HTTP. Exact baseline JAR runs at HTTPS18443 (initial PID22728), PostgreSQL56433 and ClamAV13310 on new dedicated volumes/network. Fresh prerequisite migrationsV001–V013 succeeded. Main8081 was already absent; existing project container IDs/mounts/stopped state remained unchanged.
 
 Early manually assessed HTTP: anonymous session200, missing-CSRF login403 with no business effects, authenticated login200 with cookie/CSRF rotation, Party create201, exact idempotent replay201 without duplicated effects, conflicting same-key input409, unauthorized Maker Party creation403. Reserved-domain Contact email produced an actual baseline defect: valid canonical@example.invalid create422 and assigned seed Relationship GET503. Both failures and no-effect snapshots remain recorded; a separate clearly identified@example.com synthetic case continues the baseline flow. No source or baseline JAR was changed. Diagnosis/narrow repair proposal is in progress under the normal review/Git process; this checkpoint is not final smoke acceptance.
+
+## Resume30October2026
+
+All42 Git refs audited; origin/devdf34af6 mergedPR2–10, exactef33bae tree. FE/setup/docs/test refs are README-only placeholders. Evidence extends throughs31Policyregression200, Dossierv5/threeCLEANfiles; no Revision/Round/Contract/PDF/signing/Clockactivation evidence.
+
+Separate repair81c3d7f independently source-reviewed;108-source skipped-test package PASS30Oct07:51:56+07. CandidateJARb29274dc1dc401ac4c0019233449f01e8cd85e2e0e8b6ceddaf43da867e26fe3, delivery236ba8a/DraftPR11. Candidate copied to isolated run app/candidate-81c3d7f only; original baseline preserved. No candidate deployment/HTTP PASS.
+
+Runtime BLOCKED: Docker host log reports SecretsEngine socket rename failure then engine shutdown; WSLdocker-desktop stopped/npipe absent. No factoryreset/socketdelete/volume mutation/forcedcleanup performed. No HTTP/container/apprestart today. Owner must restore Engine safely before live isolation revalidation and approved manual smoke can resume. Candidate expected plan and preparation manifest retained in ignored run evidence. Full acceptance remains pending.
