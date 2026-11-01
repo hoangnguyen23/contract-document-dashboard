@@ -1,0 +1,7 @@
+# Blueprint preparation record — 01/11/2026
+
+Baseline dev81d6c17; source application not changed. Delivered9handwrittendesign/taskdocuments,4ASCIIwireframes,33screenIDs and read-only canonicalreference85operations/188schemas. All85operations assigned a screen/component owner; all14A12.1screen groups represented. Reference components exactly equal canonicalJSON; OpenAPIhash and uniqueoperationcounts verified. Exact login/logout andfile/reviewer operationnames checked againstcanonical. Gitwhitespacecheck performed. These are documentation consistency checks, not applicationtests or businessacceptance.
+
+No Figmafile created, no externalsharing/invitations, no apps/web scaffolding/code, no dependencyinstallation, no build/test/browser/HTTP/runtime change or canonical/resource regeneration. ActualFigmaexecution task is FIGMA-01. Implementationtasks FE01–FE12 followdesignhandoff; agentmustrecordactualframeIDs/client/build/evidence ratherthanclaimingthemfromthisblueprint.
+
+Knownexecutiondependencies: Figmaworkspaceaccess/actualdesignartifact and counterpartdesigner; finalfontlicense/assetavailability; currentupstreamtoolchainavailability at actualbootstrap; FEHTTPSproxy/certtrust; owneropenslater teststage. These do not requireinventingAPI/schema or askingagainaboutsettledbusinessrules. Reviewallconditionalrequestschemas ratherthanflattenoneOf. Allfuturecontractchanges follow A/B ownercontrol.

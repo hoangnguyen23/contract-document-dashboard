@@ -1,5 +1,7 @@
 # Project documentation
 
+- [Frontend design blueprint](fe/README.md): screen map, design system, detailed flows, Figma assignment and implementation task graph.
+
 - [Backend development completion](plan/backend-development-completion.md): delivered source/runtime preparation and separate deferred verification stage.
 
 - [Backend current delivery status](plan/backend-current-status.md): current source/JAR/PR, evidence limits and owner decisions.
