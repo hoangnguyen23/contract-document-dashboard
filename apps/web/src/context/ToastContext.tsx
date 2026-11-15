@@ -1,5 +1,8 @@
 import React, { createContext, useCallback, useContext, useRef, useState } from 'react';
 import { CheckCircle2, XCircle, AlertTriangle, Info, X } from 'lucide-react';
+import { ApiErrorModal } from '@/components/ui/ApiErrorModal';
+import type { FormattedError, ApiProblem } from '@/lib/apiUtils';
+import { formatApiError } from '@/lib/apiUtils';
 
 // ─── Types ─────────────────────────────────────────────────────────────────
 export type ToastVariant = 'success' | 'error' | 'warning' | 'info';
@@ -19,6 +22,7 @@ interface ToastContextType {
   error: (title: string, message?: string) => void;
   warning: (title: string, message?: string) => void;
   info: (title: string, message?: string) => void;
+  showApiError: (err: FormattedError | ApiProblem | Error | unknown, onRefresh?: () => void) => void;
   dismiss: (id: string) => void;
 }
 
@@ -28,6 +32,10 @@ const ToastContext = createContext<ToastContextType | undefined>(undefined);
 // ─── Provider ──────────────────────────────────────────────────────────────
 export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [toasts, setToasts] = useState<Toast[]>([]);
+  const [modalError, setModalError] = useState<{
+    error: FormattedError | ApiProblem | Error | unknown;
+    onRefresh?: () => void;
+  } | null>(null);
   const timers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
 
   const dismiss = useCallback((id: string) => {
@@ -52,10 +60,34 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const warning = useCallback((title: string, message?: string) => toast({ variant: 'warning', title, message, duration: 6000 }), [toast]);
   const info    = useCallback((title: string, message?: string) => toast({ variant: 'info',    title, message }), [toast]);
 
+  const showApiError = useCallback((err: FormattedError | ApiProblem | Error | unknown, onRefresh?: () => void) => {
+    const formatted = formatApiError(err);
+    // Open detailed RFC9457 Problem Modal
+    setModalError({ error: formatted, onRefresh });
+    // Also show quick error toast for immediate feedback
+    toast({
+      variant: 'error',
+      title: formatted.title,
+      message: `${formatted.code}: ${formatted.message.slice(0, 100)}${formatted.message.length > 100 ? '...' : ''}`,
+      duration: 6000,
+    });
+  }, [toast]);
+
   return (
-    <ToastContext.Provider value={{ toasts, toast, success, error, warning, info, dismiss }}>
+    <ToastContext.Provider value={{ toasts, toast, success, error, warning, info, showApiError, dismiss }}>
       {children}
       <ToastContainer toasts={toasts} dismiss={dismiss} />
+      {modalError && (
+        <ApiErrorModal
+          isOpen={!!modalError}
+          error={modalError.error}
+          onClose={() => setModalError(null)}
+          onRefresh={() => {
+            modalError.onRefresh?.();
+            setModalError(null);
+          }}
+        />
+      )}
     </ToastContext.Provider>
   );
 };

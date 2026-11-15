@@ -62,6 +62,27 @@ apiClient.interceptors.request.use(
       }
     }
 
+    // 3. Inject If-Match for existing-resource mutations (B §4)
+    // Mutations (PUT, DELETE, and POST /{collection}/{id}/commands) require If-Match
+    if (isMutation && config.url) {
+      const existingIfMatch = config.headers.get('If-Match');
+      if (existingIfMatch) {
+        // Ensure canonical quotation ^"r-[1-9][0-9]*"$
+        const raw = String(existingIfMatch).replace(/^"|"$/g, '');
+        config.headers.set('If-Match', `"${raw}"`);
+      } else {
+        // Auto-lookup ETag from resource ID in URL: /api/v1/{collection}/{id} or /api/v1/{collection}/{id}/commands
+        const match = config.url.match(/\/api\/v1\/[^/]+\/([0-9a-f-]{36})(?:\/|$)/i);
+        if (match) {
+          const resourceId = match[1];
+          const cached = etagCache.get(resourceId);
+          if (cached) {
+            config.headers.set('If-Match', `"${cached.replace(/^"|"$/g, '')}"`);
+          }
+        }
+      }
+    }
+
     return config;
   },
   (error) => Promise.reject(error)
@@ -77,11 +98,14 @@ apiClient.interceptors.response.use(
 
     // Cache ETag from resource responses (B §4: resource detail/create/update/command)
     const etag = response.headers['etag'];
-    if (etag) {
-      // Extract resource ID from URL pattern /api/v1/{collection}/{id}
-      const match = response.config.url?.match(/\/api\/v1\/[^/]+\/([0-9a-f-]{36})/i);
-      if (match) {
-        etagCache.set(match[1], etag.replace(/^"|"$/g, '')); // strip quotes
+    const match = response.config.url?.match(/\/api\/v1\/[^/]+\/([0-9a-f-]{36})/i);
+    const resourceId = match ? match[1] : response.data?.id;
+
+    if (resourceId) {
+      if (etag) {
+        etagCache.set(resourceId, etag.replace(/^"|"$/g, ''));
+      } else if (typeof response.data?.version === 'number' && response.data.version > 0) {
+        etagCache.set(resourceId, `r-${response.data.version}`);
       }
     }
 

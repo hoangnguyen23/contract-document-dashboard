@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fileApi } from '@/lib/businessApi';
+import { fileApi, relationshipApi } from '@/lib/businessApi';
 import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
+import { useToast } from '@/context/ToastContext';
 import {
   Files,
   Search,
@@ -12,39 +13,61 @@ import {
   UploadCloud,
   Download,
   FileText,
+  AlertTriangle,
 } from 'lucide-react';
 
 export const DocumentsPage: React.FC = () => {
   const queryClient = useQueryClient();
+  const { success, showApiError } = useToast();
+
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('ALL');
-  const [isUploading, setIsUploading] = useState(false);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+  // Upload form state
+  const [targetKind, setTargetKind] = useState<'RELATIONSHIP' | 'DOSSIER' | 'CONTRACT'>('RELATIONSHIP');
+  const [targetId, setTargetId] = useState('');
+  const [branchId, setBranchId] = useState('');
+  const [purpose, setPurpose] = useState<
+    | 'SERVICE_APPLICATION'
+    | 'CORPORATE_ID'
+    | 'REPRESENTATION_BASIS'
+    | 'SERVICE_TERMS'
+    | 'IDENTITY_IMAGE'
+    | 'SIGNING_COPY'
+    | 'NOTICE_EVIDENCE'
+    | 'DUTY_EVIDENCE'
+    | 'CONTROL_EVIDENCE'
+    | 'DATA_BASIS'
+  >('REPRESENTATION_BASIS');
 
   const { data, isLoading, refetch, isFetching } = useQuery({
     queryKey: ['files-list'],
     queryFn: () => fileApi.list(),
   });
 
-  const uploadMutation = useMutation({
-    mutationFn: (file: File) =>
-      fileApi.upload(file, '00000000-0000-4000-8000-000000000001', 'EVIDENCE'),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['files-list'] });
-      setIsUploading(false);
-    },
-    onError: (err: unknown) => {
-      const error = err as { message?: string };
-      alert(`Upload file thất bại: ${error.message || 'Lỗi không xác định'}`);
-      setIsUploading(false);
-    },
+  // Relationships to select targetId and branchId
+  const { data: relData } = useQuery({
+    queryKey: ['relationships-for-upload'],
+    queryFn: () => relationshipApi.list({ limit: '50' }),
+    enabled: isUploadModalOpen,
   });
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setIsUploading(true);
-      uploadMutation.mutate(e.target.files[0]);
-    }
-  };
+  const uploadMutation = useMutation({
+    mutationFn: (file: File) => {
+      const activeBranchId = branchId || relData?.items?.[0]?.branchId || '00000000-0000-4000-8000-000000000001';
+      const activeTargetId = targetId || relData?.items?.[0]?.id || '00000000-0000-4000-8000-00000000000f';
+      return fileApi.upload(file, activeBranchId, purpose, targetKind, activeTargetId);
+    },
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({ queryKey: ['files-list'] });
+      setIsUploadModalOpen(false);
+      setSelectedFile(null);
+      success('Tải lên tệp thành công', `${res.filename} đã được gửi tới ClamAV quét mã độc.`);
+    },
+    onError: (err) => showApiError(err),
+  });
 
   const files = data?.items || [];
 
@@ -65,12 +88,23 @@ export const DocumentsPage: React.FC = () => {
       case 'INFECTED':
         return <Badge variant="rose">Phát hiện virus (INFECTED)</Badge>;
       case 'REDACTED':
-        return <Badge variant="indigo">Đã che mờ bảo mật (REDACTED)</Badge>;
+        return <Badge variant="indigo">Đã che mờ (REDACTED)</Badge>;
       case 'DISPOSED':
         return <Badge variant="slate">Đã tiêu hủy (DISPOSED)</Badge>;
+      case 'SCAN_FAILED':
+        return <Badge variant="rose">Quét lỗi (SCAN_FAILED)</Badge>;
       default:
         return <Badge variant="slate">{state}</Badge>;
     }
+  };
+
+  const handleStartUpload = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedFile) {
+      showApiError(new Error('Vui lòng chọn tệp tin cần tải lên'));
+      return;
+    }
+    uploadMutation.mutate(selectedFile);
   };
 
   return (
@@ -99,16 +133,20 @@ export const DocumentsPage: React.FC = () => {
             <span>Làm mới</span>
           </Button>
 
-          <label className="inline-flex items-center justify-center font-medium rounded-lg text-sm px-4 py-2 gap-2 bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm cursor-pointer select-none transition-all">
+          <Button
+            size="sm"
+            onClick={() => {
+              if (relData?.items?.length) {
+                setTargetId(relData.items[0].id);
+                setBranchId(relData.items[0].branchId);
+              }
+              setIsUploadModalOpen(true);
+            }}
+            className="gap-1.5"
+          >
             <UploadCloud className="w-4 h-4" />
-            <span>{isUploading ? 'Đang tải lên...' : 'Tải lên tài liệu'}</span>
-            <input
-              type="file"
-              onChange={handleFileChange}
-              disabled={isUploading}
-              className="hidden"
-            />
-          </label>
+            <span>Tải lên tài liệu</span>
+          </Button>
         </div>
       </div>
 
@@ -137,6 +175,7 @@ export const DocumentsPage: React.FC = () => {
             <option value="PENDING_SCAN">PENDING_SCAN (Chờ quét)</option>
             <option value="REDACTED">REDACTED (Che mờ)</option>
             <option value="INFECTED">INFECTED (Mã độc)</option>
+            <option value="DISPOSED">DISPOSED (Tiêu hủy)</option>
           </select>
         </div>
       </div>
@@ -171,7 +210,7 @@ export const DocumentsPage: React.FC = () => {
                   <td colSpan={7} className="text-center py-12 text-slate-400">
                     <p className="text-sm font-semibold">Chưa có tệp tài liệu nào</p>
                     <p className="text-xs text-slate-500 mt-1">
-                      Bấm "Tải lên tài liệu" để gửi file đính kèm hồ sơ và quét virus tự động.
+                      Nhấn "Tải lên tài liệu" để gửi file đính kèm hồ sơ và quét virus tự động.
                     </p>
                   </td>
                 </tr>
@@ -218,6 +257,118 @@ export const DocumentsPage: React.FC = () => {
           </table>
         </div>
       </Card>
+
+      {/* ─── Upload Modal (B1.3.0 Compliant) ────────────────────────────────── */}
+      {isUploadModalOpen && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+              <div className="flex items-center gap-2">
+                <UploadCloud className="w-5 h-5 text-indigo-400" />
+                <h3 className="font-bold text-base text-white">Tải lên Tài liệu / Bằng chứng</h3>
+              </div>
+              <Button variant="ghost" size="sm" onClick={() => setIsUploadModalOpen(false)}>
+                Đóng
+              </Button>
+            </div>
+
+            <form onSubmit={handleStartUpload} className="space-y-4 text-xs">
+              {/* File input */}
+              <div className="space-y-1.5">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
+                  Chọn tệp tin (PDF, JPEG, PNG tối đa 10MiB) <span className="text-rose-400">*</span>
+                </label>
+                <input
+                  type="file"
+                  accept=".pdf,.png,.jpg,.jpeg"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      setSelectedFile(e.target.files[0]);
+                    }
+                  }}
+                  className="w-full text-xs text-slate-300 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500 bg-slate-950 border border-slate-700 rounded-xl p-2 cursor-pointer"
+                />
+              </div>
+
+              {/* Purpose dropdown */}
+              <div className="space-y-1.5">
+                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
+                  Mục đích tài liệu (Purpose) <span className="text-rose-400">*</span>
+                </label>
+                <select
+                  value={purpose}
+                  onChange={(e) => setPurpose(e.target.value as typeof purpose)}
+                  className="w-full text-xs bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                >
+                  <option value="REPRESENTATION_BASIS">Căn cứ đại diện (REPRESENTATION_BASIS)</option>
+                  <option value="CORPORATE_ID">Đăng ký kinh doanh (CORPORATE_ID)</option>
+                  <option value="SERVICE_APPLICATION">Đơn đăng ký dịch vụ (SERVICE_APPLICATION)</option>
+                  <option value="SERVICE_TERMS">Điều khoản dịch vụ thỏa thuận (SERVICE_TERMS)</option>
+                  <option value="IDENTITY_IMAGE">Ảnh CCCD/Hộ chiếu người đại diện (IDENTITY_IMAGE)</option>
+                  <option value="SIGNING_COPY">Bản sao hợp đồng đã ký (SIGNING_COPY)</option>
+                  <option value="NOTICE_EVIDENCE">Bằng chứng gửi/nhận thông báo (NOTICE_EVIDENCE)</option>
+                  <option value="CONTROL_EVIDENCE">Bằng chứng kiểm soát dịch vụ (CONTROL_EVIDENCE)</option>
+                </select>
+              </div>
+
+              {/* Target Kind */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
+                    Gắn vào đối tượng *
+                  </label>
+                  <select
+                    value={targetKind}
+                    onChange={(e) => setTargetKind(e.target.value as typeof targetKind)}
+                    className="w-full text-xs bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-slate-200"
+                  >
+                    <option value="RELATIONSHIP">Quan hệ khách hàng (RELATIONSHIP)</option>
+                    <option value="DOSSIER">Hồ sơ thu hộ (DOSSIER)</option>
+                    <option value="CONTRACT">Hợp đồng (CONTRACT)</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-400">
+                    Đối tác áp dụng
+                  </label>
+                  <select
+                    value={targetId}
+                    onChange={(e) => {
+                      setTargetId(e.target.value);
+                      const rel = relData?.items?.find((r) => r.id === e.target.value);
+                      if (rel) setBranchId(rel.branchId);
+                    }}
+                    className="w-full text-xs bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-slate-200"
+                  >
+                    {relData?.items?.map((rel) => (
+                      <option key={rel.id} value={rel.id}>
+                        {rel.id.slice(0, 8)}... (CN {rel.branchId.slice(0, 8)}...)
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="p-3 bg-slate-950/70 border border-slate-800 rounded-xl text-[11px] text-slate-400 flex items-start gap-2">
+                <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                <span>
+                  Tệp tải lên sẽ được chuyển ngay vào chế độ cách ly và quét virus bởi <strong>ClamAV (Port 3310)</strong>. Chỉ các tệp đạt <strong>CLEAN</strong> mới được phép đính kèm hồ sơ và cấp quyền tải về.
+                </span>
+              </div>
+
+              <div className="flex justify-end gap-3 pt-3 border-t border-slate-800">
+                <Button type="button" variant="outline" size="sm" onClick={() => setIsUploadModalOpen(false)}>
+                  Hủy bỏ
+                </Button>
+                <Button type="submit" size="sm" isLoading={uploadMutation.isPending}>
+                  Bắt đầu tải lên
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
