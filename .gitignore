@@ -1,6 +1,7 @@
 apps/api/target/
 apps/web/node_modules/
 apps/web/dist/
+build/
 var/
 .env
 *.log

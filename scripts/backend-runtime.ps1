@@ -119,6 +119,8 @@ function Invoke-BackendNative {
     $quoted = @($Arguments | ForEach-Object { ConvertTo-BackendNativeArgument $_ })
     $child = Start-Process -FilePath $Executable -ArgumentList $quoted -WorkingDirectory $Paths.Repository `
         -WindowStyle Hidden -RedirectStandardOutput $stdout -RedirectStandardError $stderr -PassThru
+    # On Windows PowerShell 5.1, access the process handle immediately so ExitCode is populated when the process terminates.
+    $null = $child.Handle
     $elapsed = [Diagnostics.Stopwatch]::StartNew()
     try {
         if (-not $child.WaitForExit($TimeoutSeconds * 1000)) {
