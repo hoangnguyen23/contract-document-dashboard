@@ -8,6 +8,7 @@
 
 - [Final Project Specification](Final_Project_Specification.md): canonical product, business rules and acceptance criteria (A1.3.0).
 - [FE/BE Shared Development Contract](FE_BE_Shared_Development_Contract.md): canonical HTTP schema, permissions, fixtures and protocol (B1.3.0, policy corpus/empty schedule consistency and generated metadata correction).
+- [Operations & Verification Guide](Operations_Guide.md): canonical architecture, environment setup, B1.3.0 wire protocol, demo accounts, E2E workflow test execution and troubleshooting runbook.
 - [Backend delivery plan](plan/backend-implementation.md): implementation sequence and verification scope for the current Backend work.
 - [Backend operation coverage](plan/backend-operation-coverage.md): implementation status and limitations for all 85 canonical operations.
 - [Independent foundation review](plan/reviews/backend-foundation-follow-up.md): closed source findings and build evidence, with runtime acceptance still pending.

@@ -15,6 +15,7 @@ import {
   Building2,
   FolderGit2,
   Lock,
+  X,
 } from 'lucide-react';
 import { cn } from '@/components/ui/Button';
 
@@ -70,14 +71,27 @@ export const Sidebar: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
   return (
     <aside className="w-72 bg-slate-900 border-r border-slate-800 flex flex-col h-screen select-none shrink-0">
       {/* Brand Header */}
-      <div className="h-16 flex items-center px-6 border-b border-slate-800 gap-3">
-        <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
-          <ShieldCheck className="w-5 h-5" />
+      <div className="h-16 flex items-center justify-between px-6 border-b border-slate-800">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
+            <ShieldCheck className="w-5 h-5" />
+          </div>
+          <div>
+            <h1 className="font-bold text-sm tracking-wide text-white leading-tight">CONTRACT DOC</h1>
+            <p className="text-[10px] text-slate-400 font-medium tracking-wider uppercase">Enterprise Governance</p>
+          </div>
         </div>
-        <div>
-          <h1 className="font-bold text-sm tracking-wide text-white leading-tight">CONTRACT DOC</h1>
-          <p className="text-[10px] text-slate-400 font-medium tracking-wider uppercase">Enterprise Governance</p>
-        </div>
+
+        {/* Mobile close button */}
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            aria-label="Đóng thanh điều hướng"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        )}
       </div>
 
       {/* Nav Menu */}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { FormattedError, ApiProblem } from '@/lib/apiUtils';
 import { formatApiError } from '@/lib/apiUtils';
 import { AlertCircle, Copy, Check, RefreshCw, X, ShieldAlert, FileWarning } from 'lucide-react';
@@ -19,6 +19,15 @@ export const ApiErrorModal: React.FC<ApiErrorModalProps> = ({
   onRefresh,
 }) => {
   const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, onClose]);
 
   if (!isOpen || !error) return null;
 

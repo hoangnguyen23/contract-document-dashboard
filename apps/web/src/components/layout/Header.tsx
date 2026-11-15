@@ -45,6 +45,7 @@ export const Header: React.FC<HeaderProps> = ({ breadcrumbs = [{ label: 'Trang c
           <input
             type="text"
             placeholder="Tìm kiếm hợp đồng, hồ sơ..."
+            aria-label="Tìm kiếm hợp đồng hoặc hồ sơ"
             className="w-full pl-9 pr-4 py-1.5 text-xs bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500"
           />
         </div>
@@ -53,6 +54,7 @@ export const Header: React.FC<HeaderProps> = ({ breadcrumbs = [{ label: 'Trang c
         <button
           className="relative p-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
           title="Thông báo"
+          aria-label="Xem thông báo hệ thống"
         >
           <Bell className="w-5 h-5" />
           <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-indigo-500 rounded-full"></span>
