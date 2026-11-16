@@ -132,7 +132,11 @@ apiClient.interceptors.response.use(
     // ─── Global side-effects by status ──────────────────────────────────
     if (status === 401) {
       // Session expired or unauthenticated — trigger redirect to /login
-      onUnauthenticated?.();
+      const requestUrl = error.config?.url;
+      const isLoginRequest = requestUrl === '/api/v1/session/login';
+      if (!isLoginRequest) {
+        onUnauthenticated?.();
+      }
     }
 
     // 412 / 428 / 429 / 503 → let caller handle via formatApiError()

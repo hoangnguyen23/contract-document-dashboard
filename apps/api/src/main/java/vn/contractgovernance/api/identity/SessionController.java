@@ -24,13 +24,13 @@ public class SessionController {
     @PostMapping("/login")
     ResponseEntity<JsonNode> login(@RequestBody JsonNode body, HttpServletRequest request, HttpServletResponse response) {
         var issued = sessions.login(current(request), body.path("username").asString(), body.path("password").asString(), request.getRemoteAddr());
-        SessionFilter.setCookie(response, issued.opaqueToken(), false);
+        SessionFilter.setCookie(response, issued.opaqueToken(), false, request.isSecure());
         return ResponseEntity.ok(sessions.representation(issued.session()));
     }
 
     @PostMapping("/logout")
     ResponseEntity<Void> logout(HttpServletRequest request, HttpServletResponse response) {
-        sessions.logout(current(request)); SessionFilter.setCookie(response, "", true);
+        sessions.logout(current(request)); SessionFilter.setCookie(response, "", true, request.isSecure());
         return ResponseEntity.noContent().build();
     }
 

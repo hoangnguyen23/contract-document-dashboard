@@ -46,9 +46,24 @@ export const LoginPage: React.FC = () => {
     }
   };
 
-  const setDemoCredentials = (username: string) => {
+  const setDemoCredentials = async (username: string) => {
+    const demoPassword = import.meta.env.VITE_DEMO_PASSWORD;
     setValue('username', username);
+    if (!demoPassword) {
+      setErrorMessage('Chưa cấu hình VITE_DEMO_PASSWORD cho tài khoản demo.');
+      return;
+    }
+    setValue('password', demoPassword);
     setErrorMessage(null);
+    setIsLoading(true);
+    try {
+      await login(username, demoPassword);
+    } catch (err: unknown) {
+      const error = err as { message?: string };
+      setErrorMessage(error.message || 'Đăng nhập tài khoản demo không thành công.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (

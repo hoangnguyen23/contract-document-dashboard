@@ -17,6 +17,7 @@ import vn.contractgovernance.api.shared.ApiException;
 
 @Component
 public class SessionFilter extends OncePerRequestFilter {
+    private static final String LOCAL_COOKIE = "cg-session";
     private final SessionService sessions;
     private final HandlerExceptionResolver resolver;
     public SessionFilter(SessionService sessions, @Qualifier("handlerExceptionResolver") HandlerExceptionResolver resolver) {
@@ -37,7 +38,7 @@ public class SessionFilter extends OncePerRequestFilter {
             SessionService.Session session;
             if (found.isEmpty() && bootstrap) {
                 var issued = sessions.bootstrap(); session = issued.session();
-                setCookie(response, issued.opaqueToken(), false);
+                setCookie(response, issued.opaqueToken(), false, request.isSecure());
             } else if (found.isEmpty()) {
                 throw ApiException.of(login ? "CSRF_INVALID" : "UNAUTHENTICATED",
                         login ? "Hãy lấy session và CSRF token trước khi đăng nhập." : "Bạn cần đăng nhập.");
@@ -58,15 +59,17 @@ public class SessionFilter extends OncePerRequestFilter {
     static String cookie(HttpServletRequest request) {
         if (request.getCookies() == null) return null;
         String value = null;
-        for (Cookie cookie : request.getCookies()) if (cookie.getName().equals(SessionService.COOKIE)) {
+        String cookieName = request.isSecure() ? SessionService.COOKIE : LOCAL_COOKIE;
+        for (Cookie cookie : request.getCookies()) if (cookie.getName().equals(cookieName)) {
             if (value != null) return null; // Ambiguous cookies never choose one attacker-controlled token.
             value = cookie.getValue();
         }
         return value;
     }
 
-    static void setCookie(HttpServletResponse response, String value, boolean expire) {
-        var cookie = ResponseCookie.from(SessionService.COOKIE, value).secure(true).httpOnly(true)
+    static void setCookie(HttpServletResponse response, String value, boolean expire, boolean secure) {
+        String cookieName = secure ? SessionService.COOKIE : LOCAL_COOKIE;
+        var cookie = ResponseCookie.from(cookieName, value).secure(secure).httpOnly(true)
                 .path("/").sameSite("Lax");
         if (expire) cookie.maxAge(0);
         response.addHeader("Set-Cookie", cookie.build().toString());
